@@ -1,0 +1,1 @@
+add_library(whereswally_framework search_pattern.cpp pattern_information.cpp results_analysis.cpp)

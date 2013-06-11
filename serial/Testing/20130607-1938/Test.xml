@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Site BuildName="Linux-c++"
+	BuildStamp="20130607-1938-Continuous"
+	Name="desktop-archlinux"
+	Generator="ctest-2.8.11"
+	CompilerName="/usr/bin/c++"
+	OSName="Linux"
+	Hostname="desktop-archlinux"
+	OSRelease="3.9.4-1-ARCH"
+	OSVersion="#1 SMP PREEMPT Sun May 26 11:56:48 CEST 2013"
+	OSPlatform="i686"
+	Is64Bits="0"
+	VendorString="GenuineIntel"
+	VendorID="Intel Corporation"
+	FamilyID="6"
+	ModelID="23"
+	ProcessorCacheSize="2048"
+	NumberOfLogicalCPU="4"
+	NumberOfPhysicalCPU="4"
+	TotalVirtualMemory="0"
+	TotalPhysicalMemory="3286"
+	LogicalProcessorsPerPhysical="1"
+	ProcessorClockFrequency="2333.56"
+>
+<Testing>
+	<StartDateTime>Jun 07 20:38 BST</StartDateTime>
+	<StartTestTime>1370633888</StartTestTime>
+	<TestList>
+		<Test>./test/unit_tests/io_input_unit_test</Test>
+	</TestList>
+	<Test Status="passed">
+		<Name>io_input_unit_test</Name>
+		<Path>./test/unit_tests</Path>
+		<FullName>./test/unit_tests/io_input_unit_test</FullName>
+		<FullCommandLine>/home/cian/HPCWheresWallySolver/serial/test/unit_tests/io_input_unit_test</FullCommandLine>
+		<Results>
+			<NamedMeasurement type="numeric/double" name="Execution Time"><Value>0.00225102</Value></NamedMeasurement>
+			<NamedMeasurement type="text/string" name="Completion Status"><Value>Completed</Value></NamedMeasurement>
+			<NamedMeasurement type="text/string" name="Command Line"><Value>/home/cian/HPCWheresWallySolver/serial/test/unit_tests/io_input_unit_test</Value></NamedMeasurement>
+			<Measurement>
+				<Value>.
+
+OK (1)
+</Value>
+			</Measurement>
+		</Results>
+	</Test>
+	<EndDateTime>Jun 07 20:38 BST</EndDateTime>
+	<EndTestTime>1370633888</EndTestTime>
+<ElapsedMinutes>0</ElapsedMinutes></Testing>
+</Site>
