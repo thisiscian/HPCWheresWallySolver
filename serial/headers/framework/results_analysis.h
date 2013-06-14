@@ -1,5 +1,5 @@
-#ifndef hpc_wally_results_analysis
-#define hpc_wally_results_analysis
+#ifndef hpc_whereswally_serial_results_analysis
+#define hpc_whereswally_serial_results_analysis
 
   #include "search_pattern.h"
 

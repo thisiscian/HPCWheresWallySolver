@@ -34,9 +34,6 @@ int Input::load_results() {
   return UNDEFINED;
 }
 
-void Input::set_variables(IO_Variables new_variables) {
-}
-
 Mat Input::load_image() {
   Mat placeholder;
   return placeholder;

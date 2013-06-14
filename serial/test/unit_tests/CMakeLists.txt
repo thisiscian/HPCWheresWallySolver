@@ -1,4 +1,6 @@
 add_library(ww_ut_general general_test_functions.cpp)
+add_subdirectory(pattern_information)
+add_subdirectory(search_pattern)
 add_subdirectory(io_variables)
 add_subdirectory(input)
 add_subdirectory(output)
