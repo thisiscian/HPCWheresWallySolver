@@ -15,6 +15,9 @@
 #define hpc_whereswally_serial_input
 
   #include <iostream>
+  #include <fstream>
+  #include <algorithm>
+  #include <cctype>
   #include <opencv2/core/core.hpp>
   #include "io_variables.h"
 
@@ -25,6 +28,9 @@
     BAD_RESULTS_FILE,
     CONTRADICTING_INPUTS
   };
+
+  int to_lower_case(int c);
+  std::string remove_whitespace(std::string in_string);
 
   class Input {
     private:
