@@ -20,7 +20,7 @@
       Pattern_Information info;
     public:
       const Pattern_Information get_pattern_information();
-      std::vector<Pattern_Result> start_search(cv::Mat image);
+      virtual std::vector<Pattern_Result> start_search(cv::Mat image);
   };
 
 #endif

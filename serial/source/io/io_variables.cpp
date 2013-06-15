@@ -17,7 +17,6 @@ IO_Variables::IO_Variables() {
   puzzle_image_filename = "";
   config_filename = "";
   load_results_filename = "";
-  
 }
 
 void IO_Variables::set_number_of_final_results(int result_count){

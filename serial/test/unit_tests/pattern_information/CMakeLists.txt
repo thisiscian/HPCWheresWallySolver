@@ -1,0 +1,3 @@
+add_executable(ww_ut_pattern_information ww_ut_pattern_information.cpp)
+target_link_libraries(ww_ut_pattern_information ${CPPUNIT_LIBRARY} ${OPENCV_LIBS} ww_ut_general whereswally_io whereswally_framework)
+add_test(test_pattern_information_class ww_ut_pattern_information)

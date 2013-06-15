@@ -1,0 +1,21 @@
+Start testing: Jun 14 12:43 BST
+----------------------------------------------------------
+1/1 Testing: test_pattern_information_class
+1/1 Test: test_pattern_information_class
+Command: "/home/cian/HPCWheresWallySolver/serial/test/unit_tests/pattern_information/ww_ut_pattern_information"
+Directory: /home/cian/HPCWheresWallySolver/serial/test/unit_tests/pattern_information
+"test_pattern_information_class" start time: Jun 14 12:43 BST
+Output:
+----------------------------------------------------------
+.....
+
+OK (5)
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Passed.
+"test_pattern_information_class" end time: Jun 14 12:43 BST
+"test_pattern_information_class" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jun 14 12:43 BST

@@ -22,22 +22,219 @@ Input::Input(IO_Variables *new_variables) {
 }
 
 int Input::parse_input(int argc, char* argv[]) {
+  string argv_i, file;
   if(argc == 1) {
     cerr << "usage: " << argv[0] << " [options [files]]" << endl;
     cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
     cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
+    cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
     cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
     cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-    cerr << "\t-Op,--print-output={TRUE,FALSE}\tPrints the results to the terminal" << endl;
-    cerr << "\t-Od,--display-output={TRUE,FALSE}\tShows the results graphically, in a new window" << endl;
+    cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
+    cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
     cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
     cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
-    cerr << "\t-h,--help[=COMMAND]\tDisplays this help message, or more detailed help associated with a specific command" << endl;
+    cerr << "\t-h,--help\tDisplays this help message" << endl;
     return NO_ERRORS;
   } else {
-    
+    for(int i=1; i<argc; i++) {
+      argv_i = argv[i]; 
+      if(argv_i == "-c"){
+        variables->set_load_config_from_file(true);
+        i++;
+        file = argv[i];
+        if(file[0] == '-') {
+          cerr << "Error: -c expects the following argument to be a filename" << endl;
+          return BAD_COMMAND_USAGE; 
+        }
+        variables->set_config_filename(file);
+      } else if(argv_i.find("--config=") != string::npos) {
+        variables->set_load_config_from_file(true);
+        file = argv_i.substr(argv_i.find("=")+1);
+        variables->set_config_filename(file);
+      } else if(argv_i == "-n") {
+        i++;
+        int n = strtol (argv[i],NULL,10);
+        variables->set_number_of_final_results(n);
+      } else if(argv_i.find("--number-of-results=") != string::npos) {
+        int n = strtol (argv_i.substr(argv_i.find("=")+1).c_str(),NULL,10);
+        variables->set_number_of_final_results(n);
+      } else if(argv_i == "-w") {
+          int weight;
+          string pattern_name, pattern_weight_str;
+          i++;
+          file = argv[i];
+          while(file.find(",") != string::npos) {
+            if(file.find(":") == string::npos || file.find(":") > file.find(",")) {
+              cerr << "Error: expect weightings in the form of NAME:WEIGHT" << endl;
+              return BAD_COMMAND_USAGE;
+            }
+            pattern_name = file.substr(1, file.find(":")-2); // parses pattern_name from string
+            pattern_weight_str = file.substr(file.find(":")+1, file.find(",")-file.find(":")-1); //parses pattern_weighting from string
+            weight = strtol (pattern_weight_str.c_str(),NULL,10); // converts  str to long int
+            variables->set_weighting(pattern_name,weight);
+            file.erase(0,file.find(",")+1); // erase 'used' data
+          }
+          if(file.find(":") == string::npos) {
+            cerr << "Error: expect weightings in the form of NAME:WEIGHT" << endl;
+            return BAD_COMMAND_USAGE;
+          }
+          pattern_name = file.substr(1, file.find(":")-2); // parses pattern_name from string
+          pattern_weight_str = file.substr(file.find(":")+1); //parses pattern_weighting from string
+          weight = strtol (pattern_weight_str.c_str(),NULL,10); // converts str to long int
+          variables->set_weighting(pattern_name,weight);
+      } else if(argv_i.find("--pattern-weighting=") != string::npos) {
+          int weight;
+          string pattern_name, pattern_weight_str;
+          file = argv_i.substr(argv_i.find("=")+1);
+          while(file.find(",") != string::npos) {
+            if(file.find(":") == string::npos || file.find(":") > file.find(",")) {
+              cerr << "Error: expect weightings in the form of NAME:WEIGHT" << endl;
+              return BAD_COMMAND_USAGE;
+            }
+            pattern_name = file.substr(1, file.find(":")-2); // parses pattern_name from string
+            pattern_weight_str = file.substr(file.find(":")+1, file.find(",")-file.find(":")-1); //parses pattern_weighting from string
+            weight = strtol (pattern_weight_str.c_str(),NULL,10); // converts  str to long int
+            variables->set_weighting(pattern_name,weight);
+            file.erase(0,file.find(",")+1); // erase 'used' data
+          }
+          if(file.find(":") == string::npos) {
+            cerr << "Error: expect weightings in the form of NAME:WEIGHT" << endl;
+            return BAD_COMMAND_USAGE;
+          }
+          pattern_name = file.substr(1, file.find(":")-2); // parses pattern_name from string
+          pattern_weight_str = file.substr(file.find(":")+1); //parses pattern_weighting from string
+          weight = strtol (pattern_weight_str.c_str(),NULL,10); // converts string to long int
+          variables->set_weighting(pattern_name,weight);
+      } else if(argv_i == "-p") {
+        i++;
+        file = argv[i];
+        variables->set_load_puzzle_from_file(true);
+        variables->set_puzzle_image_filename(file);
+      } else if(argv_i.find("--solve-puzzle=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        variables->set_load_puzzle_from_file(true);
+        variables->set_puzzle_image_filename(file);
+      } else if(argv_i == "-l") {
+        i++;
+        file = argv[i];
+        variables->set_load_results_from_file(true);
+        variables->set_load_results_filename(file);
+      } else if(argv_i.find("--load-results=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        variables->set_load_results_from_file(true);
+        variables->set_load_results_filename(file);
+      } else if(argv_i == "-Op") {
+        i++;
+        file = argv[i];
+        if(file == "VERBOSE") {
+          variables->set_print_results(true);
+          variables->set_verbose_print(true);
+        } else if(file == "TRUE" ) {
+          variables->set_print_results(true);
+          variables->set_verbose_print(false);
+        } else if(file == "FALSE") {
+          variables->set_print_results(false);
+          variables->set_verbose_print(false);
+        } else {
+          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          return BAD_COMMAND_USAGE;
+        }
+      } else if(argv_i.find("--print-output=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        if(file == "VERBOSE") {
+          variables->set_print_results(true);
+          variables->set_verbose_print(true);
+        } else if(file == "TRUE" ) {
+          variables->set_print_results(true);
+          variables->set_verbose_print(false);
+        } else if(file == "FALSE") {
+          variables->set_print_results(false);
+          variables->set_verbose_print(false);
+        } else {
+          cerr << "Error: --print-output expects VERBOSE,TRUE or FALSE as input values" << endl;
+          return BAD_COMMAND_USAGE;
+        }
+      } else if(argv_i == "-Od") {
+        i++;
+        file = argv[i];
+        if(file == "VERBOSE") {
+          variables->set_display_results(true);
+          variables->set_verbose_display(true);
+        } else if(file == "TRUE" ) {
+          variables->set_display_results(true);
+          variables->set_verbose_display(false);
+        } else if(file == "FALSE") {
+          variables->set_display_results(false);
+          variables->set_verbose_display(false);
+        } else {
+          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          return BAD_COMMAND_USAGE;
+        }
+      } else if(argv_i.find("--display-output=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        if(file == "VERBOSE") {
+          variables->set_display_results(true);
+          variables->set_verbose_display(true);
+        } else if(file == "TRUE" ) {
+          variables->set_display_results(true);
+          variables->set_verbose_display(false);
+        } else if(file == "FALSE") {
+          variables->set_display_results(false);
+          variables->set_verbose_display(false);
+        } else {
+          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          return BAD_COMMAND_USAGE;
+        }
+      } else if(argv_i == "-St") {
+        i++;
+        file = argv[i];
+        variables->set_save_print_to_file(true);
+        variables->set_print_output_filename(file);
+      } else if(argv_i.find("--save-text-output=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        variables->set_save_print_to_file(true);
+        variables->set_print_output_filename(file);
+      } else if(argv_i == "-Si") {
+        i++;
+        file = argv[i];
+        variables->set_save_display_to_file(true);
+        variables->set_display_output_filename(file);
+      } else if(argv_i.find("--save-image-output=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        variables->set_save_display_to_file(true);
+        variables->set_display_output_filename(file);
+      } else if(argv_i == "-h") {
+          cerr << "usage: " << argv[0] << " [options [files]]" << endl;
+          cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
+          cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
+          cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
+          cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
+          cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
+          cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
+          cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
+          cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
+          cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
+          cerr << "\t-h,--help\tDisplays this help message" << endl;
+      } else if(argv_i == "--help") {
+          cerr << "usage: " << argv[0] << " [options [files]]" << endl;
+          cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
+          cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
+          cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
+          cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
+          cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
+          cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
+          cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
+          cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
+          cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
+          cerr << "\t-h,--help\tDisplays this help message" << endl;
+      } else {
+        cerr << "Error: unrecognised command, exiting" << endl;
+        return UNRECOGNISED_COMMAND;
+      }
+    }
   }
-  return UNDEFINED;
+  return 0;
 }
 
 int Input::load_config() {

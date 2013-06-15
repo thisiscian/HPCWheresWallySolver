@@ -1,0 +1,69 @@
+Start testing: Jun 15 16:42 BST
+----------------------------------------------------------
+1/1 Testing: test_input_class
+1/1 Test: test_input_class
+Command: "/home/cian/HPCWheresWallySolver/serial/test/unit_tests/input/ww_ut_input"
+Directory: /home/cian/HPCWheresWallySolver/serial/test/unit_tests/input
+"test_input_class" start time: Jun 15 16:42 BST
+Output:
+----------------------------------------------------------
+Stripes 1 2 "Stripes":2
+...............
+
+ww_ut_input.cpp:118:Assertion
+Test name: input_test::test_option_pattern_weighting
+assertion failed
+- Expression: 2 == input->variables->get_weighting("Stripes")
+
+ww_ut_input.cpp:143:Assertion
+Test name: input_test::test_option_solve_puzzle
+assertion failed
+- Expression: "../../sample_files/test_puzzle_image.png" == input->variables->g
+et_puzzle_image_filename()
+
+ww_ut_input.cpp:167:Assertion
+Test name: input_test::test_option_load_results
+assertion failed
+- Expression: true == input->variables->get_load_results_from_file()
+
+ww_ut_input.cpp:218:Assertion
+Test name: input_test::test_option_display_output
+assertion failed
+- Expression: false == input->variables->get_display_results()
+
+ww_ut_input.cpp:194:Assertion
+Test name: input_test::test_option_print_output
+assertion failed
+- Expression: false == input->variables->get_print_results()
+
+ww_ut_input.cpp:268:Assertion
+Test name: input_test::test_option_save_image_output
+assertion failed
+- Expression: true == input->variables->get_save_display_to_file()
+
+ww_ut_input.cpp:241:Assertion
+Test name: input_test::test_option_save_text_output
+assertion failed
+- Expression: true == input->variables->get_save_print_to_file()
+
+ww_ut_input.cpp:311:Assertion
+Test name: input_test::test_option_help
+assertion failed
+- Expression: record_output.get_cerr_output() == help_message.str()
+
+ww_ut_input.cpp:405:Assertion
+Test name: input_test::test_unrecognised_command
+assertion failed
+- Expression: UNRECOGNISED_COMMAND != err_no
+
+Failures !!!
+Run: 15   Failure total: 9   Failures: 9   Errors: 0
+<end of output>
+Test time =   0.00 sec
+----------------------------------------------------------
+Test Failed.
+"test_input_class" end time: Jun 15 16:42 BST
+"test_input_class" time elapsed: 00:00:00
+----------------------------------------------------------
+
+End testing: Jun 15 16:42 BST

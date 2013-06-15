@@ -18,6 +18,7 @@
   #include <fstream>
   #include <algorithm>
   #include <cctype>
+  #include <cstdlib>
   #include <opencv2/core/core.hpp>
   #include "io_variables.h"
 
@@ -26,7 +27,9 @@
     UNDEFINED,
     BAD_CONFIG_FILE,
     BAD_RESULTS_FILE,
-    CONTRADICTING_INPUTS
+    CONTRADICTING_INPUTS,
+    UNRECOGNISED_COMMAND,
+    BAD_COMMAND_USAGE
   };
 
   int to_lower_case(int c);

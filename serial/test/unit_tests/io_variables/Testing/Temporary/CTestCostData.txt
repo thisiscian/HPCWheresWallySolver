@@ -1,0 +1,2 @@
+test_io_variables_class 3 0.000837691
+---
