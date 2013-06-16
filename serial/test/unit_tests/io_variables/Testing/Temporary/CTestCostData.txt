@@ -1,2 +1,2 @@
-test_io_variables_class 3 0.000837691
+test_io_variables_class 4 0.00081801
 ---
