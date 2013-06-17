@@ -10,11 +10,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(pattern_information_test);
 
 void pattern_information_test::setUp(){
   tmp_patt = new Pattern_Information();
-  record_output.silence();
+  monitor.silence();
 }
 void pattern_information_test::tearDown(){
   delete tmp_patt;
-  record_output.unsilence();
+  monitor.unsilence();
 }
 
 void pattern_information_test::test_name() {
@@ -35,11 +35,11 @@ void pattern_information_test::test_confidence() {
   CPPUNIT_ASSERT( 4.0 == tmp_patt->get_confidence() );
 
   // should ignore attempts to set 'confidence' to values less than 0 and print errors
-  record_output.start_recording_cerr();
+  monitor.start_recording_cerr();
     tmp_patt->set_confidence(-1.0);
-  record_output.stop_recording_cerr();
+  monitor.stop_recording_cerr();
   CPPUNIT_ASSERT_MESSAGE( "failed <0 test", 4.0 == tmp_patt->get_confidence() );
-  CPPUNIT_ASSERT( "Error: Confidence values should be non-negative\n" == record_output.get_cerr_output() );
+  CPPUNIT_ASSERT( "Error: Confidence values should be non-negative\n" == monitor.get_cerr_output() );
 }
 
 void pattern_information_test::test_relational_operators() {

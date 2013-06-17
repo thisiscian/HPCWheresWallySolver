@@ -21,37 +21,86 @@ Input::Input(IO_Variables *new_variables) {
   variables = new_variables;
 }
 
+int Input::option_config(int *num, int argc, char *argv[]) {
+  string arg = argv[*num];
+  string file;
+  if(arg[1] == '-') {
+    file = arg.substr(arg.find("=")+1);
+    arg.erase(arg.find("=")+1);
+  } else {
+    arg.append(" ");
+    if(*num+1 >= argc) {
+      cerr << err_msg("option_config", arg.c_str());
+      return BAD_COMMAND_USAGE; 
+    }
+    (*num)++;
+    file = argv[*num];
+  }
+  if(file[0] == '-' || (argc > *num+1 && argv[*num+1][0] != '-') ) {
+    cerr << err_msg("option_config", arg.c_str());
+    return BAD_COMMAND_USAGE; 
+  }
+  variables->set_load_config_from_file(true);
+  variables->set_config_input_filename(file);
+return UNDEFINED;
+}
+
+int Input::option_number_of_results(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_pattern_weighting(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_load_puzzle(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_load_results(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_show_text(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_show_graphic(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_save_text(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_save_graphic(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_save_results(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+int Input::option_help(int *num, int argc, char *argv[]) {
+  return UNDEFINED;
+}
+
+
+
 int Input::parse_input(int argc, char* argv[]) {
   string argv_i, file;
   if(argc == 1) {
-    cerr << "usage: " << argv[0] << " [options [files]]" << endl;
-    cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
-    cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
-    cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
-    cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
-    cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-    cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
-    cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
-    cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
-    cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
-    cerr << "\t-h,--help\tDisplays this help message" << endl;
+    cerr << err_msg("option_help", argv[0]);
     return NO_ERRORS;
   } else {
     for(int i=1; i<argc; i++) {
       argv_i = argv[i]; 
-      if(argv_i == "-c"){
-        variables->set_load_config_from_file(true);
-        i++;
-        file = argv[i];
-        if(file[0] == '-') {
-          cerr << "Error: -c expects the following argument to be a filename" << endl;
-          return BAD_COMMAND_USAGE; 
-        }
-        variables->set_config_filename(file);
+      if( argv_i == "-c" || argv_i.substr(0,9) == "--config="){
+        option_config(&i, argc, argv);
       } else if(argv_i.find("--config=") != string::npos) {
         variables->set_load_config_from_file(true);
         file = argv_i.substr(argv_i.find("=")+1);
-        variables->set_config_filename(file);
+        variables->set_config_input_filename(file);
       } else if(argv_i == "-n") {
         i++;
         int n = strtol (argv[i],NULL,10);
@@ -110,32 +159,32 @@ int Input::parse_input(int argc, char* argv[]) {
         i++;
         file = argv[i];
         variables->set_load_puzzle_from_file(true);
-        variables->set_puzzle_image_filename(file);
+        variables->set_puzzle_input_filename(file);
       } else if(argv_i.find("--solve-puzzle=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_load_puzzle_from_file(true);
-        variables->set_puzzle_image_filename(file);
+        variables->set_puzzle_input_filename(file);
       } else if(argv_i == "-l") {
         i++;
         file = argv[i];
         variables->set_load_results_from_file(true);
-        variables->set_load_results_filename(file);
+        variables->set_results_input_filename(file);
       } else if(argv_i.find("--load-results=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_load_results_from_file(true);
-        variables->set_load_results_filename(file);
+        variables->set_results_input_filename(file);
       } else if(argv_i == "-Op") {
         i++;
         file = argv[i];
         if(file == "VERBOSE") {
-          variables->set_print_results(true);
-          variables->set_verbose_print(true);
+          variables->set_show_text_results(true);
+          variables->set_make_text_verbose(true);
         } else if(file == "TRUE" ) {
-          variables->set_print_results(true);
-          variables->set_verbose_print(false);
+          variables->set_show_text_results(true);
+          variables->set_make_text_verbose(false);
         } else if(file == "FALSE") {
-          variables->set_print_results(false);
-          variables->set_verbose_print(false);
+          variables->set_show_text_results(false);
+          variables->set_make_text_verbose(false);
         } else {
           cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
@@ -143,14 +192,14 @@ int Input::parse_input(int argc, char* argv[]) {
       } else if(argv_i.find("--print-output=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         if(file == "VERBOSE") {
-          variables->set_print_results(true);
-          variables->set_verbose_print(true);
+          variables->set_show_text_results(true);
+          variables->set_make_text_verbose(true);
         } else if(file == "TRUE" ) {
-          variables->set_print_results(true);
-          variables->set_verbose_print(false);
+          variables->set_show_text_results(true);
+          variables->set_make_text_verbose(false);
         } else if(file == "FALSE") {
-          variables->set_print_results(false);
-          variables->set_verbose_print(false);
+          variables->set_show_text_results(false);
+          variables->set_make_text_verbose(false);
         } else {
           cerr << "Error: --print-output expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
@@ -159,14 +208,14 @@ int Input::parse_input(int argc, char* argv[]) {
         i++;
         file = argv[i];
         if(file == "VERBOSE") {
-          variables->set_display_results(true);
-          variables->set_verbose_display(true);
+          variables->set_show_graphic_results(true);
+          variables->set_make_graphic_verbose(true);
         } else if(file == "TRUE" ) {
-          variables->set_display_results(true);
-          variables->set_verbose_display(false);
+          variables->set_show_graphic_results(true);
+          variables->set_make_graphic_verbose(false);
         } else if(file == "FALSE") {
-          variables->set_display_results(false);
-          variables->set_verbose_display(false);
+          variables->set_show_graphic_results(false);
+          variables->set_make_graphic_verbose(false);
         } else {
           cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
@@ -174,14 +223,14 @@ int Input::parse_input(int argc, char* argv[]) {
       } else if(argv_i.find("--display-output=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         if(file == "VERBOSE") {
-          variables->set_display_results(true);
-          variables->set_verbose_display(true);
+          variables->set_show_graphic_results(true);
+          variables->set_make_graphic_verbose(true);
         } else if(file == "TRUE" ) {
-          variables->set_display_results(true);
-          variables->set_verbose_display(false);
+          variables->set_show_graphic_results(true);
+          variables->set_make_graphic_verbose(false);
         } else if(file == "FALSE") {
-          variables->set_display_results(false);
-          variables->set_verbose_display(false);
+          variables->set_show_graphic_results(false);
+          variables->set_make_graphic_verbose(false);
         } else {
           cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
@@ -189,21 +238,21 @@ int Input::parse_input(int argc, char* argv[]) {
       } else if(argv_i == "-St") {
         i++;
         file = argv[i];
-        variables->set_save_print_to_file(true);
-        variables->set_print_output_filename(file);
+        variables->set_save_text_to_file(true);
+        variables->set_text_output_filename(file);
       } else if(argv_i.find("--save-text-output=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
-        variables->set_save_print_to_file(true);
-        variables->set_print_output_filename(file);
+        variables->set_save_text_to_file(true);
+        variables->set_text_output_filename(file);
       } else if(argv_i == "-Si") {
         i++;
         file = argv[i];
-        variables->set_save_display_to_file(true);
-        variables->set_display_output_filename(file);
+        variables->set_save_graphic_to_file(true);
+        variables->set_graphic_output_filename(file);
       } else if(argv_i.find("--save-image-output=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
-        variables->set_save_display_to_file(true);
-        variables->set_display_output_filename(file);
+        variables->set_save_graphic_to_file(true);
+        variables->set_graphic_output_filename(file);
       } else if(argv_i == "-h") {
           cerr << "usage: " << argv[0] << " [options [files]]" << endl;
           cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
@@ -240,7 +289,7 @@ int Input::parse_input(int argc, char* argv[]) {
 int Input::load_config() {
   string current_line;
   fstream config;
-  config.open(variables->get_config_filename().c_str(), fstream::in);
+  config.open(variables->get_config_input_filename().c_str(), fstream::in);
   while(config.good()) {
     getline(config, current_line);
       if(current_line.find("#") != string::npos) {
@@ -283,42 +332,42 @@ int Input::load_config() {
           transform(current_line.begin(), current_line.end(), current_line.begin(), to_lower_case); //converts string to lower case
           current_line = remove_whitespace(current_line);
         }
-      } else if (current_line.find("print_results=") != string::npos) {
+      } else if (current_line.find("show_text_results=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_print_results(val == "true");
-      } else if (current_line.find("display_results=") != string::npos) {
+        variables->set_show_text_results(val == "true");
+      } else if (current_line.find("show_graphic_results=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_display_results(val == "true");
-      } else if (current_line.find("verbose_print=") != string::npos) {
+        variables->set_show_graphic_results(val == "true");
+      } else if (current_line.find("make_text_verbose=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_verbose_print(val == "true");
-      } else if (current_line.find("verbose_display=") != string::npos) {
+        variables->set_make_text_verbose(val == "true");
+      } else if (current_line.find("make_graphic_verbose=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_verbose_display(val == "true");
-      } else if (current_line.find("save_display_to_file=") != string::npos) {
+        variables->set_make_graphic_verbose(val == "true");
+      } else if (current_line.find("save_graphic_to_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_save_display_to_file(val == "true");
-      } else if (current_line.find("save_print_to_file=") != string::npos) {
+        variables->set_save_graphic_to_file(val == "true");
+      } else if (current_line.find("save_text_to_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_save_print_to_file(val == "true");
+        variables->set_save_text_to_file(val == "true");
       } else if (current_line.find("load_puzzle_from_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_load_puzzle_from_file(val == "true");
       } else if (current_line.find("load_results_from_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_load_results_from_file(val == "true");
-      } else if (current_line.find("display_output_filename=") != string::npos) {
+      } else if (current_line.find("graphic_output_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_display_output_filename(val);
-      } else if (current_line.find("print_output_filename=") != string::npos) {
+        variables->set_graphic_output_filename(val);
+      } else if (current_line.find("text_output_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_print_output_filename(val);
-      } else if (current_line.find("puzzle_image_filename=") != string::npos) {
+        variables->set_text_output_filename(val);
+      } else if (current_line.find("puzzle_input_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_puzzle_image_filename(val);
-      } else if (current_line.find("load_results_filename=") != string::npos) {
+        variables->set_puzzle_input_filename(val);
+      } else if (current_line.find("results_input_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
-        variables->set_load_results_filename(val);
+        variables->set_results_input_filename(val);
       } else {
         cerr << "Error: config file contained some errors" << endl;
         cerr << current_line << endl;
@@ -332,7 +381,7 @@ int Input::load_config() {
 int Input::load_results() {
   string current_line;
   fstream results;
-  results.open(variables->get_load_results_filename().c_str(), fstream::in);
+  results.open(variables->get_results_input_filename().c_str(), fstream::in);
   vector<Pattern_Result> result_list;
   while(results.good()) {
     getline(results, current_line);
@@ -393,7 +442,7 @@ int Input::load_results() {
 
     result_list.push_back(this_result);
   }
-  variables->add_to_load_results(result_list);
+  variables->add_to_loaded_results(result_list);
   return 0;
 }
 

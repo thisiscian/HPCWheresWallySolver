@@ -35,7 +35,7 @@
       void test_constructor();
     private:
       Pattern_Information *tmp_patt;
-      Record_Output record_output;  // allows test to silence & record stdout and stderr
+      IO_Monitor monitor;  // allows test to silence & record stdout and stderr
   };
 
 #endif

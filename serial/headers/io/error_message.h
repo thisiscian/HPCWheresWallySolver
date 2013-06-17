@@ -19,6 +19,18 @@ class Error_Message {
     std::string bad_graphic_output_filename(va_list vl);
     std::string bad_results_output_filename(va_list vl);
 
+    std::string bad_option_config(va_list vl);
+    std::string bad_option_number_of_final_results(va_list vl);
+    std::string bad_option_pattern_weighting(va_list vl);
+    std::string bad_option_load_puzzle(va_list vl);
+    std::string bad_option_load_results(va_list vl);
+    std::string bad_option_show_text(va_list vl);
+    std::string bad_option_show_graphic(va_list vl);
+    std::string bad_option_save_text(va_list vl);
+    std::string bad_option_save_graphic(va_list vl);
+    std::string bad_option_save_results(va_list vl);
+    std::string bad_option_help(va_list vl);
+
     std::string unrecognised_error(std::string bad_error);
   public:
     std::string operator()(std::string,...);

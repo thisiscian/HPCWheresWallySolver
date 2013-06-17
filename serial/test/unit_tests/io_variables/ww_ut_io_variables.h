@@ -39,6 +39,8 @@
       CPPUNIT_TEST(test_save_results_to_file);
       CPPUNIT_TEST(test_results_output_filename);
 
+      CPPUNIT_TEST(test_loaded_image);
+
       CPPUNIT_TEST(test_constructor);
     CPPUNIT_TEST_SUITE_END();
     public:
@@ -52,6 +54,7 @@
 
       void test_load_puzzle_from_file();
       void test_puzzle_input_filename();
+      void test_loaded_image();
 
       void test_load_results_from_file();
       void test_results_input_filename();

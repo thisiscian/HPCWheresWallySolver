@@ -5,6 +5,7 @@
 
 using namespace std;
 using namespace CppUnit;
+using namespace cv;
 
 CPPUNIT_TEST_SUITE_REGISTRATION(io_variables_test);
 
@@ -72,6 +73,13 @@ void io_variables_test::test_puzzle_input_filename(){
   // should be able to set the value of 'puzzle_input_filename' to a blank one
   tmp_var->set_puzzle_input_filename("");
   CPPUNIT_ASSERT( "" == tmp_var->get_puzzle_input_filename() );
+}
+
+void io_variables_test::test_loaded_image() {
+   // should be load and receive an opencv Mat
+  Mat image(5,5, CV_32F, Scalar(5)); 
+  tmp_var->set_loaded_image(image);
+  CPPUNIT_ASSERT( 5 == image.dot(image)/25 ); // this test could be better
 }
 
 void io_variables_test::test_load_results_from_file() {

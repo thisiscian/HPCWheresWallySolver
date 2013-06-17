@@ -10,11 +10,11 @@ CPPUNIT_TEST_SUITE_REGISTRATION(search_pattern_test);
 
 void search_pattern_test::setUp(){
   tmp_search = new Search_Pattern;
-  record_output.silence();
+  monitor.silence();
 }
 void search_pattern_test::tearDown(){
   delete tmp_search;
-  record_output.unsilence();
+  monitor.unsilence();
 }
 
 void search_pattern_test::test_pattern_information() {

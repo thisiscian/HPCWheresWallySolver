@@ -4,7 +4,7 @@
   #include <sstream>
   #include <string>
 
-  class Record_Output {
+  class IO_Monitor {
     public:
       void start_recording_cout();
       void stop_recording_cout();
@@ -13,7 +13,7 @@
       void stop_recording_cerr();
       std::string get_cerr_output();
       void silence(), unsilence();
-      Record_Output();
+      IO_Monitor();
     private:
       bool silent;
       std::stringstream cout_buffer,cerr_buffer;

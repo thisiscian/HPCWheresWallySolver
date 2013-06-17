@@ -17,7 +17,7 @@
   #include "io_variables.h"
   #include "input.h"
   #include "output.h"
-  #include "../framework/result_analysis.h"
+  #include "../framework/results_analysis.h"
   
   class IO_Control {
     private:
@@ -29,7 +29,7 @@
       IO_Control(int argc, char* argv[]);
       Input *input;
       Output *output;
-      Result_Analysis analysis;
+      Results_Analysis analysis;
 
       // needed for analysis of results by Global_Results (global_results.h)
       int start();

@@ -97,6 +97,105 @@ void error_message_test::test_results_output_filename() {
   CPPUNIT_ASSERT( err_msg("results_output_filename", "existing_file", "new_output_file") == err.str() );
 }
 
+void error_message_test::test_option_config(){
+  stringstream err;
+  err << "Error: " << "--config=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--config=" << "sample_files/test_config.cfg";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_config", "--config=") == err.str() );
+}
+
+void error_message_test::test_option_number_of_results() {
+  stringstream err;
+  err << "Error: " << "--number-of-final-results=" << " expects a single integer as an argument\n";
+  err << "\te.g. " << "--number-of-final-results=" << "10";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_number_of_final_results", "--number-of-final-results=") == err.str() );
+}
+
+void error_message_test::test_option_pattern_weighting() {
+  stringstream err;
+  err << "Error: " << "--pattern-weighting=" << " expects a comma separated list of patterns and weightings\n";
+  err << "\te.g. " << "--pattern-weighting=" << "\"Red and Black\":2,\"Stripes\":1,\"Wally\":5";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_pattern_weighting", "--pattern-weighting=") == err.str() );
+}
+
+void error_message_test::test_option_load_puzzle() {
+  stringstream err;
+  err << "Error: " << "--load-puzzle=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--load-puzzle=" << "sample_files/test_wally_puzzle.png";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_load_puzzle", "--load-puzzle=") == err.str() );
+}
+
+void error_message_test::test_option_load_results() {
+  stringstream err;
+  err << "Error: " << "--load-results=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--load-results=" << "sample_files/test_results.dat";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_load_results", "--load-results=") == err.str() );
+}
+
+void error_message_test::test_option_show_text() {
+  stringstream err;
+  err << "Error: " << "--show-text=" << " expects TRUE, FALSE or VERBOSE as an argument \n";
+  err << "\te.g. " << "--show-text=" << "TRUE";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_show_text", "--show-text=") == err.str() );
+}
+
+void error_message_test::test_option_show_graphic() {
+  stringstream err;
+  err << "Error: " << "--show-graphic=" << " expects TRUE, FALSE or VERBOSE as an argument \n";
+  err << "\te.g. " << "--show-graphic=" << "TRUE";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_show_graphic", "--show-graphic=") == err.str() );
+}
+
+void error_message_test::test_option_save_text() {
+  stringstream err;
+  err << "Error: " << "--save-text=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--save-text=" << "sample_files/test_text_output.txt";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_save_text", "--save-text=") == err.str() );
+}
+
+void error_message_test::test_option_save_graphic() {
+  stringstream err;
+  err << "Error: " << "--save-graphic=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--save-graphic=" << "sample_files/test_graphic_output.png";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_save_graphic", "--save-graphic=") == err.str() );
+}
+
+void error_message_test::test_option_save_results() {
+  stringstream err;
+  err << "Error: " << "--save-results=" << " expects a single filename as an argument\n";
+  err << "\te.g. " << "--save-results=" << "sample_files/test_results.dat";
+  err << endl;
+  CPPUNIT_ASSERT( err_msg("option_save_results", "--save-results=") == err.str() );
+}
+
+
+void error_message_test::test_option_help() {
+  stringstream err;
+  err << "usage: " << "./test_app" << " [options [files]]" << endl;
+  err << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
+  err << "\t-n,--number-of-final-results=N\tSets the number of results to be output" << endl;
+  err << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
+  err << "\t-p,--load-puzzle=FILE\tAttempts to locate Wally in FILE" << endl;
+  err << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
+  err << "\t-Op,--show-text={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
+  err << "\t-Od,--show-graphic={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
+  err << "\t-St,--save-text=FILE\tSaves the textual format of the results to FILE" << endl;
+  err << "\t-Si,--save-graphic=FILE\tSaves the graphical format of the results to FILE" << endl;
+  err << "\t-Sr,--save-results=FILE\tSaves the results to FILE, which can be loaded later" << endl;
+  err << "\t-h,--help\tDisplays this help message" << endl;
+
+  CPPUNIT_ASSERT( err_msg("option_help", "./test_app") == err.str() );
+}
+
 void error_message_test::test_false_error() {
   // fake error should return error
   stringstream err;

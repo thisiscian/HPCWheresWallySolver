@@ -17,10 +17,9 @@
       void setUp();
       void tearDown();
 
-      void test_constructor();
     private:
-      IO_Variables *var;
-      Output *output;
+      Output output;
+      vector<Pattern_Results> final_results;
       IO_Monitor monitor;
   };
 

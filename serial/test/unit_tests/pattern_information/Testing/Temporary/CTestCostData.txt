@@ -1,2 +1,0 @@
-test_pattern_information_class 1 0.002988
----

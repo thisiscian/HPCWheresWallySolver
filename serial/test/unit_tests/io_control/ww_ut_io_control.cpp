@@ -1,4 +1,4 @@
-#include "ww_ut_input.h"
+#include "ww_ut_io_control.h"
 #include <cppunit/CompilerOutputter.h>
 #include <cppunit/extensions/TestFactoryRegistry.h>
 #include <cppunit/ui/text/TestRunner.h>
@@ -6,23 +6,14 @@
 using namespace std;
 using namespace CppUnit;
 
-CPPUNIT_TEST_SUITE_REGISTRATION(input_test);
+CPPUNIT_TEST_SUITE_REGISTRATION(io_control_test);
 
-void input_test::setUp(){
-  var = new IO_Variables();
-  input = new Input(var);
-  record_output.silence();
+void io_control_test::setUp(){
+  monitor.silence();
 }
 
-void input_test::tearDown(){
-  record_output.unsilence();
-  delete input;
-  delete var;
-}
-
-// test the construction of the 'Input' class
-void input_test::test_constructor() {
- CPPUNIT_ASSERT(var == input->variables);  // class variable  "variables" should be changed to input variable
+void io_control_test::tearDown(){
+  monitor.unsilence();
 }
 
 int main(int argc, char* argv[]) {

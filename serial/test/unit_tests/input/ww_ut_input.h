@@ -15,13 +15,13 @@
       CPPUNIT_TEST(test_load_config);
       CPPUNIT_TEST(test_load_results);
       CPPUNIT_TEST(test_option_config);
-      CPPUNIT_TEST(test_option_number_of_results);
+      CPPUNIT_TEST(test_option_number_of_final_results);
       CPPUNIT_TEST(test_option_pattern_weighting);
       CPPUNIT_TEST(test_option_solve_puzzle);
       CPPUNIT_TEST(test_option_load_results);
-      CPPUNIT_TEST(test_option_display_output);
-      CPPUNIT_TEST(test_option_print_output);
-      CPPUNIT_TEST(test_option_save_image_output);
+      CPPUNIT_TEST(test_option_graphic_output);
+      CPPUNIT_TEST(test_option_text_output);
+      CPPUNIT_TEST(test_option_save_graphic_output);
       CPPUNIT_TEST(test_option_save_text_output);
       CPPUNIT_TEST(test_option_help);
       CPPUNIT_TEST(test_unrecognised_command);
@@ -36,22 +36,23 @@
       void test_load_results();
       
       void test_option_config();
-      void test_option_number_of_results();
+      void test_option_number_of_final_results();
       void test_option_pattern_weighting();
       void test_option_solve_puzzle();
       void test_option_load_results();
-      void test_option_display_output();
-      void test_option_print_output();
-      void test_option_save_image_output();
+      void test_option_graphic_output();
+      void test_option_text_output();
+      void test_option_save_graphic_output();
       void test_option_save_text_output();
       void test_option_help();
 
       void test_no_arguments();
       void test_unrecognised_command();
     private:
+      Error_Message err_msg;
       IO_Variables *var;
       Input *input;
-      Record_Output record_output;
+      IO_Monitor monitor;
   };
 
 #endif

@@ -27,7 +27,7 @@
     private:
       Search_Pattern *tmp_search;
       Pattern_Result result;
-      Record_Output record_output;  // allows test to silence & record stdout and stderr
+      IO_Monitor monitor;  // allows test to silence & record stdout and stderr
   };
 
 #endif
