@@ -72,6 +72,8 @@
       bool get_load_puzzle_from_file();
       void set_puzzle_input_filename(std::string filename);
       std::string get_puzzle_input_filename();
+      void set_loaded_image(cv::Mat image);
+      cv::Mat get_loaded_image();
 
       void set_load_results_from_file(bool should_load_results_from_file);
       bool get_load_results_from_file();
@@ -109,8 +111,6 @@
       void set_results_output_filename(std::string filename);
       std::string get_results_output_filename();
 
-      void set_loaded_image(cv::Mat image);
-      cv::Mat get_loaded_image();
 
       bool fileExists(std::string filename);
   };

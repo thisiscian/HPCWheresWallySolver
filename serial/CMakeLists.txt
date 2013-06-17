@@ -27,3 +27,4 @@ if (BUILD_TESTS)
     message("Error: could not find cppunit")
   endif(CPPUNIT_FOUND)
 endif (BUILD_TESTS)
+

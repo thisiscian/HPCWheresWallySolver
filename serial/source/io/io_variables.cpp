@@ -1,5 +1,6 @@
 #include "../../headers/io/io_variables.h"
 using namespace std;
+using namespace cv;
 
 IO_Variables::IO_Variables() {
   load_config_from_file = false;
@@ -222,6 +223,14 @@ void IO_Variables::set_puzzle_input_filename(string filename){
 
 string IO_Variables::get_puzzle_input_filename(){
   return puzzle_input_filename;
+}
+
+void set_loaded_image(cv::Mat image) { 
+
+}
+
+Mat get_loaded_image() {
+  return Mat(1,1,CV_32F,Scalar(0));
 }
 
 
