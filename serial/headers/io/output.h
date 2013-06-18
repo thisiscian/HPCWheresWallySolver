@@ -35,6 +35,7 @@
       Output(IO_Variables *variables);
 
       // store results produced by Results_Analysis
+      std::vector<Pattern_Result> get_final_results();
       void set_final_results(std::vector<Pattern_Result> results);
 
       // creates the output as specified by IO_Variables

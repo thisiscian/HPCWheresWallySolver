@@ -5,6 +5,9 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
+  #include <cppunit/CompilerOutputter.h>
+  #include <cppunit/extensions/TestFactoryRegistry.h>
+  #include <cppunit/ui/text/TestRunner.h>
   #include "../../../headers/io/io_variables.h"
   #include "../general_test_functions.h"
 

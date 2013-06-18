@@ -9,6 +9,7 @@ find_package(OpenCV REQUIRED)
 if(OpenCV_found)
   include_directories(${OpenCV_INCLUDE_DIR})
 endif(OpenCV_found)
+
 add_definitions(-O2 -Wno-varargs)
 
 include_directories("${PROJECT_SOURCE_DIR}/source")

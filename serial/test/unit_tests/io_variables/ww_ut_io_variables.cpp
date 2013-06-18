@@ -1,7 +1,4 @@
 #include "ww_ut_io_variables.h"
-#include <cppunit/CompilerOutputter.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
 
 using namespace std;
 using namespace CppUnit;
@@ -79,7 +76,7 @@ void io_variables_test::test_loaded_image() {
    // should be load and receive an opencv Mat
   Mat image(5,5, CV_32F, Scalar(5)); 
   tmp_var->set_loaded_image(image);
-  CPPUNIT_ASSERT( 5 == image.dot(image)/25 ); // this test could be better
+  CPPUNIT_ASSERT( 25 == image.dot(image)/25 ); // this test could be better
 }
 
 void io_variables_test::test_load_results_from_file() {

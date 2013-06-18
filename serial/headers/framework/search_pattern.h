@@ -2,7 +2,7 @@
 #define hpc_whereswally_serial_search_pattern
 
   #include <vector>
-  #include "opencv2/core/core.hpp"
+  #include <opencv2/core/core.hpp>
   #include "pattern_information.h"
 
   typedef struct {

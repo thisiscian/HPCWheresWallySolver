@@ -225,12 +225,13 @@ string IO_Variables::get_puzzle_input_filename(){
   return puzzle_input_filename;
 }
 
-void set_loaded_image(cv::Mat image) { 
-
+void IO_Variables::set_loaded_image(Mat image) { 
+  loaded_image = image;
 }
 
-Mat get_loaded_image() {
-  return Mat(1,1,CV_32F,Scalar(0));
+Mat IO_Variables::get_loaded_image() {
+  
+  return loaded_image.clone();
 }
 
 

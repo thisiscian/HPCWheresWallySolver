@@ -1,4 +1,4 @@
 add_executable(ww_ut_io_variables ww_ut_io_variables.cpp)
-target_link_libraries(ww_ut_io_variables ${CPPUNIT_LIBRARY} ${OPENCV_LIBS} ww_ut_general whereswally_io whereswally_framework)
+target_link_libraries(ww_ut_io_variables ${CPPUNIT_LIBRARY} ww_ut_general whereswally_io whereswally_framework)
 add_test(test_io_variables_class ww_ut_io_variables)
 
