@@ -17,8 +17,8 @@
 
   class Search_Pattern {
     private:
-      Pattern_Information info;
     public:
+      Pattern_Information info;
       const Pattern_Information get_pattern_information();
       virtual std::vector<Pattern_Result> start_search(cv::Mat image);
   };

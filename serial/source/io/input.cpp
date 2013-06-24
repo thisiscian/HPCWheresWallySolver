@@ -447,6 +447,7 @@ int Input::load_results() {
 }
 
 Mat Input::load_image() {
-  Mat placeholder;
-  return placeholder;
+  Mat image = imread(variables->get_puzzle_input_filename(), 1);
+  variables->set_loaded_image(image);
+  return image;
 }

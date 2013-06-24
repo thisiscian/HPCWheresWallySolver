@@ -1,4 +1,6 @@
 include_directories("io")
 include_directories("framework")
-add_subdirectory(io)
+include_directories("patterns")
+add_subdirectory(patterns)
 add_subdirectory(framework)
+add_subdirectory(io)

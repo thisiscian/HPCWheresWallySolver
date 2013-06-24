@@ -10,7 +10,10 @@
 #ifndef hpc_whereswally_serial_output
 #define hpc_whereswally_serial_output
 
+  #include <sstream>
+  #include <string>
   #include <vector>
+  #include <opencv2/highgui/highgui.hpp>
   #include "io_variables.h"
   #include "../framework/search_pattern.h"
   

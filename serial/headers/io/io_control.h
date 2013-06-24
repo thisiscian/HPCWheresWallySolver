@@ -22,7 +22,6 @@
   class IO_Control {
     private:
       IO_Variables *variables;
-      Search_Pattern *list_of_patterns;
 
       void load_patterns_dynamically();
     public:
@@ -32,7 +31,7 @@
       Results_Analysis analysis;
 
       // needed for analysis of results by Global_Results (global_results.h)
-      int start();
+      int start(std::vector<Search_Pattern*>);
   };
 
 #endif

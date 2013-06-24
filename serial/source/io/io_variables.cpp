@@ -1,4 +1,5 @@
 #include "../../headers/io/io_variables.h"
+#include <opencv2/highgui/highgui.hpp>
 using namespace std;
 using namespace cv;
 
@@ -230,7 +231,7 @@ void IO_Variables::set_loaded_image(Mat image) {
 }
 
 Mat IO_Variables::get_loaded_image() {
-  
+  Mat clone = loaded_image.clone();
   return loaded_image.clone();
 }
 

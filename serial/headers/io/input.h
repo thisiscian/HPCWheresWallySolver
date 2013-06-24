@@ -20,6 +20,7 @@
   #include <cctype>
   #include <cstdlib>
   #include <opencv2/core/core.hpp>
+  #include <opencv2/highgui/highgui.hpp>
   #include "io_variables.h"
 
   enum input_errors {
