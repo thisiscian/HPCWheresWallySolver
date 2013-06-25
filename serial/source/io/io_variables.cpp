@@ -1,5 +1,5 @@
-#include "../../headers/io/io_variables.h"
-#include <opencv2/highgui/highgui.hpp>
+#include "whereswally/io/io_variables.h"
+
 using namespace std;
 using namespace cv;
 

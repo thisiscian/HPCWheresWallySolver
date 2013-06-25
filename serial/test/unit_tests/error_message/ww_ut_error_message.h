@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/io/error_message.h"
+  #include "whereswally/io/error_message.h"
   #include "../general_test_functions.h"
 
   class error_message_test : public CppUnit::TestFixture {

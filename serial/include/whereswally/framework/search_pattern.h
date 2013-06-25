@@ -3,7 +3,7 @@
 
   #include <vector>
   #include <opencv2/core/core.hpp>
-  #include "pattern_information.h"
+  #include <whereswally/framework/pattern_information.h>
 
   typedef struct {
     Pattern_Information info;

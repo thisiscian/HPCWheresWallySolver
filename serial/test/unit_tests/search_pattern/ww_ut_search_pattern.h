@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/framework/search_pattern.h"
+  #include "whereswally/framework/search_pattern.h"
   #include "../general_test_functions.h"
 
   class search_pattern_test : public CppUnit::TestFixture {

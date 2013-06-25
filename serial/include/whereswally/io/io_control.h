@@ -14,10 +14,10 @@
 #ifndef hpc_whereswally_serial_io_control
 #define hpc_whereswally_serial_io_control
 
-  #include "io_variables.h"
-  #include "input.h"
-  #include "output.h"
-  #include "../framework/results_analysis.h"
+  #include <whereswally/framework.h>
+  #include <whereswally/io/io_variables.h>
+  #include <whereswally/io/input.h>
+  #include <whereswally/io/output.h>
   
   class IO_Control {
     private:

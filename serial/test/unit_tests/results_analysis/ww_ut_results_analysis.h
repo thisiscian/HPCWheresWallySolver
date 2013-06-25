@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/framework/results_analysis.h"
+  #include "whereswally/framework/results_analysis.h"
   #include "../general_test_functions.h"
 
   class results_analysis_test : public CppUnit::TestFixture {

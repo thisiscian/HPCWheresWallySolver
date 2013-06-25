@@ -1,8 +1,8 @@
 #ifndef hpc_whereswally_serial_results_analysis
 #define hpc_whereswally_serial_results_analysis
 
-  #include "search_pattern.h"
   #include <set>
+  #include <whereswally/framework/search_pattern.h>
 
   class Results_Analysis {
     private:

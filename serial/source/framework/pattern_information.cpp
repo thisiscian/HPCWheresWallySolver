@@ -1,4 +1,4 @@
-#include "../headers/framework/pattern_information.h"
+#include "whereswally/framework/pattern_information.h"
 
 using namespace std;
 

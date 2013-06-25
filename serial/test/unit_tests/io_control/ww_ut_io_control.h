@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/io/io_control.h"
+  #include "whereswally/io/io_control.h"
   #include "../general_test_functions.h"
 
   class io_control_test : public CppUnit::TestFixture {

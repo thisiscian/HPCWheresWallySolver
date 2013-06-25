@@ -1,4 +1,4 @@
-#include "../../headers/framework/results_analysis.h"
+#include "whereswally/framework/results_analysis.h"
 
 using namespace std;
   struct classcomp {

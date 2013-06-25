@@ -28,6 +28,3 @@ if (BUILD_TESTS)
     message("Error: could not find cppunit")
   endif(CPPUNIT_FOUND)
 endif (BUILD_TESTS)
-
-add_executable(bin/whereswallysolver source/main.cpp)
-target_link_libraries(bin/whereswallysolver whereswally_io whereswally_framework pattern_redandwhite)

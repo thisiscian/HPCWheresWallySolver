@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/io/input.h"
+  #include "whereswally/io/input.h"
   #include "../general_test_functions.h"
 
   class input_test : public CppUnit::TestFixture {

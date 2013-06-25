@@ -1,4 +1,4 @@
-#include "../../headers/framework/search_pattern.h"
+#include "whereswally/framework/search_pattern.h"
 
 using namespace std;
 using namespace cv;

@@ -1,3 +1,4 @@
+include_directories("${PROJECT_SOURCE_DIR}/include")
 add_library(ww_ut_general general_test_functions.cpp)
 add_subdirectory(error_message)
 add_subdirectory(pattern_information)

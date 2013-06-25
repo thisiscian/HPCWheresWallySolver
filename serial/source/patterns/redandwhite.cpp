@@ -1,8 +1,9 @@
-#include "../../headers/patterns/redandwhite.h"
-#include "../../headers/patterns/find_regions.h"
+#include <whereswally/patterns.h>
+#include "whereswally/patterns/redandwhite.h"
 
 using namespace std;
 using namespace cv;
+using namespace wwp;
 
 Red_and_White::Red_and_White() {
   info.set_name("Red and White");
@@ -44,13 +45,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
     return results;
   }
   int sum = regions_list[1].size;
-  cout << "1 " << regions_list[1].size  << " " << regions_list[1].av_x << "," << regions_list[1].av_y << ": ";
-  cout << regions_list[1].smallest_x << "," << regions_list[1].largest_x << "  ";
-  cout << regions_list[1].smallest_y << "," << regions_list[1].largest_y << endl;
   for(int i=2; i<regions_list.size(); i++) {
-    cout << i << " " << regions_list[i].size << " " << regions_list[i].av_x << "," << regions_list[i].av_y << ": ";
-    cout << regions_list[i].smallest_x << "," << regions_list[i].largest_x << "  ";
-    cout << regions_list[i].smallest_y << "," << regions_list[i].largest_y << endl;
     sum += regions_list[i].size;
   }
   for(int i=1; i<regions_list.size(); i++) {
@@ -64,6 +59,5 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
     results.push_back(tmp);
   }
-  cout << "results=" << results.size() << endl;
 }
 

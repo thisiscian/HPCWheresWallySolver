@@ -16,8 +16,9 @@
   #include <map>
   #include <fstream>
   #include <sys/stat.h>
-  #include "../framework/search_pattern.h"
-  #include "error_message.h"
+  #include <opencv2/highgui/highgui.hpp>
+  #include <whereswally/framework.h>
+  #include <whereswally/io/error_message.h>
 
   class IO_Variables {
     private:

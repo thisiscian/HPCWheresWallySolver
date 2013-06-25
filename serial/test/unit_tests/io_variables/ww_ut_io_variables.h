@@ -8,7 +8,7 @@
   #include <cppunit/CompilerOutputter.h>
   #include <cppunit/extensions/TestFactoryRegistry.h>
   #include <cppunit/ui/text/TestRunner.h>
-  #include "../../../headers/io/io_variables.h"
+  #include "whereswally/io/io_variables.h"
   #include "../general_test_functions.h"
 
   class io_variables_test : public CppUnit::TestFixture {

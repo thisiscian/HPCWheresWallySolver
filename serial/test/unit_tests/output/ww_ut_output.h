@@ -5,7 +5,7 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
-  #include "../../../headers/io/output.h"
+  #include "whereswally/io/output.h"
   #include "../general_test_functions.h"
 
   class output_test : public CppUnit::TestFixture {

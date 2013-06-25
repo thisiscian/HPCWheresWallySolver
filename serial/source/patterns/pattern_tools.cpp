@@ -1,9 +1,9 @@
-#include "../../headers/patterns/find_regions.h"
+#include "whereswally/patterns/pattern_tools.h"
 
 using namespace std;
 using namespace cv;
 
-region::region() {
+wwp::region::region() {
   largest_x = 0;
   largest_y = 0;
   smallest_x = INT_MAX;
@@ -14,7 +14,7 @@ region::region() {
 // This is done by assigning each pixel a unique number
 // and then each pixel takes the value of it's largest neighbour.
 // Pixels with a value of zero remain at zero
-vector<region> find_regions_from_mask(Mat input) {
+vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   Mat counter(input.size(), CV_32SC1); // CV_32SC1 indicates type int with 1 channel, which is needed for the counting mask
   for(int i=0; i<counter.rows; i++) {
     for(int j=0; j<counter.cols; j++) {
@@ -64,7 +64,7 @@ vector<region> find_regions_from_mask(Mat input) {
     }
   }
 
-  map<int, region> region_size;
+  map<int, wwp::region> region_size;
   for(int i=0; i<counter.rows; i++) {
     for(int j=0; j<counter.cols; j++) {
       if(region_size[counter.at<int>(i,j)].smallest_x > j) region_size[counter.at<int>(i,j)].smallest_x = j;
@@ -77,8 +77,8 @@ vector<region> find_regions_from_mask(Mat input) {
     }
   }
 
-  map<int,region>::iterator it;
-  vector<region> found_regions;
+  map<int,wwp::region>::iterator it;
+  vector<wwp::region> found_regions;
   int i=0;
   for(it=region_size.begin(); it!=region_size.end(); ++it,++i) {
     (*it).second.av_x /= (*it).second.size;
