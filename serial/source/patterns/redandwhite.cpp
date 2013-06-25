@@ -18,15 +18,18 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   Mat red_and_white_stripes;
   split(image, image_rgb);
 
-  // split images are stored in bgr format , hence red->[2]
-  Mat more_red_than_blue = image_rgb[2] > ratio_to_red*image_rgb[0];
-  Mat more_red_than_green = image_rgb[2] > ratio_to_red*image_rgb[1];
+//  // split images are stored in bgr format , hence red->[2]
+//  Mat more_red_than_blue = image_rgb[2] > ratio_to_red*image_rgb[0];
+//  Mat more_red_than_green = image_rgb[2] > ratio_to_red*image_rgb[1];
+//  Mat red_mask = more_red_than_blue & more_red_than_green; // masks areas with pure red areas
 
-  Mat red_mask = more_red_than_blue & more_red_than_green; // masks areas with pure red areas
-  Mat white_mask = (image_rgb[0] > white_threshold) & (image_rgb[1] > white_threshold) & (image_rgb[2] > white_threshold);
+  float tolerance[3] = {2.5,0,0.4};
+  int invert[3] = {255, 255, 0};
+  Mat red_mask = get_colour_in_image(image, "#FFFFFF", "#000000", tolerance, invert);
+  Mat white_mask = get_greyscale_in_image(image, 200, 255, 25);
 
   // blur image to get an overlap, could also use shift the masks in the 4 cardinal directions
-  Size ksize(1,5);// by varying this, control over vertical and horizontal stripes can be found
+  Size ksize(1,7);// by varying this, control over vertical and horizontal stripes can be found
   GaussianBlur(red_mask, red_mask,ksize, 3);
   GaussianBlur(white_mask, white_mask,ksize, 3);
   

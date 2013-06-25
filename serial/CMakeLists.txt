@@ -12,8 +12,7 @@ endif(OpenCV_found)
 
 add_definitions(-O2 -Wno-varargs)
 
-include_directories("${PROJECT_SOURCE_DIR}/source")
-include_directories("${PROJECT_SOURCE_DIR}/source/io")
+make_directory(bin)
 add_subdirectory(source)
 
 option (BUILD_TESTS "Build CppUnit test suites" ON)
