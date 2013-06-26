@@ -3,6 +3,7 @@
 
   #include <vector>
   #include <climits>
+  #include <sstream>
   #include <opencv2/core/core.hpp>
 
   // wwp - where's wally patterns, small name for ease of use
@@ -28,6 +29,12 @@
 
     // overlay two binary single channel Mats, taking their union
     std::vector<region> region_overlay_OR(cv::Mat left, cv::Mat right);
+
+    // find all instances of a colour between two #rrggbb strings
+    cv::Mat get_colour_in_image(cv::Mat image, std::string colour_a, std::string colour_b, float tolerance[3], int invert[3]);
+
+    // find all instances of greyscale in image, with a tolerance
+    cv::Mat get_greyscale_in_image(cv::Mat image, int low, int high, int tolerance);
   }
 
 #endif
