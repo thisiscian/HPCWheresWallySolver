@@ -1,5 +1,6 @@
 #include <whereswally/patterns.h>
 #include "whereswally/patterns/redandwhite.h"
+#include <opencv2/highgui/highgui.hpp>
 
 using namespace std;
 using namespace cv;
@@ -25,7 +26,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
   float tolerance[3] = {2.5,0,0.4};
   int invert[3] = {255, 255, 0};
-  Mat red_mask = get_colour_in_image(image, "#FFFFFF", "#000000", tolerance, invert);
+  Mat red_mask = get_colour_in_image(image, "#000000", "#FFFFFF", 2.5,0,2.5,0,0,0);
   Mat white_mask = get_greyscale_in_image(image, 200, 255, 25);
 
   // blur image to get an overlap, could also use shift the masks in the 4 cardinal directions
@@ -33,6 +34,8 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   GaussianBlur(red_mask, red_mask,ksize, 3);
   GaussianBlur(white_mask, white_mask,ksize, 3);
   
+
+
   // multiply red and white masks to find places with red and white stripes
   multiply(red_mask, white_mask, red_and_white_stripes, 1.0/255.0);
   ksize = Size(5,5);
@@ -44,20 +47,20 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   
   // turn regions into results
   vector<Pattern_Result> results;
-  if(regions_list.size() < 2) {
+  if(regions_list.size() < 1) {
     return results;
   }
   int sum = regions_list[1].size;
-  for(int i=2; i<regions_list.size(); i++) {
+  for(int i=1; i<regions_list.size(); i++) {
     sum += regions_list[i].size;
   }
-  for(int i=1; i<regions_list.size(); i++) {
+  for(int i=0; i<regions_list.size(); i++) {
     Pattern_Result tmp;
     tmp.info = info;
-    tmp.wally_location[0] = regions_list[i].av_x;
-    tmp.wally_location[1] = regions_list[i].av_y;
-    tmp.scale[0] = (regions_list[i].largest_x -regions_list[i].smallest_x)/2;
-    tmp.scale[1] = (regions_list[i].largest_y -regions_list[i].smallest_y)/2;
+    tmp.wally_location[1] = regions_list[i].av_x;
+    tmp.wally_location[0] = regions_list[i].av_y;
+    tmp.scale[1] = (regions_list[i].largest_x -regions_list[i].smallest_x)/2;
+    tmp.scale[0] = (regions_list[i].largest_y -regions_list[i].smallest_y)/2;
     tmp.certainty = (float) regions_list[i].size/sum;
 
     results.push_back(tmp);

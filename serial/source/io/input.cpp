@@ -105,7 +105,7 @@ int Input::parse_input(int argc, char* argv[]) {
         i++;
         int n = strtol (argv[i],NULL,10);
         variables->set_number_of_final_results(n);
-      } else if(argv_i.find("--number-of-results=") != string::npos) {
+      } else if(argv_i.find("--number-of-final-results=") != string::npos) {
         int n = strtol (argv_i.substr(argv_i.find("=")+1).c_str(),NULL,10);
         variables->set_number_of_final_results(n);
       } else if(argv_i == "-w") {
@@ -254,31 +254,11 @@ int Input::parse_input(int argc, char* argv[]) {
         variables->set_save_graphic_to_file(true);
         variables->set_graphic_output_filename(file);
       } else if(argv_i == "-h") {
-          cerr << "usage: " << argv[0] << " [options [files]]" << endl;
-          cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
-          cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
-          cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
-          cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
-          cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-          cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
-          cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
-          cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
-          cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
-          cerr << "\t-h,--help\tDisplays this help message" << endl;
+          cerr << err_msg("option_help", argv[0]);
       } else if(argv_i == "--help") {
-          cerr << "usage: " << argv[0] << " [options [files]]" << endl;
-          cerr << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
-          cerr << "\t-n,--number-of-results=N\tSets the number of results to be output" << endl;
-          cerr << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
-          cerr << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
-          cerr << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-          cerr << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
-          cerr << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
-          cerr << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
-          cerr << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
-          cerr << "\t-h,--help\tDisplays this help message" << endl;
+          cerr << err_msg("option_help", argv[0]);
       } else {
-        cerr << "Error: unrecognised command, exiting" << endl;
+        cerr << "Error: unrecognised command \"" << argv_i << "\", exiting" << endl;
         return UNRECOGNISED_COMMAND;
       }
     }
@@ -350,6 +330,9 @@ int Input::load_config() {
       } else if (current_line.find("save_text_to_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_save_text_to_file(val == "true");
+      } else if (current_line.find("save_results_to_file=") != string::npos) {
+        string val = current_line.substr(current_line.find("=")+1,string::npos);
+        variables->set_save_results_to_file(val == "true");
       } else if (current_line.find("load_puzzle_from_file=") != string::npos) {
         string val = current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_load_puzzle_from_file(val == "true");
@@ -362,6 +345,9 @@ int Input::load_config() {
       } else if (current_line.find("text_output_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_text_output_filename(val);
+      } else if (current_line.find("results_output_filename=") != string::npos) {
+        string val=current_line.substr(current_line.find("=")+1,string::npos);
+        variables->set_results_output_filename(val);
       } else if (current_line.find("puzzle_input_filename=") != string::npos) {
         string val=current_line.substr(current_line.find("=")+1,string::npos);
         variables->set_puzzle_input_filename(val);
@@ -370,7 +356,7 @@ int Input::load_config() {
         variables->set_results_input_filename(val);
       } else {
         cerr << "Error: config file contained some errors" << endl;
-        cerr << current_line << endl;
+        cerr << "\tProblem with: " << current_line << endl;
         return BAD_CONFIG_FILE;
       }
   }

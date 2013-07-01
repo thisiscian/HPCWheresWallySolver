@@ -243,7 +243,8 @@ void IO_Variables::set_config_input_filename(string filename){
   if(check_config.good() || filename == "") {
     config_input_filename = filename;
   } else {
-   cerr << err_msg("config_input_filename", filename.c_str(), config_input_filename.c_str()); 
+    cerr << err_msg("config_input_filename", filename.c_str(), config_input_filename.c_str()); 
+    throw CONFIG_FILE_DOES_NOT_EXIST;
   }
   check_config.close();
 }

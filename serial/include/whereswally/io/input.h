@@ -23,16 +23,6 @@
   #include <opencv2/highgui/highgui.hpp>
   #include <whereswally/io/io_variables.h>
 
-  enum input_errors {
-    NO_ERRORS,
-    UNDEFINED,
-    BAD_CONFIG_FILE,
-    BAD_RESULTS_FILE,
-    CONTRADICTING_INPUTS,
-    UNRECOGNISED_COMMAND,
-    BAD_COMMAND_USAGE
-  };
-
   int to_lower_case(int c);
   std::string remove_whitespace(std::string in_string);
 

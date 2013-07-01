@@ -21,6 +21,8 @@
         region();
     };
 
+    bool operator==(region lhs, region rhs);
+
     // from a binary (0,255) single channel Mat, find the distinct regions with values of 255
     std::vector<region> find_regions_from_mask(cv::Mat input);
 
@@ -30,8 +32,8 @@
     // overlay two binary single channel Mats, taking their union
     std::vector<region> region_overlay_OR(cv::Mat left, cv::Mat right);
 
-    // find all instances of a colour between two #rrggbb strings
-    cv::Mat get_colour_in_image(cv::Mat image, std::string colour_a, std::string colour_b, float tolerance[3], int invert[3]);
+    // find all instances of a colour between two #rrggbb strings, and some given ratio
+    cv::Mat get_colour_in_image(cv::Mat image, std::string colour_one, std::string colour_two, float redgreen, float greenred, float redblue, float bluered, float greenblue, float bluegreen);
 
     // find all instances of greyscale in image, with a tolerance
     cv::Mat get_greyscale_in_image(cv::Mat image, int low, int high, int tolerance);

@@ -49,9 +49,15 @@ void input_test::test_option_config() {
     argv[2] = new char[255];
     strcpy(argv[1], "-p");
   monitor.start_recording_cerr();
-  input->parse_input(argc, argv);
+    input->parse_input(argc, argv); 
   monitor.stop_recording_cerr();
-  CPPUNIT_ASSERT( false == input->variables->get_load_config_from_file() );
+  bool load_config = true;
+  try {
+    load_config = input->variables->get_load_config_from_file();
+  } catch (errors err) {
+    CPPUNIT_FAIL("Exception for loading valid config file");
+  }
+  CPPUNIT_ASSERT( false == load_config );
   CPPUNIT_ASSERT( "" == input->variables->get_config_input_filename() );
 
   delete argv[0];
@@ -139,10 +145,10 @@ void input_test::test_option_solve_puzzle() {
     argv[0] = new char[255];
     strcpy(argv[0], "./test_program_name");
     argv[1] = new char[255];
-    strcpy(argv[1], "--solve-puzzle=../../sample_files/test_puzzle_input.png");
+    strcpy(argv[1], "--solve-puzzle=../../sample_files/test_puzzle_image.png");
   input->parse_input(argc, argv);
   CPPUNIT_ASSERT( true == input->variables->get_load_puzzle_from_file() );
-  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_input.png" == input->variables->get_puzzle_input_filename() );
+  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_image.png" == input->variables->get_puzzle_input_filename() );
 
   input->variables->set_load_puzzle_from_file(false);
   input->variables->set_puzzle_input_filename("");
@@ -153,10 +159,10 @@ void input_test::test_option_solve_puzzle() {
     argv[1] = new char[255];
     strcpy(argv[1], "-p");
     argv[2] = new char[255];
-  strcpy(argv[2], "../../sample_files/test_puzzle_input.png");
+  strcpy(argv[2], "../../sample_files/test_puzzle_image.png");
   input->parse_input(argc, argv);
   CPPUNIT_ASSERT( true == input->variables->get_load_puzzle_from_file() );
-  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_input.png" == input->variables->get_puzzle_input_filename() );
+  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_image.png" == input->variables->get_puzzle_input_filename() );
  
 }
 
@@ -169,7 +175,6 @@ void input_test::test_option_load_results() {
     argv[1] = new char[255];
     strcpy(argv[1], "--load-results=../../sample_files/test_load_results.dat");
   input->parse_input(argc, argv);
-  if( input->variables->get_results_input_filename() == "../../sample_files/test_load_results.dat") cerr << "OKAY" << endl;
   CPPUNIT_ASSERT( true == input->variables->get_load_results_from_file() );
   CPPUNIT_ASSERT( "../../sample_files/test_load_results.dat" == input->variables->get_results_input_filename() );
 
@@ -297,24 +302,11 @@ void input_test::test_option_help() {
     strcpy(argv[0], "./test_program_name");
     argv[1] = new char[255];
     strcpy(argv[1], "--help");
-  stringstream help_message;
-
-  help_message << "usage: " << argv[0] << " [options [files]]" << endl;
-  help_message << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
-  help_message << "\t-n,--number-of-final-results=N\tSets the number of results to be output" << endl;
-  help_message << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
-  help_message << "\t-p,--solve-puzzle=PUZZLE_FILE\tAttempts to locate Wally in the PUZZLE_FILE" << endl;
-  help_message << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-  help_message << "\t-Op,--print-output={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
-  help_message << "\t-Od,--display-output={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
-  help_message << "\t-St,--save-text-output=OUTPUT_FILE\tSaves the textual format of the results to OUTPUT_FILE" << endl;
-  help_message << "\t-Si,--save-image-output=OUTPUT_FILE\tSaves the graphical format of the results to OUTPUT_FILE" << endl;
-  help_message << "\t-h,--help\tDisplays this help message" << endl;
 
   monitor.start_recording_cerr();
     input->parse_input(argc,argv);
   monitor.stop_recording_cerr();
-  CPPUNIT_ASSERT(monitor.get_cerr_output() == help_message.str());
+  CPPUNIT_ASSERT(monitor.get_cerr_output() == err_msg("option_help", argv[0]));
   delete argv[1];
     argv[1] = new char[255];
     strcpy(argv[1], "-h");
@@ -322,7 +314,7 @@ void input_test::test_option_help() {
   monitor.start_recording_cerr();
     input->parse_input(argc,argv);
   monitor.stop_recording_cerr();
-  CPPUNIT_ASSERT(monitor.get_cerr_output() == help_message.str());
+  CPPUNIT_ASSERT(monitor.get_cerr_output() == err_msg("option_help", argv[0]));
 }
 
 void input_test::test_load_config() {
@@ -353,8 +345,8 @@ void input_test::test_load_config() {
   CPPUNIT_ASSERT( false == input->variables->get_load_puzzle_from_file() );
   CPPUNIT_ASSERT( true == input->variables->get_load_results_from_file() );
   CPPUNIT_ASSERT( "../../sample_files/test_save_graphic.png" == input->variables->get_graphic_output_filename() );
-  CPPUNIT_ASSERT( "../../sample_files/test_save_text.dat" == input->variables->get_text_output_filename() );
-  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_input.png" == input->variables->get_puzzle_input_filename() );
+  CPPUNIT_ASSERT( "../../sample_files/test_save_print.dat" == input->variables->get_text_output_filename() );
+  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_image.png" == input->variables->get_puzzle_input_filename() );
   CPPUNIT_ASSERT( "../../sample_files/test_load_results.dat" == input->variables->get_results_input_filename() );
 }
 
@@ -407,7 +399,7 @@ void input_test::test_unrecognised_command() {
     int err_no = input->parse_input(argc, argv);
   monitor.stop_recording_cerr();
   CPPUNIT_ASSERT( UNRECOGNISED_COMMAND == err_no);
-  CPPUNIT_ASSERT( "Error: unrecognised command, exiting\n" == monitor.get_cerr_output());
+  CPPUNIT_ASSERT( "Error: unrecognised command \"this_is_not_a_command\", exiting\n" == monitor.get_cerr_output());
 }
 
 int main(int argc, char* argv[]) {

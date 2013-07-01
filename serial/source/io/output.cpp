@@ -22,7 +22,6 @@ void Output::save_text_to_file() {
 }
 
 void Output::show_graphic_results() {
-  string window_name = "Where's Wally Solver";
   Mat image = variables->get_loaded_image();
   Point center;
   Size scale;
@@ -45,6 +44,7 @@ void Output::show_graphic_results() {
     putText(image, text.str(), Point(center.x-(textSize.width/2),center.y+scale.height-textSize.height+25),fontFace, 0.4, Scalar::all(0), 1);
   }
 
+  string window_name = "Where's Wally Solver";
   namedWindow(window_name, CV_WINDOW_NORMAL);
   imshow(window_name, image);
   waitKey();

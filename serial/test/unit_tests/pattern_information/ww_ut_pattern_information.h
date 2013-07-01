@@ -5,6 +5,9 @@
   #include <iostream>
   #include <sstream>
   #include <cppunit/extensions/HelperMacros.h>
+  #include <cppunit/CompilerOutputter.h>
+  #include <cppunit/extensions/TestFactoryRegistry.h>
+  #include <cppunit/ui/text/TestRunner.h>
   #include <whereswally/framework/pattern_information.h>
   #include "../general_test_functions.h"
 
@@ -34,6 +37,7 @@
       // test construction
       void test_constructor();
     private:
+      int error;
       Pattern_Information *tmp_patt;
       IO_Monitor monitor;  // allows test to silence & record stdout and stderr
   };

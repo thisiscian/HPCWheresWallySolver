@@ -85,6 +85,7 @@
     private:
       IO_Variables *tmp_var; // IO_Variables class that gets rebuilt for each test
       IO_Monitor monitor;  // allows test to silence & record stdout and stderr
+      int error;
       Error_Message err_msg;
   };
 

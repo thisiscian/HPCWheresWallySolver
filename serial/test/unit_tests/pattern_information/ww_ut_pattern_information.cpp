@@ -1,7 +1,4 @@
 #include "ww_ut_pattern_information.h"
-#include <cppunit/CompilerOutputter.h>
-#include <cppunit/extensions/TestFactoryRegistry.h>
-#include <cppunit/ui/text/TestRunner.h>
 
 using namespace std;
 using namespace CppUnit;
@@ -31,26 +28,36 @@ void pattern_information_test::test_description() {
 
 void pattern_information_test::test_confidence() {
   // should be able to change the value of 'confidence'
-  tmp_patt->set_confidence(4.0);
+  try {
+    tmp_patt->set_confidence(4.0);
+  } catch (errors err) {
+    error = err;
+    CPPUNIT_FAIL("Exception thrown for correct value");
+  }
   CPPUNIT_ASSERT( 4.0 == tmp_patt->get_confidence() );
 
   // should ignore attempts to set 'confidence' to values less than 0 and print errors
   monitor.start_recording_cerr();
-    tmp_patt->set_confidence(-1.0);
+    try {
+      tmp_patt->set_confidence(-1.0);
+    } catch (errors err) {
+      error = err;
+    } 
   monitor.stop_recording_cerr();
   CPPUNIT_ASSERT_MESSAGE( "failed <0 test", 4.0 == tmp_patt->get_confidence() );
   CPPUNIT_ASSERT( "Error: Confidence values should be non-negative\n" == monitor.get_cerr_output() );
+  CPPUNIT_ASSERT( error == NEGATIVE_CONFIDENCE );
 }
 
 void pattern_information_test::test_relational_operators() {
   tmp_patt->set_name("hello");
   tmp_patt->set_description("very good");
-  tmp_patt->set_confidence(4.0);
+  try { tmp_patt->set_confidence(4.0); } catch (errors err) { CPPUNIT_FAIL("Exception throw when should be fine"); };
   Pattern_Information same_patt = *tmp_patt;
   Pattern_Information diff_patt;
   diff_patt.set_name("bye");
   diff_patt.set_description("quite bad");
-  diff_patt.set_confidence(2.3);
+  try { diff_patt.set_confidence(2.3); } catch (int err) { CPPUNIT_FAIL("Exception throw when should be fine"); };
 
   // should be able to make sane relational operations
   CPPUNIT_ASSERT( *tmp_patt == same_patt);

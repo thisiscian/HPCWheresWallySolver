@@ -41,6 +41,7 @@ void Pattern_Information::set_confidence(float new_confidence) {
     confidence = new_confidence;
   } else {
     cerr << "Error: Confidence values should be non-negative" << endl;
+    throw NEGATIVE_CONFIDENCE;
   }
 }
 

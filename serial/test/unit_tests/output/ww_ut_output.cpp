@@ -48,6 +48,7 @@ void output_test::test_final_results() {
 }
 
 void output_test::test_show_text_results() {
+  var->set_show_graphic_results(false);
   output->set_final_results(final_results);
   monitor.start_recording_cout();
     output->output();
