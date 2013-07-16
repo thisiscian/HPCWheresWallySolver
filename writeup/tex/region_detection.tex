@@ -1,0 +1,22 @@
+
+Region Detection
+
+This algorithm is intended to find connected regions of pixels.
+The input is a single channel binary matrix; each pixel has a single value of either 0 or 255.
+A region is defined as a group of pixels, each with a value of 255, that are connected through nearest neighbours.
+
+Regions are detected by multiplying each pixel of the input with a unique integer value, starting at $p_{00}=1$.
+Thus $p_{ij} = (Ni+j+1)*p_{ij}$, where $N$ is the range of values that $j$ can take.
+This means that each pixel now either has a value of 0, or it's own unique value.
+From this point, each non-zero pixel of the matrix is looped over, and it's value is changed to the maximum of it's four neighbours.
+This loop is repeated until no pixels are changed.
+The algorithm takes the maximum value of neighbouring pixels, and ignores non-zero pixels, so maximal values can not be spread outside of a region's boundary.
+Within a region, it is evident that every pixel will have the value of the maximum pixel within that region.
+As each pixel has a unique value, it follows that each regional maximum will also have a unique value.
+By counting the unique values in the matrix, the number of regions can be found.
+Similarly, properties of the region can be calculated by analysing specific unique values.
+For example, the mean position of the pixels within the region, the size of the region, and the bounding box around the region.
+
+This algorithm is very useful for augmenting the results of colour detection.
+Colour detection schemes generally output a binary matrix of results, based on whether each pixel passes the criteria.
+Detecting regions can help to make the results more understandable to the user, and also condense the results into a smaller format.

@@ -1,0 +1,49 @@
+This is BibTeX, Version 0.99d (TeX Live 2012/Arch Linux)
+Capacity: max_strings=35307, hash_size=35307, hash_prime=30011
+The top-level auxiliary file: pdf/WheresWallyDissertation-CianBooth.aux
+The style file: ieeetr.bst
+Database file #1: whereswally.bib
+Warning--empty journal in zhangsift
+Warning--empty year in zhangsift
+You've used 5 entries,
+            1876 wiz_defined-function locations,
+            510 strings with 4379 characters,
+and the built_in function-call counts, 1582 in all, are:
+= -- 163
+> -- 41
+< -- 0
++ -- 16
+- -- 11
+* -- 110
+:= -- 211
+add.period$ -- 4
+call.type$ -- 5
+change.case$ -- 5
+chr.to.int$ -- 0
+cite$ -- 7
+duplicate$ -- 85
+empty$ -- 157
+format.name$ -- 11
+if$ -- 388
+int.to.chr$ -- 0
+int.to.str$ -- 5
+missing$ -- 5
+newline$ -- 18
+num.names$ -- 5
+pop$ -- 19
+preamble$ -- 1
+purify$ -- 0
+quote$ -- 0
+skip$ -- 65
+stack$ -- 0
+substring$ -- 136
+swap$ -- 38
+text.length$ -- 0
+text.prefix$ -- 0
+top$ -- 0
+type$ -- 0
+warning$ -- 2
+while$ -- 17
+width$ -- 6
+write$ -- 51
+(There were 2 warnings)

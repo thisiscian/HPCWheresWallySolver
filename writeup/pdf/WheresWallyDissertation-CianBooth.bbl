@@ -1,0 +1,27 @@
+\begin{thebibliography}{1}
+
+\bibitem{sift}
+D.~G. Lowe, ``Object recognition from local scale-invariant features,'' in {\em
+  Computer vision, 1999. The proceedings of the seventh IEEE international
+  conference on}, vol.~2, pp.~1150--1157, Ieee, 1999.
+
+\bibitem{tanakahv}
+K.~Tanaka, ``Mechanisms of visual object recognition: monkey and human
+  studies,'' {\em Current opinion in neurobiology}, vol.~7, no.~4,
+  pp.~523--529, 1997.
+
+\bibitem{perretthv}
+D.~I. Perrett and M.~W. Oram, ``Visual recognition based on temporal cortex
+  cells: Viewer-centred processing of pattern configuration,'' {\em Zeitschrift
+  fur Naturforschung C-Journal of Biosciences}, vol.~53, no.~7, pp.~518--541,
+  1998.
+
+\bibitem{zhangsift}
+Q.~Zhang, Y.~Chen, Y.~Zhang, and Y.~Xu, ``Sift implementation and optimization
+  for multi-core systems,''
+
+\bibitem{surf}
+H.~Bay, T.~Tuytelaars, and L.~Van~Gool, ``Surf: Speeded up robust features,''
+  in {\em Computer Vision--ECCV 2006}, pp.~404--417, Springer, 2006.
+
+\end{thebibliography}
