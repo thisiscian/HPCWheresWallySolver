@@ -1,7 +1,7 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
   \section{Introduction}
-    Computer vision is a field concerned with using computers to process and analyze images. 
+    Computer vision is a field concerned with using computers to process and analyse images. 
     It is an attempt to replace the need for humans to perceive visual information, and perhaps to improve upon innate human ability in some areas.
 
     One of the most important things that human vision is able to do, is to recognise an object. 
@@ -25,7 +25,7 @@
     One of these characters is the eponymous Wally, who is dressed distinctly from the others, see Figure \ref{justwally}.
     Similarly dressed characters exist, Figure \ref{justwenda}, adding complexity to specifically finding Wally.
     The cartoon nature of the characters means that shapes are boldly coloured, and often bordered by a black line.
-    As Where's Wally is puzzle, sometimes Wally will be hard to find; he is often obscured, camoflauged or simply small.
+    As Where's Wally is puzzle, sometimes Wally will be hard to find; he is often obscured, camouflaged or simply small.
     This provides a non-trivial problem, that is still simple enough to easily provide solutions for.
 
     \begin{figure}[h]
@@ -60,8 +60,8 @@
     Vector images, rather than raster images, are directly easier to perform shape and colour analysis on.
     However, input devices such as webcams and scanners typically produce images in raster formats.
 
-    Regardless of format, methods of colour analysis are simple to implement programatically.
-    This is because colour is instrinsic to all methods of storing the data of an image.
+    Regardless of format, methods of colour analysis are simple to implement programmatically.
+    This is because colour is intrinsic to all methods of storing the data of an image.
     Shape analysis is less simple for raster images.
     Shape boundaries must be found, which is normally done through edge detection.
     These boundaries are then analysed to find points of intersection, and the curvature between them.
@@ -70,7 +70,7 @@
     These methods allow for a descriptional, heuristic method for locating characters.
     No previous image of Wally is required, only a description, such as "red and white stripes" or "black glasses".
     This allows users to extend the solution past Wally, and towards other characters, who do not have to be seen prior.
-    This form of analysis can lead to false positivies, and should be combined with other results.
+    This form of analysis can lead to false positives, and should be combined with other results.
 
     An example of the usefulness of this, beyond Where's Wally, could be found in augmented reality technology, such as Google Glass.
     A common problem people experience is losing their keys.
