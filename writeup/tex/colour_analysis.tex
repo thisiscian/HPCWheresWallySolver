@@ -5,10 +5,12 @@
     It only requires that an image be accessible in the normal way; an array of pixels.
     As this problem considers only Where's Wally images, the pixels can be accessed in the RGB format.
     This means that each pixel contains information on how much red, green and blue to show.
-    This is as opposed to HSV, or hue, saturation and value.
+    This is in contrast to HSV, or hue, saturation and value.
     Hue represents the pixel's position on a colour wheel, saturation represents it's vibrancy and value is a measure of it's brightness.
     RGB maps easily to HSV, but in cartoon images, there isn't generally a large change in an objects lightness level.
-    Thus it is easier to work with RGB images, but the methods described below also work for HSV.
+    It is easier to work with RGB images, but the methods described below also work for HSV.
+
+    What follows is a list of functions and search patterns that utilise colour analysis.
 
   \subsection{Function: \texttt{get\_colour\_in\_image}}
     \begin{description}
@@ -21,7 +23,7 @@
 
     This function allows a user to search the image for a specific range of colours.
     Moreover, the user is able to restrict the results based on the relationships between the pixels colour values.
-    For example, a user can search for colours that are yellow by searching the entire colourspace and ensuring that $R$ and $G$ have similar values, and that they are both greater than $B$;
+    For example, a user can search for colours that are yellow by searching the entire colour space and ensuring that $R$ and $G$ have similar values, and that they are both greater than $B$;
     \begin{center}
       \texttt{yellow = get\_colour\_in\_image(input,"\#000000","\#FFFFFF",0.8,0.8,1.1,0,1.1,0)}
     \end{center}
@@ -63,7 +65,7 @@
       \item[returns] Binary mask the same size as the input image, with values of 255 if pixel was within the required values, and 0 otherwise.
     \end{description}
     Although greyscale is a special case of colour, slightly different requirements were discerned for greyscale searches.
-    Users are able to defince a tolerance, which allows for colours that are not strictly grey to be included in results.
+    Users are able to define a tolerance, which allows for colours that are not strictly grey to be included in results.
     For example; 
     \begin{center}
       \texttt{black = get\_greyscale\_in\_image(input, 0, 40, 20)}
@@ -78,9 +80,9 @@
     It is important to be able to discretise the results of the above functions.
     Something is needed that will convert the binary matrix into a list of results.
     This can be done by counting and collecting data about the distinct regions available in the matrix.
-    A region is defined as a group of pixels that are connected through non-zero nearest neighbours.
+    A region here is defined as a group of pixels that are connected through non-zero nearest neighbours.
   
-    A naive way to do this computationally is shown in Figure \ref{simpleregion}.
+    A computationally naive way to do this is shown in Figure \ref{simpleregion}.
     Each non-zero pixel is assigned a unique integer value.
     Each pixel of the matrix is looped over, and it's value becomes the maximum of itself and it's four nearest neighbours.
     This is repeated until no pixels change value.
@@ -94,12 +96,12 @@
     More computationally efficient methods exist.
     Lifeng \cite{efficientregion} describes the method of connected-component labelling.
     The removes the need for iteration until the matrix stabilises, and also reduces the memory need per pixel.
-    A pixel $p_{i,j}$ that has zero-valued or non-existant neighbours $p_{i-1,j}$ and $p_{i,j-1}$ is assigned a new temporary label.
+    A pixel $p_{i,j}$ that has zero-valued or non-existent neighbours $p_{i-1,j}$ and $p_{i,j-1}$ is assigned a new temporary label.
     Otherwise, if the upper pixel $p_{i,j-1}$ is non-zero, it has a label (thanks to the ordering of the algorithm).
     The pixel $p_{i,j}$ is then assigned with the label of $p_{i,j-1}$.
     If the label of $p_{i,j}$ has not been set, then it gets the label of the non-zero left pixel $p_{i-1,j}$.
-    If $p_{i-1,j} = p_{i,j-1}$ but they do not have the same label, then a label equivalence is noted, for later use.
-    Equivalent labels are then merged, and the regions have been developed.
+    If $p_{i-1,j} = p_{i,j-1}$ but they do not have the same label, then a label equivalence is noted.
+    Once the matrix has been traversed, equivalent labels are merged, and the regions have been d.
     This method, is both simple and memory efficient enough to be suitable for parallelism; temporary labels can be calculated concurrently and the final labels only need a small amount of halo data to be obtained.
 
     \begin{figure}[h]
@@ -165,8 +167,18 @@
   \subsection{Pattern: Red and White Stripes}
     This algorithm seeks to find Wally by one of his most identifiable features; his red and white jumper.
     The algorithm works by producing a binary mask of all the red areas in an image, using \texttt{get\_colour\_in\_image}, and a binary mask of all the white areas in an image, using \texttt{get\_greyscale\_in\_image}.
+    These vertically blurred using a Gaussian blur method, and are then multiplied together per element.
+    
+    Any overlap in the two blurs will lead to a non-zero value in this matrix.
+    Thus, by scanning for non-zero values, regions of the image with red and white on top of each other can be found.
+    For a sufficiently small tolerance, large regions found this way can be said to be regions containing red and white stripes.
+    The tolerance of the pattern is defined by the amount of blur the Gaussian method applies.
+    
     \subsubsection{Weaknesses}
       This pattern does have some weaknesses associated with it.
+      Wally is regularly not the only character, or even object, that has red and white stripes.
+      Wenda, seen in Figure \ref{justwenda} clearly also wears a similar jumper.
+      Other objects that match this pattern can be seen in red and white skirts, candy canes and more.
       Prioritisation of results is hard to get correct.
       Assuming that Wally is the largest region of red and white stripes fails in any situation where that is not true.
       Attempting to describe the size of Wally's jumper specifically stop the pattern from scaling to images of different sizes.

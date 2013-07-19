@@ -6,7 +6,7 @@
 \contentsline {subsection}{\numberline {2.2}Feature Recognition}{5}{subsection.2.2}
 \contentsline {section}{\numberline {3}Colour Analysis}{5}{section.3}
 \contentsline {subsection}{\numberline {3.1}Function: {\tt {get\_colour\_in\_image}}}{5}{subsection.3.1}
-\contentsline {subsection}{\numberline {3.2}Function: {\tt {get\_greyscale\_in\_image}}}{7}{subsection.3.2}
+\contentsline {subsection}{\numberline {3.2}Function: {\tt {get\_greyscale\_in\_image}}}{6}{subsection.3.2}
 \contentsline {subsection}{\numberline {3.3}Function: {\tt {find\_regions\_from\_mask}}}{7}{subsection.3.3}
-\contentsline {subsection}{\numberline {3.4}Pattern: Red and White Stripes}{8}{subsection.3.4}
+\contentsline {subsection}{\numberline {3.4}Pattern: Red and White Stripes}{7}{subsection.3.4}
 \contentsline {subsubsection}{\numberline {3.4.1}Weaknesses}{8}{subsubsection.3.4.1}

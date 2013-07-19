@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.7.10)  19 JUL 2013 09:01
+This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.7.10)  19 JUL 2013 12:41
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -894,67 +894,72 @@ LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <14.4> not available
  [3 <./img/just_a_chump.png> <./img/just_wally.png> <./img/just_wenda.png>]) (.
 /tex/literature_review.tex [4])
 (./tex/colour_analysis.tex [5]
-<img/results/spectrum.png, id=118, 144.54pt x 108.405pt>
+<img/results/spectrum.png, id=119, 144.54pt x 108.405pt>
 File: img/results/spectrum.png Graphic file (type png)
 
 <use img/results/spectrum.png>
-Package pdftex.def Info: img/results/spectrum.png used on input line 33.
+Package pdftex.def Info: img/results/spectrum.png used on input line 35.
 (pdftex.def)             Requested size: 192.74081pt x 144.53778pt.
 
-<img/results/get_yellow_from_image_mask.png, id=119, 2409.0pt x 1806.75pt>
+<img/results/get_yellow_from_image_mask.png, id=120, 2409.0pt x 1806.75pt>
 File: img/results/get_yellow_from_image_mask.png Graphic file (type png)
 
 <use img/results/get_yellow_from_image_mask.png>
 Package pdftex.def Info: img/results/get_yellow_from_image_mask.png used on inp
-ut line 39.
+ut line 41.
 (pdftex.def)             Requested size: 192.68718pt x 144.53778pt.
 
-<img/results/get_yellow_from_image.png, id=120, 2409.0pt x 1806.75pt>
+<img/results/get_yellow_from_image.png, id=121, 2409.0pt x 1806.75pt>
 File: img/results/get_yellow_from_image.png Graphic file (type png)
 
 <use img/results/get_yellow_from_image.png>
 Package pdftex.def Info: img/results/get_yellow_from_image.png used on input li
-ne 45.
+ne 47.
 (pdftex.def)             Requested size: 192.68718pt x 144.53778pt.
- [6 <./img/results/spectrum.png (PNG copy)> <./img/results/get_yellow_from_imag
-e_mask.png (PNG copy)> <./img/results/get_yellow_from_image.png (PNG copy)>]
-Overfull \hbox (19.29199pt too wide) in paragraph at lines 94--104
-[]\T1/pplx/m/n/12 More com-pu-ta-tion-ally ef-fi-cient meth-ods ex-ist. Lifeng 
-[[]] de-scribes the method of connected-
- []
-
-[7]
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 116.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 116.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 116.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 116.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 116.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 116.
-
-<img/results/redandwhitestripes_fail_small.png, id=139, 332.24126pt x 169.63374
-pt>
-File: img/results/redandwhitestripes_fail_small.png Graphic file (type png)
- <use img/results/redandwhitestripes_fail_small.png>
-Package pdftex.def Info: img/results/redandwhitestripes_fail_small.png used on 
-input line 176.
-(pdftex.def)             Requested size: 387.36848pt x 197.7925pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[8]) [9 <./img/results/redandwhitestripes_fail_small.png>]
-(pdf/WheresWallyDissertation-CianBooth.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 42.
- [10]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 42.
+[6]
+Overfull \hbox (19.29199pt too wide) in paragraph at lines 96--106
+[]\T1/pplx/m/n/12 More com-pu-ta-tion-ally ef-fi-cient meth-ods ex-ist. Lifeng 
+[[]] de-scribes the method of connected-
+ []
 
-(pdf/WheresWallyDissertation-CianBooth.aux)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 118.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 118.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 118.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 118.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 118.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 118.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+<img/results/redandwhitestripes_fail_small.png, id=134, 332.24126pt x 169.63374
+pt>
+File: img/results/redandwhitestripes_fail_small.png Graphic file (type png)
+ <use img/results/redandwhitestripes_fail_small.png>
+Package pdftex.def Info: img/results/redandwhitestripes_fail_small.png used on 
+input line 188.
+(pdftex.def)             Requested size: 387.36848pt x 197.7925pt.
+ [7]
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+) [8] (pdf/WheresWallyDissertation-CianBooth.bbl)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 42.
+ [9] [10 <./img/results/spectrum.png (PNG copy)> <./img/results/get_yellow_from
+_image_mask.png (PNG copy)> <./img/results/get_yellow_from_image.png (PNG copy)
+>] [11 <./img/results/redandwhitestripes_fail_small.png>]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 42.
+ (pdf/WheresWallyDissertation-CianBooth.aux)
 Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 42.
 Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 42.
 Package rerunfilecheck Info: File `WheresWallyDissertation-CianBooth.out' has n
@@ -963,9 +968,9 @@ ot changed.
 Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 42.
  ) 
 Here is how much of TeX's memory you used:
- 15498 strings out of 493488
- 254382 string characters out of 3146892
- 340908 words of memory out of 3000000
+ 15499 strings out of 493488
+ 254389 string characters out of 3146892
+ 344911 words of memory out of 3000000
  18471 multiletter control sequences out of 15000+200000
  53651 words of font info for 114 fonts, out of 3000000 for 9000
  957 hyphenation exceptions out of 8191
@@ -978,11 +983,11 @@ amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cms
 y10.pfb></usr/share/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/
 texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texmf-dist/fonts/typ
 e1/urw/palatino/uplri8a.pfb>
-Output written on pdf/WheresWallyDissertation-CianBooth.pdf (10 pages, 1172260 
+Output written on pdf/WheresWallyDissertation-CianBooth.pdf (11 pages, 1172980 
 bytes).
 PDF statistics:
- 197 PDF objects out of 1000 (max. 8388607)
- 161 compressed objects within 2 object streams
- 35 named destinations out of 1000 (max. 500000)
+ 202 PDF objects out of 1000 (max. 8388607)
+ 165 compressed objects within 2 object streams
+ 36 named destinations out of 1000 (max. 500000)
  147 words of extra memory for PDF output out of 10000 (max. 10000000)
 
