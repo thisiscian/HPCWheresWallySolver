@@ -8,7 +8,7 @@ using namespace wwp;
 
 Red_and_White::Red_and_White() {
   info.set_name("Red and White");
-  info.set_description("Locate Wally by areas red and white stripes");
+  info.set_description("Locate Wally by areas with red and white stripes");
   info.set_confidence(0.7);
   ratio_to_red = 2.5;
   white_threshold = 200;
@@ -26,6 +26,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
   float tolerance[3] = {2.5,0,0.4};
   int invert[3] = {255, 255, 0};
+
   Mat red_mask = get_colour_in_image(image, "#000000", "#FFFFFF", 2.5,0,2.5,0,0,0);
   Mat white_mask = get_greyscale_in_image(image, 200, 255, 25);
 

@@ -1,8 +1,8 @@
 \documentclass[a4paper,12pt]{article}
 \usepackage{assignmentCian}
 \author{Cian Booth: \textbf{s1256705}}
-
 \title{Finding Wally}
+\graphicspath{{img/}}
 %\subtitle{Solving Where's Wally Puzzles Computationally}
 \def\biblio {
   \bibliographystyle{ieeetr}
@@ -25,13 +25,17 @@
     \textbf{\Huge Finding Wally}\\
     {\Large MSc. Dissertation Report}\\
     \vfill
+    \includegraphics[width=0.4\textwidth]{wallylogo}
+    \vfill
     {\huge \textbf{Cian Booth}}\\
     \vspace{1em}
   \end{center}
   \pagebreak
   \tableofcontents
   \pagebreak
+  \subfile{introduction}
   \subfile{literature_review}
+  \subfile{colour_analysis}
   \pagebreak
   \bibliographystyle{ieeetr}
   \bibliography{whereswally}

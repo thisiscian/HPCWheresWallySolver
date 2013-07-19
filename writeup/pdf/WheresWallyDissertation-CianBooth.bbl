@@ -24,4 +24,8 @@ Q.~Zhang, Y.~Chen, Y.~Zhang, and Y.~Xu, ``Sift implementation and optimization
 H.~Bay, T.~Tuytelaars, and L.~Van~Gool, ``Surf: Speeded up robust features,''
   in {\em Computer Vision--ECCV 2006}, pp.~404--417, Springer, 2006.
 
+\bibitem{efficientregion}
+L.~He, Y.~Chao, K.~Suzuki, and K.~Wu, ``Fast connected-component labeling,''
+  {\em Pattern Recognition}, vol.~42, no.~9, pp.~1977--1987, 2009.
+
 \end{thebibliography}
