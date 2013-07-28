@@ -20,8 +20,15 @@
         int largest_y;
         region();
     };
-
     bool operator==(region lhs, region rhs);
+  
+    struct homography {
+      float a;
+      int b;
+      float c;
+      int d;
+    };
+    bool operator<(homography lhs, homography rhs);
 
     // from a binary (0,255) single channel Mat, find the distinct regions with values of 255
     std::vector<region> find_regions_from_mask(cv::Mat input);

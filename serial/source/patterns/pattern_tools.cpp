@@ -22,6 +22,30 @@ bool wwp::operator==(wwp::region lhs, wwp::region rhs) {
   return same;
 }
 
+bool wwp::operator<(wwp::homography lhs, wwp::homography rhs) {
+  if(lhs.a > rhs.a) {
+    return true;
+  } else if(lhs.a < rhs.b) {
+    return false;
+  }
+  if(lhs.b > rhs.b) {
+    return true;
+  } else if(lhs.b < rhs.b) {
+    return false;
+  }
+  if(lhs.c > rhs.c) {
+    return true;
+  } else if(lhs.c < rhs.c) {
+    return false;
+  }
+  if(lhs.d > rhs.d) {
+    return true;
+  } else if(lhs.d < rhs.d) {
+    return false;
+  }
+  return false;
+}
+
 // Finds the distinct regions from a mask input.
 // This is done by assigning each pixel a unique number
 // and then each pixel takes the value of it's largest neighbour.
