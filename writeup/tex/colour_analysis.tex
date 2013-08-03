@@ -8,7 +8,7 @@
     This is in contrast to HSV, or hue, saturation and value.
     Hue represents the pixel's position on a colour wheel, saturation represents it's vibrancy and value is a measure of it's brightness.
     RGB maps easily to HSV, but in cartoon images, there isn't generally a large change in an objects lightness level.
-    It is easier to work with RGB images, but the methods described below also work for HSV.
+    It is easier to work with RGB images, but the methods described below work for HSV.
 
     What follows is a list of functions and search patterns that utilise colour analysis.
 
@@ -88,14 +88,14 @@
     This is repeated until no pixels change value.
     This method takes the maximum value of neighbouring pixels, and ignores non-zero pixels, so maximal values can not be spread outside of a region's boundary.
     Within a region, it is evident that every pixel will have the value of the maximum pixel within that region.
-    As each pixel has a unique value, it follows that each regional maximum will also have a unique value.
+    As each pixel has a unique value, it follows that each regional maximum must have a unique value.
     By counting the unique values in the matrix, the number of regions can be found.
     Similarly, properties of the region can be calculated by analysing specific unique values.
     For example, the mean position of the pixels within the region, the size of the region, and the bounding box around the region.
 
     More computationally efficient methods exist.
     Lifeng \cite{efficientregion} describes the method of connected-component labelling.
-    The removes the need for iteration until the matrix stabilises, and also reduces the memory need per pixel.
+    The removes the need for iteration until the matrix stabilises, and reduces the memory need per pixel.
     A pixel $p_{i,j}$ that has zero-valued or non-existent neighbours $p_{i-1,j}$ and $p_{i,j-1}$ is assigned a new temporary label.
     Otherwise, if the upper pixel $p_{i,j-1}$ is non-zero, it has a label (thanks to the ordering of the algorithm).
     The pixel $p_{i,j}$ is then assigned with the label of $p_{i,j-1}$.
@@ -177,7 +177,7 @@
     \subsubsection{Weaknesses}
       This pattern does have some weaknesses associated with it.
       Wally is regularly not the only character, or even object, that has red and white stripes.
-      Wenda, seen in Figure \ref{justwenda} clearly also wears a similar jumper.
+      Wenda, seen in Figure \ref{justwenda} clearly wears a similar jumper.
       Other objects that match this pattern can be seen in red and white skirts, candy canes and more.
       Prioritisation of results is hard to get correct.
       Assuming that Wally is the largest region of red and white stripes fails in any situation where that is not true.
