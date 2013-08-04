@@ -1,0 +1,81 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+  \section{Introduction}
+    Computer vision is a field concerned with using computers to process and analyse images. 
+    It is an an attempt to augment human abilities to perceive visual information,
+      allowing users to increase their capabilities to accurately and quickly use visual techniques. %% sentence too long
+
+    Recognising an object is one of the most important things that human vision is able to do.
+    This means that the brain is able to decipher the basic information received from the eyes, deducing any objects the information describes.
+    This is an intricate task and not simply replicated programmatically.
+
+    %% Reliably finding an object within an image is difficult to do at speed.
+    For each way to describe an object, several different techniques emerge to locate the object.
+    Each technique has varying requirements and reliability.
+    Some need specific descriptions (e.g. a sample image) and produce very reliable results.
+    Others do not require such precise descriptions, but do not create similarly dependable results.
+    By combining these techniques together, the reliability and robustness of computational object recognition can be improved.
+    Using all available techniques will considerably increase the time the vision program takes to complete.
+    This can be mitigated by computing each techniques in parallel.
+    An intuitive method of parallelism is the task farm.
+    This means that general tasks (in this case, each method of identifying an object) will be run concurrently.
+    Task farms are useful in this case, because it allows the use of serial algorithms libraries that would otherwise complicate or prevent parallelism.
+    Computing results simultaneously, a task farm allows computer vision programs to produce results both quickly and reliably.
+
+    %% Where's Wally is a good basis for parallel object recognition
+    %%    - maybe add a bit about clearly definable features?
+    A good way of testing the task farm method is with Where's Wally puzzles.
+    These are simple cartoons, normally a large image filled with various characters, who wear simply coloured clothing, see Figure \ref{justachump}.
+    One of these characters is the eponymous Wally, who is dressed distinctly from most others characters, see Figure \ref{justwally}.
+    Similarly dressed characters exist, Figure \ref{justwenda}, adding some complexity to finding Wally correctly.
+    The cartoon nature of the characters means that shapes are boldly coloured and often bordered by a black line.
+    As Where's Wally is a puzzle, sometimes Wally will be hard to find; he is often obscured, camouflaged or simply small.
+    Creating a program to solve Where's Wally is non-trivial, requiring a combination of computer vision techinuqes.
+    Despite this, the puzzle provides a simple base to implement parallel object recognition.
+
+    \begin{figure}[h]
+    \centering
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[height=0.15\textheight]{just_a_chump}   
+        \caption{A normal person}
+        \label{justachump}
+      \end{subfigure}
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[height=0.15\textheight]{just_wally}   
+        \caption{Wally}
+        \label{justwally}
+      \end{subfigure}
+      \begin{subfigure}[b]{0.3\textwidth}
+        \centering
+        \includegraphics[height=0.15\textheight]{just_wenda}   
+        \caption{Wenda}
+        \label{justwenda}
+      \end{subfigure}
+    \caption{Characters from Where's Wally}
+    \label{wallychars}
+    \end{figure}
+
+    %% Real World Uses of object recognition/parallel object recognition
+    Extending beyond Where's Wally puzzles, parallel object recognition is a useful technique for many areas.
+    Wildlife conservation is a delicate task.
+    To accurately know which species are endangered, it is important to have an accurate count of the members of the species for a given region.
+    Actively surveying the population, by means of physically interacting with members can have adverse effects on the population.
+    Nielsen \cite{electrofishing} discusses the negative effects of electrofishing on rare fish populations.
+    She goes on to indicate the lack of non-invasive methods of surveying the population, without which population counts cannot be maintained.
+    Directly surveying endangered species can be inefficient, slow or dangerous to either the researcher or the animal in question.
+    Passive techniques, such as photography, allow the researcher to estimate populations without interacting with the environment.
+    Ideally a researcher would be constantly vigilant and able be to immediately identify each species correctly.
+    This is rarely the case; a single human is fallible and a team may be beyond the funding of the endeavour.
+    Instead, with access to any modern laptop and a digital camera, parallel computer vision may be able to assist in many ways.
+    A video feed would allow observation for as long as the battery lasts, and a database of the features of regional species would help with identification.
+    Parallel species recognition would allow multiple species to be surveyed at a time.
+    It could even allow non-experts to survey the populations, freeing up researchers for more critical tasks.
+      
+    TRAFFIC JAMS
+    
+    FINDING CHILDREN LOST IN A CROWD
+
+
+\end{document}

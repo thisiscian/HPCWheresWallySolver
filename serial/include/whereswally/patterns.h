@@ -3,6 +3,8 @@
 
   #include "patterns/pattern_tools.h"
   #include "patterns/redandwhite.h"
+  #include "patterns/findglasses.h"
+  #include "patterns/findfeatures.h"
 
 #endif
 

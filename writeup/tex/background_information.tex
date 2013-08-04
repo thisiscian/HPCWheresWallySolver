@@ -1,0 +1,49 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+  \section{Background Information}
+    \subsection{Shape and Colour Analysis}
+    One obvious way of analysing an image is to break it down into shapes and colours.
+    In linguistic terms, it is easiest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
+    This is conceptually simple to explain and understand, and thus is more intuitive to program.
+    Most images are saved as raster images (e.g. PNG, BMP, GIF), which is a 2D array of colours that directly map to set of pixels on the screen.
+    This is opposed to vector images that store the location and colour of geometric primitives (squares, circles, triangles, etc.).
+    Vector images, rather than raster images, are directly easier to perform shape and colour analysis on.
+    However, input devices such as webcams and scanners typically produce images in raster formats.
+
+    Regardless of format, methods of colour analysis are simple to implement programmatically.
+    This is because colour is intrinsic to all methods of storing the data of an image.
+    Shape analysis is less simple for raster images.
+    Shape boundaries must be found, which is normally done through edge detection.
+    These boundaries are then analysed to find points of intersection, and the curvature between them.
+    The group of curves must then be examined to find what shapes exist.
+
+    These methods allow for a descriptional, heuristic method for locating characters.
+    No previous image of Wally is required, only a description, such as "red and white stripes" or "black glasses".
+    This allows users to extend the solution past Wally, and towards other characters, who do not have to be seen prior.
+    This form of analysis can lead to false positives, and should be combined with other results.
+
+    An example of the usefulness of this, beyond Where's Wally, could be found in augmented reality technology, such as Google Glass.
+    A common problem people experience is losing their keys.
+    Users with access to AR devices could use colour and shape analysis to enhance their searching (i.e. if they are visible, but in a cluttered area).
+    As keys generally have a few well defined shapes and colour schemes, the device would not have to store what the keys look like in advance.
+    Assuming that parallelism is available, this could potentially be done faster than the human eye can search, helping the user significantly.
+    
+    \subsection{Feature Analysis}
+    Some of the most reliable computer vision libraries (such as SIFT \cite{sift}), were developed while considering the neuroscience of human vision.
+    Tanaka\cite{tanakahv} and Perrett and Oram\cite{perretthv} found that human object recognition identifies objects with features that are invariant to brightness, scale and position.
+    These results have been used as inspiration for feature analysis.
+    This technique finds features; regions of an image which are scale, rotation and illumination invariant.
+    These features are most immediately useful when compared with the features of another image.
+    For example, the features from an image of just Wally can be used to locate Wally in a normal puzzle image.
+
+    This method generally requires an existing image to find Wally, which restricts the flexibility of the search.
+    However, this method is very reliable, as long as Wally is not obscured, it will likely locate him correctly.
+    Normally, Wally is obscured, so this method should be combined with other techniques.
+
+    Feature analysis benefits from task farming when there is an image needs to be searched for a large number of sub-images.
+    A beyond Wally example would be in detecting employees going into work on a flexitime basis.
+    This would use photos of each employee combined with CCTV to note the time that workers enter and leave their workplace.
+    Users would not need any form of ID other than their own faces, and this can be combined with existing security systems.    
+
+\end{document}
+

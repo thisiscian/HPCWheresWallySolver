@@ -13,6 +13,7 @@
   } Pattern_Result;
 
   const bool operator==(const Pattern_Result &lhs, const Pattern_Result &rhs);
+  const bool operator>(const Pattern_Result &lhs, const Pattern_Result &rhs);
   const bool operator!=(const Pattern_Result &lhs, const Pattern_Result &rhs);
 
   class Search_Pattern {

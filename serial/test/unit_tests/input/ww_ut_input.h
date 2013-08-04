@@ -49,6 +49,7 @@
       void test_no_arguments();
       void test_unrecognised_command();
     private:
+      int error;
       Error_Message err_msg;
       IO_Variables *var;
       Input *input;

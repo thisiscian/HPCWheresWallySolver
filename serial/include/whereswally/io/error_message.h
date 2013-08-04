@@ -6,6 +6,20 @@
 #include <string>
 #include <cstdarg>
 
+enum errors {
+  NO_ERRORS,
+  NEGATIVE_CONFIDENCE,
+  CONFIG_FILE_DOES_NOT_EXIST,
+  UNDEFINED,
+  NO_CONFIG_FILE,
+  BAD_CONFIG_FILE,
+  NO_RESULTS_FILE,
+  BAD_RESULTS_FILE,
+  CONTRADICTING_INPUTS,
+  UNRECOGNISED_COMMAND,
+  BAD_COMMAND_USAGE
+};
+
 class Error_Message {
   private:
     std::string bad_number_of_final_results(va_list vl);

@@ -1,8 +1,5 @@
 #include "whereswally/patterns/pattern_tools.h"
 
-#include<iostream>
-#include<opencv2/highgui/highgui.hpp>
-
 using namespace std;
 using namespace cv;
 
@@ -11,6 +8,42 @@ wwp::region::region() {
   largest_y = 0;
   smallest_x = INT_MAX;
   smallest_y = INT_MAX;
+}
+
+bool wwp::operator==(wwp::region lhs, wwp::region rhs) {
+  bool same = true;
+  if(lhs.size != rhs.size) same = false; 
+  if(fabs(lhs.av_x -rhs.av_x) > 0.1 ) same = false;
+  if(fabs(lhs.av_y -rhs.av_y) > 0.1 ) same = false;
+  if(lhs.smallest_x != rhs.smallest_x) same = false;
+  if(lhs.smallest_y != rhs.smallest_y) same = false;
+  if(lhs.largest_x != rhs.largest_x) same = false;
+  if(lhs.largest_y != rhs.largest_y) same = false;
+  return same;
+}
+
+bool wwp::operator<(wwp::homography lhs, wwp::homography rhs) {
+  if(lhs.a > rhs.a) {
+    return true;
+  } else if(lhs.a < rhs.b) {
+    return false;
+  }
+  if(lhs.b > rhs.b) {
+    return true;
+  } else if(lhs.b < rhs.b) {
+    return false;
+  }
+  if(lhs.c > rhs.c) {
+    return true;
+  } else if(lhs.c < rhs.c) {
+    return false;
+  }
+  if(lhs.d > rhs.d) {
+    return true;
+  } else if(lhs.d < rhs.d) {
+    return false;
+  }
+  return false;
 }
 
 // Finds the distinct regions from a mask input.
@@ -70,20 +103,21 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   map<int, wwp::region> region_size;
   for(int i=0; i<counter.rows; i++) {
     for(int j=0; j<counter.cols; j++) {
-      if(region_size[counter.at<int>(i,j)].smallest_x > j) region_size[counter.at<int>(i,j)].smallest_x = j;
-      if(region_size[counter.at<int>(i,j)].smallest_y > i) region_size[counter.at<int>(i,j)].smallest_y = i;
-      if(region_size[counter.at<int>(i,j)].largest_x < j) region_size[counter.at<int>(i,j)].largest_x = j;
-      if(region_size[counter.at<int>(i,j)].largest_y < i) region_size[counter.at<int>(i,j)].largest_y = i;
+      if(region_size[counter.at<int>(i,j)].smallest_x > i) region_size[counter.at<int>(i,j)].smallest_x = i;
+      if(region_size[counter.at<int>(i,j)].smallest_y > j) region_size[counter.at<int>(i,j)].smallest_y = j;
+      if(region_size[counter.at<int>(i,j)].largest_x < i) region_size[counter.at<int>(i,j)].largest_x = i;
+      if(region_size[counter.at<int>(i,j)].largest_y < j) region_size[counter.at<int>(i,j)].largest_y = j;
       region_size[counter.at<int>(i,j)].size+=1;
-      region_size[counter.at<int>(i,j)].av_x+=j;
-      region_size[counter.at<int>(i,j)].av_y+=i;
+      region_size[counter.at<int>(i,j)].av_x+=i;
+      region_size[counter.at<int>(i,j)].av_y+=j;
     }
   }
 
-  map<int,wwp::region>::iterator it;
+  map<int,wwp::region>::iterator it = region_size.begin();
   vector<wwp::region> found_regions;
   int i=0;
-  for(it=region_size.begin(); it!=region_size.end(); ++it,++i) {
+  ++it;
+  for(; it!=region_size.end(); ++it,++i) {
     (*it).second.av_x /= (*it).second.size;
     (*it).second.av_y /= (*it).second.size;
     found_regions.push_back((*it).second);
@@ -92,19 +126,17 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   return found_regions;
 }
 
-
 Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int tolerance) {
   int high,low;
   high = (high_in>low_in) ? high_in : low_in;
-  low  = (high_in<low_in) ? low_in : high_in;
+  low  = (high_in>low_in) ? low_in : high_in;
 
   Mat rgb[3], red, green, blue, rg, rb, gb;
   split(image, rgb);
-
   // essentially calculates saturation for each colour
-  blue = (rgb[0] >= low_in) & (rgb[0] <= high_in);
-  green = (rgb[1] >= low_in) & (rgb[1] <= high_in);
-  red = (rgb[2] >= low_in) & (rgb[2] <= high_in);
+  blue = (rgb[0] >= low-tolerance) & (rgb[0] <= high+tolerance);
+  green = (rgb[1] >= low-tolerance) & (rgb[1] <= high+tolerance);
+  red = (rgb[2] >= low-tolerance) & (rgb[2] <= high+tolerance);
 
   // gets all colours with the correct saturation value
   Mat color_magnitude = blue & green & blue;
@@ -119,20 +151,20 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
   return out;
 }
 
-Mat wwp::get_colour_in_image(cv::Mat image, std::string colour_x, std::string colour_y, float tolerance[3], int invert[3]) {
+Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_two, float redgreen, float greenred, float redblue, float bluered, float greenblue, float bluegreen) {
   // these hold the ranges for allowed colours
   int r[2],g[2],b[2];
 
   // parse the rgb strings (e.g. '#FFB3AD') into the distinct colour sections
-  string r_hex[2] = {colour_x.substr(1,2),colour_y.substr(1,2)};
-  string g_hex[2] = {colour_x.substr(3,2),colour_y.substr(3,2)};
-  string b_hex[2] = {colour_x.substr(5,2),colour_y.substr(5,2)};
+  string r_hex[2] = {colour_one.substr(1,2),colour_two.substr(1,2)};
+  string g_hex[2] = {colour_one.substr(3,2),colour_two.substr(3,2)};
+  string b_hex[2] = {colour_one.substr(5,2),colour_two.substr(5,2)};
 
   // needed to convert hex strings to ints
   stringstream to_hex;
   to_hex.flags(ios_base::hex);
 
-  // convert hex strings of colour_x to integer values
+  // convert hex strings of colour_one to integer values
   to_hex << r_hex[0];
   to_hex >> r[0];
   to_hex.clear();
@@ -154,32 +186,25 @@ Mat wwp::get_colour_in_image(cv::Mat image, std::string colour_x, std::string co
   to_hex >> b[1];
   to_hex.clear();
 
-  Mat rgb[3], red, green, blue, rg, gb, br;
-  split(image, rgb);
+  Mat imgcpy;
+  image.convertTo(imgcpy, CV_32S);
+  Mat rgb[3], red, green, blue, rg, gr, gb, bg,  br, rb;
+  split(imgcpy, rgb);
 
-  if(r[0] >= r[1]) {
-    red = ( rgb[2]  >= r[1] ) & ( rgb[2] <= r[0] );
-  } else {
     red = ( rgb[2] >= r[0] ) & ( rgb[2] <= r[1] );
-  }
-  if(g[0] >= g[1]) {
-    green = ( rgb[1] >= g[1] ) & ( rgb[1] <= g[0] );
-  } else {
     green = ( rgb[1] >= g[0] ) & ( rgb[1] <= g[1] );
-  }
-  if(b[0] >= b[1]) {
-    blue = ( rgb[0] >= b[1] ) & ( rgb[0] <= b[0] );
-  } else {
     blue = ( rgb[0] >= b[0] ) & ( rgb[0] <= b[1] );
-  }
   
   Mat saturation = red & green & blue;
 
-  rg = rgb[2] > tolerance[0]*rgb[1];
-  gb = rgb[1] > tolerance[1]*rgb[0];
-  br = rgb[0] > tolerance[2]*rgb[2];
- 
-  Mat ratios = (invert[0] == rg) & (invert[1] == gb) & (invert[2] == br);
+  rg = rgb[2] >= redgreen*rgb[1];
+  gr = rgb[1] >= greenred*rgb[2];
+  rb = rgb[2] >= redblue*rgb[0];
+  br = rgb[0] >= bluered*rgb[2];
+  gb = rgb[1] >= greenblue*rgb[0];
+  bg = rgb[0] >= bluegreen*rgb[1];
+
+  Mat ratios = rg & gr & rb & br & gb & bg;
 
   Mat out = ratios & saturation;
   return out;

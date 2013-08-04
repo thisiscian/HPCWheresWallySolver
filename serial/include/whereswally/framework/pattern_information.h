@@ -3,6 +3,7 @@
 
   #include <string>
   #include <iostream>
+  #include <whereswally/io/error_message.h>
 
   class Pattern_Information {
     private:

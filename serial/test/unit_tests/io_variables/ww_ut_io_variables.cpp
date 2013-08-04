@@ -8,6 +8,7 @@ CPPUNIT_TEST_SUITE_REGISTRATION(io_variables_test);
 
 void io_variables_test::setUp(){
   tmp_var = new IO_Variables();
+  error = -1;
   monitor.silence();
 }
 void io_variables_test::tearDown(){
@@ -23,20 +24,30 @@ void io_variables_test::test_load_config_from_file() {
   CPPUNIT_ASSERT( true == tmp_var->get_load_config_from_file() );
 }
 
+// test usage of functions related to the config_input_filename 
 void io_variables_test::test_config_input_filename(){
-  // should be able to change the value of 'config_input_filename' to an existing file
-  tmp_var->set_config_input_filename("../../sample_files/test_config.cfg");
-  CPPUNIT_ASSERT( "../../sample_files/test_config.cfg" == tmp_var->get_config_input_filename() );
+  string no_such_file = "../../sample_files/no_such_file";
+  string test_config_file = "../../sample_files/test_config.cfg";
 
-  // should ignore attempts to change the filename to a file that does not exist
-  tmp_var->set_config_input_filename("../../sample_files/no_such_file");
-  CPPUNIT_ASSERT( "../../sample_files/test_config.cfg" == tmp_var->get_config_input_filename() );
+  // should be able to change the value of 'config_input_filename' to an existing file
+  tmp_var->set_config_input_filename(test_config_file);
+  CPPUNIT_ASSERT( test_config_file == tmp_var->get_config_input_filename() );
 
   // should print an error with attempts to change the filename to a file that does not exist
   monitor.start_recording_cerr();
-    tmp_var->set_config_input_filename("../../sample_files/no_such_file");
+    try {
+      tmp_var->set_config_input_filename(no_such_file);
+    } catch (errors err) {
+      error = err;    
+    }
   monitor.stop_recording_cerr();
+
+  // ensure error message is printed 
   CPPUNIT_ASSERT( monitor.get_cerr_output() == err_msg("config_input_filename", "../../sample_files/no_such_file", tmp_var->get_config_input_filename().c_str()));
+  //ensure exception is thrown
+  CPPUNIT_ASSERT( error == CONFIG_FILE_DOES_NOT_EXIST);
+  // should ignore attempts to change the filename to a file that does not exist
+  CPPUNIT_ASSERT( test_config_file == tmp_var->get_config_input_filename() );
 
   // should be able to set the value of 'config_input_filename' to a blank one
   tmp_var->set_config_input_filename("");
@@ -53,12 +64,12 @@ void io_variables_test::test_load_puzzle_from_file() {
 
 void io_variables_test::test_puzzle_input_filename(){
   // should be able to change the value of 'puzzle_input_filename' to an existing file
-  tmp_var->set_puzzle_input_filename("../../sample_files/test_puzzle_input.png");
-  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_input.png" == tmp_var->get_puzzle_input_filename() );
+  tmp_var->set_puzzle_input_filename("../../sample_files/test_puzzle_image.png");
+  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_image.png" == tmp_var->get_puzzle_input_filename() );
 
   // should ignore attempts to change the filename to a file that does not exist
   tmp_var->set_puzzle_input_filename("../../sample_files/no_such_file");
-  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_input.png" == tmp_var->get_puzzle_input_filename() );
+  CPPUNIT_ASSERT( "../../sample_files/test_puzzle_image.png" == tmp_var->get_puzzle_input_filename() );
 
   // should print an error with attempts to change the filename to a file that does not exist
   monitor.start_recording_cerr();

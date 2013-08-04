@@ -1,0 +1,26 @@
+\documentclass[../main.tex]{subfiles}
+\begin{document}
+  \section{Literature Review}
+    \subsection{Shape and Colour Analysis}
+      \textit{nothing here yet}
+    \subsection{Feature Recognition}
+      Detecting features within an image is an important technique that can be used in object recognition.
+      One of the most robust algorithms available for this is SIFT (Scale-Invariant Feature Transform), developed by David Lowe \cite{sift}.
+      This algorithm uses various techniques to find scale, rotationally and translationally invariant keys, which are partially invariant under affine transforms and changes in illumination.
+      The keys contain feature vectors, which describe the area around them.
+      This algorithm is very reliable at finding a given sub-image within a larger image.
+      However, some of the techniques required to produce reliable results require unexpected amounts of memory.
+      To create a scale-space version of the image, four versions of the image must be produced, one of which is scaled to be twice the size of the original.
+      This is not a problem when analysing a single image, or analysing multiple images linearly.
+      However, if the algorithm is used for analysing multiple images concurrently, memory constraints would limit it's efficiency.
+      This can be seen with Zhang's parallel implementation of SIFT \cite{zhangsift}, where the scale-space creation is one of the areas the program spends most time on.
+      This paper shows reasonable parallel efficiency, but only has results up to 32 cores.
+      The paper only solves 5 images at a time, which gives a 7 times speed-up over an optimised version of SIFT.
+      This number of images is not large enough to show the true limits of shared memory parallelism.
+
+      SURF (Speeded-Up Robust Features), developed by Bay et. al.\cite{surf}, offers a similarly robust solution, but with greater efficiency.
+      This algorithm replaces Laplacian of Gaussian filters used in SIFT with box filters, which calculate in constant time, once an integral image has been produced.
+      It has greater potential for parallelism than SIFT; calculating versions of the image for the scale space are independent of the previous level and can be done in parallel.
+      
+    \biblio
+\end{document}
