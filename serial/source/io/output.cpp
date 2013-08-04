@@ -47,6 +47,7 @@ void Output::show_graphic_results() {
 
   namedWindow(window_name, CV_WINDOW_NORMAL);
   imshow(window_name, image);
+  imwrite("wally_results.jpg", image);
   waitKey();
   destroyWindow(window_name);
 }
