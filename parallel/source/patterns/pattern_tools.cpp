@@ -59,13 +59,14 @@ void wwp::print_output(string message, int thread_num, int num_threads, string p
 // and then each pixel takes the value of it's largest neighbour.
 // Pixels with a value of zero remain at zero
 vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
-  Mat counter(input.size(), CV_32SC1); // CV_32SC1 indicates type int with 1 channel, which is needed for the counting mask
-  for(int i=0; i<counter.rows; i++) {
-    for(int j=0; j<counter.cols; j++) {
+  int counter[input.rows][input.cols];
+  //Mat counter(input.size(), CV_32SC1); // CV_32SC1 indicates type int with 1 channel, which is needed for the counting mask
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
       if(input.at<uchar>(i,j) == 255) { 
-        counter.at<int>(i,j) = i*counter.cols+j+1; 
+        counter[i][j] = i*input.cols+j+1; 
       } else { 
-        counter.at<int>(i,j) = 0;
+        counter[i][j] = 0;
       }
     }
   }
@@ -74,34 +75,34 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   // while the counter image is still being changed, keep changing
   while(change) {
     change = false;
-    for(int i=0; i<counter.rows; i++) {
-      for(int j=0; j<counter.cols; j++) {
-        if(counter.at<int>(i,j) == 0) {continue;}
+    for(int i=0; i<input.rows; i++) {
+      for(int j=0; j<input.cols; j++) {
+        if(counter[i][j] == 0) {continue;}
         int max = 0;
         // get the max of the current cell and it's 4 neighbours
-        max = (counter.at<int>(i,j) > max)?counter.at<int>(i,j):max;
-        max = (i+1 < counter.cols && counter.at<int>(i+1,j) > max)?counter.at<int>(i+1,j):max;
-        max = (i-1 > 0 && counter.at<int>(i-1,j) > max)?counter.at<int>(i-1,j):max;
-        max = (j+1 < counter.cols && counter.at<int>(i,j+1) > max)?counter.at<int>(i,j+1):max;
-        max = (j-1 > 0 && counter.at<int>(i,j-1) > max)?counter.at<int>(i,j-1):max;
-        if( counter.at<int>(i,j) < max) {
-          counter.at<int>(i,j) = max;
+        max = (counter[i][j] > max)?counter[i][j]:max;
+        max = (i+1 < input.cols && counter[i+1][j] > max)?counter[i+1][j]:max;
+        max = (i-1 > 0 && counter[i-1][j] > max)?counter[i-1][j]:max;
+        max = (j+1 < input.cols && counter[i][j+1] > max)?counter[i][j+1]:max;
+        max = (j-1 > 0 && counter[i][j-1] > max)?counter[i][j-1]:max;
+        if( counter[i][j] < max) {
+          counter[i][j] = max;
           change = true;
         }
-        if( i+1 < counter.rows && counter.at<int>(i+1,j) < max && counter.at<int>(i+1,j) > 0) {
-          counter.at<int>(i+1,j) = max;
+        if( i+1 < input.rows && counter[i+1][j] < max && counter[i+1][j] > 0) {
+          counter[i+1][j] = max;
           change = true;
         }
-        if( i-1 > 0 && counter.at<int>(i-1,j) < max && counter.at<int>(i-1,j) > 0) {
-          counter.at<int>(i-1,j) = max;
+        if( i-1 > 0 && counter[i-1][j] < max && counter[i-1][j] > 0) {
+          counter[i-1][j] = max;
           change = true;
         }
-        if( j+1 < counter.cols && counter.at<int>(i,j+1) < max && counter.at<int>(i,j+1) > 0) {
-          counter.at<int>(i,j+1) = max;
+        if( j+1 < input.cols && counter[i][j+1] < max && counter[i][j+1] > 0) {
+          counter[i][j+1] = max;
           change = true;
         }
-        if( j-1 > 0 && counter.at<int>(i,j-1) < max && counter.at<int>(i,j-1) > 0) {
-          counter.at<int>(i,j-1) = max;
+        if( j-1 > 0 && counter[i][j-1] < max && counter[i][j-1] > 0) {
+          counter[i][j-1] = max;
           change = true;
         }
       }
@@ -109,15 +110,15 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   }
 
   map<int, wwp::region> region_size;
-  for(int i=0; i<counter.rows; i++) {
-    for(int j=0; j<counter.cols; j++) {
-      if(region_size[counter.at<int>(i,j)].smallest_x > i) region_size[counter.at<int>(i,j)].smallest_x = i;
-      if(region_size[counter.at<int>(i,j)].smallest_y > j) region_size[counter.at<int>(i,j)].smallest_y = j;
-      if(region_size[counter.at<int>(i,j)].largest_x < i) region_size[counter.at<int>(i,j)].largest_x = i;
-      if(region_size[counter.at<int>(i,j)].largest_y < j) region_size[counter.at<int>(i,j)].largest_y = j;
-      region_size[counter.at<int>(i,j)].size+=1;
-      region_size[counter.at<int>(i,j)].av_x+=i;
-      region_size[counter.at<int>(i,j)].av_y+=j;
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      if(region_size[counter[i][j]].smallest_x > i) region_size[counter[i][j]].smallest_x = i;
+      if(region_size[counter[i][j]].smallest_y > j) region_size[counter[i][j]].smallest_y = j;
+      if(region_size[counter[i][j]].largest_x < i) region_size[counter[i][j]].largest_x = i;
+      if(region_size[counter[i][j]].largest_y < j) region_size[counter[i][j]].largest_y = j;
+      region_size[counter[i][j]].size+=1;
+      region_size[counter[i][j]].av_x+=i;
+      region_size[counter[i][j]].av_y+=j;
     }
   }
 

@@ -24,7 +24,7 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     for(int i=0; i<2; i++) {
       cout << endl;
     }
-    omp_set_num_threads(8);
+    omp_set_num_threads(1);
     omp_set_nested(1);
     #pragma omp parallel for
     for(int i=0; i<patterns.size(); i++) {
