@@ -4,7 +4,10 @@ set (wheres_wally_VERSION_MAJOR 0)
 set (wheres_wally_VERSION_MINOR 0)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
-set(OpenCV_DIR /usr/share/opencv)
+
+include(source)
+set(OpenCV_DIR  /Home/s1256705/opencv-2.4.6.1/test)
+#set(CMAKE_CURRENT_LIST_DIR /Home/s1256705/dissertation/HPCWheresWallySolver/parallel)
 find_package(OpenCV REQUIRED)
 if(OpenCV_found)
   include_directories(${OpenCV_INCLUDE_DIR})

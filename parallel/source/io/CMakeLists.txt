@@ -1,5 +1,7 @@
-set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/error_message.cpp)
-set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/io_variables.cpp)
-set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/input.cpp)
-set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/output.cpp)
-set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/io_control.cpp)
+set(source_list "error_message" "io_variables" "input" "output" "io_control")
+
+foreach(source ${source_list})
+	get_filename_component(${source} ${source}.cpp ABSOLUTE)
+	set_property(GLOBAL APPEND PROPERTY SOURCE ${${source}})
+endforeach(source)
+
