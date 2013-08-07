@@ -23,7 +23,8 @@
     };
     bool operator==(region lhs, region rhs);
   
-    struct homography {
+    class homography {
+      public:
       float a;
       int b;
       float c;
@@ -34,6 +35,7 @@
     void print_output(std::string message, int thread_num, int num_threads, std::string pattern_name);
 
     // from a binary (0,255) single channel Mat, find the distinct regions with values of 255
+    std::vector<region> fast_find_regions(cv::Mat input);
     std::vector<region> find_regions_from_mask(cv::Mat input);
 
     // overlay two binary single channel Mats, taking only their intersection

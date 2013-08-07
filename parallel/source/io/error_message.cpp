@@ -8,8 +8,20 @@ string Error_Message::bad_number_of_final_results(va_list vl) {
   int current_val = va_arg(vl, int);
   va_end(vl);
   output << "Error: attempted to set 'number_of_final_results' to ";
-  output << attempt_val << ", which should be greater than or equal to zero. ";
+  output << attempt_val << ", which should be greater than zero. ";
   output << "'number_of_final_results' will remain at " << current_val << ".";
+  output << endl;
+  return output.str();
+}
+
+string Error_Message::bad_number_of_openmp_threads(va_list vl) {
+  stringstream output;
+  int attempt_val = va_arg(vl, int);
+  int current_val = va_arg(vl, int);
+  va_end(vl);
+  output << "Error: attempted to set 'number_of_openmp_threads' to ";
+  output << attempt_val << ", which should be greater than or equal to one. ";
+  output << "'number_of_openmp_threads' will remain at " << current_val << ".";
   output << endl;
   return output.str();
 }
@@ -205,15 +217,17 @@ string Error_Message::bad_option_help(va_list vl) {
   char* prog_name = va_arg(vl, char*);
   output << "usage: " << prog_name << " [options [files]]" << endl;
   output << "\t-c,--config=CONFIG_FILE\tSets the puzzle solving configuration as described by the given file" << endl;
+  output << "\t-omp,--openmp=N\tSets the number of threads that OpenMP can use" << endl;
   output << "\t-n,--number-of-final-results=N\tSets the number of results to be output" << endl;
-  output << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
+//  output << "\t-w,--pattern-weighting=\"NAME\":WEIGHT[,\"NAME\":WEIGHT[,...]]]\tSets the weighting for each pattern" << endl;
   output << "\t-p,--load-puzzle=FILE\tAttempts to locate Wally in FILE" << endl;
-  output << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
-  output << "\t-Op,--show-text={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
-  output << "\t-Od,--show-graphic={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
-  output << "\t-St,--save-text=FILE\tSaves the textual format of the results to FILE" << endl;
-  output << "\t-Si,--save-graphic=FILE\tSaves the graphical format of the results to FILE" << endl;
-  output << "\t-Sr,--save-results=FILE\tSaves the results to FILE, which can be loaded later" << endl;
+//  output << "\t-l,--load-results=RESULTS_FILE\tLoads results from a previous execution" << endl;
+  output << "\t-Ot,--show-text={TRUE,FALSE,VERBOSE}\tPrints the results to the terminal" << endl;
+  output << "\t-Og,--show-graphic={TRUE,FALSE,VERBOSE}\tShows the results graphically, in a new window" << endl;
+  output << "\t-Oc,--show-timing_results={TRUE,FALSE}\tPrints the timing results to the terminal" << endl;
+//  output << "\t-St,--save-text=FILE\tSaves the textual format of the results to FILE" << endl;
+//  output << "\t-Sg,--save-graphic=FILE\tSaves the graphical format of the results to FILE" << endl;
+//  output << "\t-Sr,--save-results=FILE\tSaves the results to FILE, which can be loaded later" << endl;
   output << "\t-h,--help\tDisplays this help message" << endl;
   return output.str();
 }
@@ -230,6 +244,11 @@ string Error_Message::operator()(string key, ...) {
   if(key == "number_of_final_results") {
     va_start(vl, 2);
     string output = bad_number_of_final_results(vl);
+    va_end(vl);
+    return output;
+  } if(key == "number_of_openmp_threads") {
+    va_start(vl, 2);
+    string output = bad_number_of_openmp_threads(vl);
     va_end(vl);
     return output;
   } else if(key == "pattern_weighting") {

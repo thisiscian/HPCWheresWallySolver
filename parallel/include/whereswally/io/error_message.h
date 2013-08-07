@@ -8,6 +8,7 @@
 
 enum errors {
   NO_ERRORS,
+  NO_ERRORS_QUIT,
   NEGATIVE_CONFIDENCE,
   CONFIG_FILE_DOES_NOT_EXIST,
   UNDEFINED,
@@ -23,6 +24,7 @@ enum errors {
 class Error_Message {
   private:
     std::string bad_number_of_final_results(va_list vl);
+    std::string bad_number_of_openmp_threads(va_list vl);
     std::string bad_pattern_weighting(va_list vl);
 
     std::string bad_config_input_filename(va_list vl);
@@ -34,12 +36,14 @@ class Error_Message {
     std::string bad_results_output_filename(va_list vl);
 
     std::string bad_option_config(va_list vl);
+    std::string bad_option_number_of_openmp_threads(va_list vl);
     std::string bad_option_number_of_final_results(va_list vl);
     std::string bad_option_pattern_weighting(va_list vl);
     std::string bad_option_load_puzzle(va_list vl);
     std::string bad_option_load_results(va_list vl);
     std::string bad_option_show_text(va_list vl);
     std::string bad_option_show_graphic(va_list vl);
+    std::string bad_option_show_timing_results(va_list vl);
     std::string bad_option_save_text(va_list vl);
     std::string bad_option_save_graphic(va_list vl);
     std::string bad_option_save_results(va_list vl);

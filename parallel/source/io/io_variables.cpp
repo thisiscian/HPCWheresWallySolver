@@ -3,6 +3,11 @@
 using namespace std;
 using namespace cv;
 
+Time_Message::Time_Message(string msg, double t) {
+  message = msg;
+  time = t;
+}
+
 IO_Variables::IO_Variables() {
   load_config_from_file = false;
   config_input_filename = "";
@@ -14,11 +19,13 @@ IO_Variables::IO_Variables() {
   results_input_filename = "";
 
   number_of_final_results = 3;
+  number_of_openmp_threads = 1;
 
   show_text_results = true;
   make_text_verbose = false;
   save_text_to_file = false;
   text_output_filename = "";
+  show_timing_results = true;
 
   show_graphic_results = true;
   make_graphic_verbose = false;
@@ -38,7 +45,17 @@ int IO_Variables::get_number_of_final_results() {
   return number_of_final_results;
 }
 
+void IO_Variables::set_number_of_openmp_threads(int thread_count) {
+  if(thread_count >= 1) {
+    number_of_openmp_threads = thread_count;
+  } else {
+    cerr << err_msg("number_of_openmp_threads", thread_count, number_of_openmp_threads);
+  }
+}
 
+int IO_Variables::get_number_of_openmp_threads() {
+  return number_of_openmp_threads;
+}
 
 void IO_Variables::set_weighting(string pattern_name, int weighting){
   if(weighting >=0 ) {
@@ -62,6 +79,18 @@ bool IO_Variables::get_show_text_results(){
   return show_text_results;
 }
 
+
+void IO_Variables::set_show_timing_results(bool should_show){
+  show_timing_results = should_show;
+}
+
+bool IO_Variables::get_show_timing_results(){
+  return show_timing_results;
+}
+
+void IO_Variables::add_timing_result(string message, double time) {
+  timing_results.push_back(Time_Message(message,time));
+}
 
 
 void IO_Variables::set_show_graphic_results(bool should_display){

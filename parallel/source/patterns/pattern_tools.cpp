@@ -1,4 +1,5 @@
 #include <whereswally/patterns/pattern_tools.h>
+#include <map>
 
 using namespace std;
 using namespace cv;
@@ -54,55 +55,144 @@ void wwp::print_output(string message, int thread_num, int num_threads, string p
   cout << output_stream.str() << flush;
 }
 
+vector<wwp::region> wwp::fast_find_regions(Mat input) {
+  int x = 0;
+  int regions[input.rows][input.cols];
+  cout << regions << endl;
+  x = 20;
+
+  // initialise regions to 0
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      regions[i][j] = 0;
+    }
+  }
+
+  // calculate rough regions, and region equivalences
+  int n_neighbour, w_neighbour;
+  map<int, int> region_equivalence;
+  int region_count = 0;
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      if(i==0) { 
+        w_neighbour = 0;
+      } else {
+        w_neighbour = input.at<uchar>(i-1,j);
+      }
+      if(j==0) {
+        n_neighbour = 0;
+      } else {
+        n_neighbour = input.at<uchar>(i,j-1);
+      }
+      if(n_neighbour > 0 && w_neighbour > 0 && n_neighbour != w_neighbour) {
+        int reg, equiv, tmp_reg = 0;
+        if(n_neighbour > w_neighbour) {
+          reg = n_neighbour;
+          equiv = w_neighbour;
+        } else {
+          reg = w_neighbour;
+          equiv = w_neighbour;
+        }
+        while(reg != tmp_reg) {
+          tmp_reg = region_equivalence[reg];
+          region_equivalence[reg] = equiv;
+          reg = tmp_reg;
+        }
+        region_equivalence[reg] = equiv;
+      }
+      if(n_neighbour > 0) {
+        regions[i][j] = n_neighbour;
+      } else if (w_neighbour > 0) {
+        regions[i][j] = w_neighbour;
+      } else {
+        region_count++;
+        region_equivalence[region_count] = region_count;
+        regions[i][j] = region_count;
+      }
+    }
+  }
+
+  // create a corrected region map
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      if(regions[i][j] == 0) {continue;}
+      regions[i][j] = region_equivalence[regions[i][j]];
+    }
+  }
+
+  // add each region to a list, and determine some basic information about it
+  map<int, wwp::region> region_list;
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      if(region_list[regions[i][j]].smallest_x > i) region_list[regions[i][j]].smallest_x = i;
+      if(region_list[regions[i][j]].smallest_y > j) region_list[regions[i][j]].smallest_y = j;
+      if(region_list[regions[i][j]].largest_x < i) region_list[regions[i][j]].largest_x = i;
+      if(region_list[regions[i][j]].largest_y < j) region_list[regions[i][j]].largest_y = j;
+      region_list[regions[i][j]].size+=1;
+      region_list[regions[i][j]].av_x+=i;
+      region_list[regions[i][j]].av_y+=j;
+    }
+  }
+
+  // normalize average positions and add them to the list of regions discovered
+  vector<wwp::region> found_regions;
+  for(map<int,wwp::region>::iterator it=++region_list.begin(); it!=region_list.end(); ++it) {
+    it->second.av_x /= it->second.size;
+    it->second.av_y /= it->second.size;
+    found_regions.push_back(it->second);
+  }
+
+  return found_regions;
+}
+
 // Finds the distinct regions from a mask input.
 // This is done by assigning each pixel a unique number
 // and then each pixel takes the value of it's largest neighbour.
 // Pixels with a value of zero remain at zero
 vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
-  int counter[input.rows][input.cols];
-  //Mat counter(input.size(), CV_32SC1); // CV_32SC1 indicates type int with 1 channel, which is needed for the counting mask
+  int count[input.rows][input.cols];
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
       if(input.at<uchar>(i,j) == 255) { 
-        counter[i][j] = i*input.cols+j+1; 
+        count[i][j] = i*input.cols+j+1; 
       } else { 
-        counter[i][j] = 0;
+        count[i][j] = 0;
       }
     }
   }
 
   bool change = true;
-  // while the counter image is still being changed, keep changing
+  // while the count image is still being changed, keep changing
   while(change) {
     change = false;
     for(int i=0; i<input.rows; i++) {
       for(int j=0; j<input.cols; j++) {
-        if(counter[i][j] == 0) {continue;}
+        if(count[i][j] == 0) {continue;}
         int max = 0;
         // get the max of the current cell and it's 4 neighbours
-        max = (counter[i][j] > max)?counter[i][j]:max;
-        max = (i+1 < input.cols && counter[i+1][j] > max)?counter[i+1][j]:max;
-        max = (i-1 > 0 && counter[i-1][j] > max)?counter[i-1][j]:max;
-        max = (j+1 < input.cols && counter[i][j+1] > max)?counter[i][j+1]:max;
-        max = (j-1 > 0 && counter[i][j-1] > max)?counter[i][j-1]:max;
-        if( counter[i][j] < max) {
-          counter[i][j] = max;
+        max = (count[i][j] > max)?count[i][j]:max;
+        max = (i+1 < input.cols && count[i+1][j] > max)?count[i+1][j]:max;
+        max = (i-1 > 0 && count[i-1][j] > max)?count[i-1][j]:max;
+        max = (j+1 < input.cols && count[i][j+1] > max)?count[i][j+1]:max;
+        max = (j-1 > 0 && count[i][j-1] > max)?count[i][j-1]:max;
+        if( count[i][j] < max) {
+          count[i][j] = max;
           change = true;
         }
-        if( i+1 < input.rows && counter[i+1][j] < max && counter[i+1][j] > 0) {
-          counter[i+1][j] = max;
+        if( i+1 < input.rows && count[i+1][j] < max && count[i+1][j] > 0) {
+          count[i+1][j] = max;
           change = true;
         }
-        if( i-1 > 0 && counter[i-1][j] < max && counter[i-1][j] > 0) {
-          counter[i-1][j] = max;
+        if( i-1 > 0 && count[i-1][j] < max && count[i-1][j] > 0) {
+          count[i-1][j] = max;
           change = true;
         }
-        if( j+1 < input.cols && counter[i][j+1] < max && counter[i][j+1] > 0) {
-          counter[i][j+1] = max;
+        if( j+1 < input.cols && count[i][j+1] < max && count[i][j+1] > 0) {
+          count[i][j+1] = max;
           change = true;
         }
-        if( j-1 > 0 && counter[i][j-1] < max && counter[i][j-1] > 0) {
-          counter[i][j-1] = max;
+        if( j-1 > 0 && count[i][j-1] < max && count[i][j-1] > 0) {
+          count[i][j-1] = max;
           change = true;
         }
       }
@@ -112,13 +202,13 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   map<int, wwp::region> region_size;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(region_size[counter[i][j]].smallest_x > i) region_size[counter[i][j]].smallest_x = i;
-      if(region_size[counter[i][j]].smallest_y > j) region_size[counter[i][j]].smallest_y = j;
-      if(region_size[counter[i][j]].largest_x < i) region_size[counter[i][j]].largest_x = i;
-      if(region_size[counter[i][j]].largest_y < j) region_size[counter[i][j]].largest_y = j;
-      region_size[counter[i][j]].size+=1;
-      region_size[counter[i][j]].av_x+=i;
-      region_size[counter[i][j]].av_y+=j;
+      if(region_size[count[i][j]].smallest_x > i) region_size[count[i][j]].smallest_x = i;
+      if(region_size[count[i][j]].smallest_y > j) region_size[count[i][j]].smallest_y = j;
+      if(region_size[count[i][j]].largest_x < i) region_size[count[i][j]].largest_x = i;
+      if(region_size[count[i][j]].largest_y < j) region_size[count[i][j]].largest_y = j;
+      region_size[count[i][j]].size+=1;
+      region_size[count[i][j]].av_x+=i;
+      region_size[count[i][j]].av_y+=j;
     }
   }
 

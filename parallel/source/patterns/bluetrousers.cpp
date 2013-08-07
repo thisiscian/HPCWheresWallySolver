@@ -26,10 +26,13 @@ vector<Pattern_Result> Blue_Trousers::start_search(Mat image) {
   Mat blue_trousers = get_colour_in_image(subimage, "#000000", "#FFFFFF",0,1,0,1,0,0.8);
   //GaussianBlur(blue_trousers, blue_trousers, Size(3,3), 1);
   blue_trousers = blue_trousers > 0;
+  subimage.release();
 
   // find and number the regions located
-  vector<region> regions_list = find_regions_from_mask(blue_trousers);
-  
+  vector<region> regions_list = fast_find_regions(blue_trousers);
+  //vector<region> regions_list = find_regions_from_mask(blue_trousers);
+  blue_trousers.release();
+
   // turn regions into results
   vector<Pattern_Result> results;
   if(regions_list.size() < 1) {

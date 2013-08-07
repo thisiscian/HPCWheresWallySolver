@@ -26,36 +26,40 @@ Red_and_White::Red_and_White(Search_Pattern *next_pattern, float next_cert) {
 }
 
 vector<Pattern_Result> Red_and_White::start_search(Mat image) {
-  stringstream output_stream;
-
   print_output("starting", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
 
-  Mat red_and_white_stripes;
+  Mat red_mask, white_mask, red_and_white_stripes;
 
-  print_output("calculating red and white masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-  // get red and white in image
-  Mat red_mask = get_colour_in_image(image, "#770000", "#FF4646", 1.7,0,1.7,0,0,0);
-  Mat white_mask = get_colour_in_image(image, "#999999", "#FFFFFF", 1.1,0.7,1.1,0.7,0.9,0.9);
+  // create two arrays, one red and one white, indicating where the respective colour exists on the image
+    print_output("calculating red and white masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+  red_mask = get_colour_in_image(image, "#770000", "#FF4646", 1.7,0,1.7,0,0,0);
+  white_mask = get_colour_in_image(image, "#999999", "#FFFFFF", 1.1,0.7,1.1,0.7,0.9,0.9);
   //  Mat white_mask = get_greyscale_in_image(image, 200, 255, 100);
+
   // blur image to get an overlap, could also use shift the masks in the 4 cardinal directions
+    print_output("blurring red and white masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   Size ksize(0,3);// by varying this, control over vertical and horizontal stripes can be found
-  GaussianBlur(red_mask, red_mask,ksize, 1);
-  GaussianBlur(white_mask, white_mask,ksize, 1);
-  threshold(white_mask, white_mask, 30, 255, THRESH_BINARY);
-  threshold(red_mask, red_mask, 30, 255, THRESH_BINARY);
+  GaussianBlur(red_mask, red_mask, ksize, 1);
+  GaussianBlur(white_mask, white_mask, ksize, 1);
+  white_mask = white_mask > 30;
+  red_mask = red_mask > 30;
   
-  print_output("merging_masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   // multiply red and white masks to find places with red and white stripes, blur to merge nearby regions
+    print_output("merging blurred masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   multiply(red_mask, white_mask, red_and_white_stripes);
+  red_mask.release();
+  white_mask.release();
   GaussianBlur(red_and_white_stripes, red_and_white_stripes,Size(0,51),1);
   red_and_white_stripes  = red_and_white_stripes > 0;
   GaussianBlur(red_and_white_stripes, red_and_white_stripes,Size(0,51),1);
   red_and_white_stripes  = red_and_white_stripes > 0;
 
-  print_output("finding regions in masks", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   // find and number the regions located
-  vector<region> regions_list = find_regions_from_mask(red_and_white_stripes);
-  
+    print_output("finding regions in mask", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+  //vector<region> regions_list = find_regions_from_mask(red_and_white_stripes);
+  vector<region> regions_list = fast_find_regions(red_and_white_stripes);
+  red_and_white_stripes.release();
+
   // turn regions into results
   vector<Pattern_Result> results;
   if(regions_list.size() < 1) {
@@ -93,24 +97,14 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
       getRectSubPix(image, Size(size_x,size_y), Point2f(pos_x, pos_y), subimage);
       vector<Pattern_Result> next_results = next->start_search(subimage);
-      float max_certainty = 0;
-      float next_confidence = 1;
-      if(next_results.size() > 0) {
-        next_confidence = next_results[0].info.get_confidence();
-        for(int j=0; j<next_results.size(); j++) {
-          if(max_certainty < next_results[j].certainty) {
-            max_certainty = next_results[j].certainty;
-          }
-        }
-      } else {
+      subimage.release();
+      if(next_results.size() == 0) {
         tmp.certainty = 0;
       }
-//      if(tmp.certainty > tmp_max) {tmp_max = tmp.certainty; cout << tmp.certainty << " " << max_certainty << " " << next_confidence << " " << info.get_confidence() << endl;}
-//      tmp.certainty += (1-tmp.certainty)*max_certainty;
-//      tmp.certainty = (tmp.certainty*info.get_confidence() +max_certainty*next_confidence)/2; //(next_confidence*info.get_confidence());
     } 
     results.push_back(tmp);
   }
+  image.release();
   print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   return results;
 }

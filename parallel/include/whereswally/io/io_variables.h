@@ -20,6 +20,13 @@
   #include <whereswally/framework.h>
   #include <whereswally/io/error_message.h>
 
+  class Time_Message {
+    public:
+    std::string message;
+    double time;
+    Time_Message(std::string msg, double t);
+  };
+
   class IO_Variables {
     private:
       // config file
@@ -38,6 +45,9 @@
       // the number of results to be shown to the user
       int number_of_final_results;
 
+      // the number of openmp threads that can be used
+      int number_of_openmp_threads;
+
       // the user defined weighting for each search pattern
       std::map<std::string, int> pattern_weighting;
 
@@ -46,6 +56,7 @@
       bool make_text_verbose; // print all produced results
       bool save_text_to_file; // print the results to a file
       std::string text_output_filename; // text results filename
+      bool show_timing_results;
 
       // graphical output
       bool show_graphic_results; // show results graphically
@@ -86,6 +97,9 @@
       void set_number_of_final_results(int result_count);
       int get_number_of_final_results();
 
+      void set_number_of_openmp_threads(int number_of_threads);
+      int get_number_of_openmp_threads();
+
       void set_weighting(std::string pattern_name, int weighting);
       int get_weighting(std::string);
 
@@ -97,6 +111,10 @@
       bool get_save_text_to_file();
       void set_text_output_filename(std::string filename);
       std::string get_text_output_filename();
+      void add_timing_result(std::string message, double time);
+      void set_show_timing_results(bool should_show); 
+      bool get_show_timing_results(); 
+      std::vector<Time_Message> timing_results;
 
       void set_show_graphic_results(bool should_show);
       bool get_show_graphic_results();

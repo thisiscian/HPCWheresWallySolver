@@ -5,12 +5,13 @@
   #include <opencv2/core/core.hpp>
   #include <whereswally/framework/pattern_information.h>
 
-  typedef struct {
+  class Pattern_Result {
+    public:
     Pattern_Information info;
     int wally_location[2];
     int scale[2];
     float certainty;
-  } Pattern_Result;
+  };
 
   const bool operator==(const Pattern_Result &lhs, const Pattern_Result &rhs);
   const bool operator>(const Pattern_Result &lhs, const Pattern_Result &rhs);

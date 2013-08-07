@@ -30,12 +30,14 @@
     private:
       Error_Message err_msg;
       int option_config(int *num, int argc, char *argv[]);
+      int option_openmp(int *num, int argc, char *argv[]);
       int option_number_of_results(int *num, int argc, char *argv[]);
       int option_pattern_weighting(int *num, int argc, char *argv[]);
       int option_load_puzzle(int *num, int argc, char *argv[]);
       int option_load_results(int *num, int argc, char *argv[]);
       int option_show_text(int *num, int argc, char *argv[]);
       int option_show_graphic(int *num, int argc, char *argv[]);
+      int option_show_timing_results(int *num, int argc, char *argv[]);
       int option_save_text(int *num, int argc, char *argv[]);
       int option_save_graphic(int *num, int argc, char *argv[]);
       int option_save_results(int *num, int argc, char *argv[]);

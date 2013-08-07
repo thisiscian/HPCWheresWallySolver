@@ -72,4 +72,11 @@ void Output::output() {
   if( variables->get_show_graphic_results() ) { 
     show_graphic_results();
   }
+  if( variables->get_show_timing_results() ) {
+    cout << "Section Timings (in seconds)" << endl;
+    cout << "----------------------------" << endl;
+    for(int i=0; i<variables->timing_results.size(); i++) { 
+      cout << variables->timing_results[i].message << ": " << variables->timing_results[i].time << endl;
+    }
+  }
 }

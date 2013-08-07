@@ -91,7 +91,7 @@ int Input::parse_input(int argc, char* argv[]) {
   string argv_i, file;
   if(argc == 1) {
     cerr << err_msg("option_help", argv[0]);
-    return NO_ERRORS;
+    return NO_ERRORS_QUIT;
   } else {
     for(int i=1; i<argc; i++) {
       argv_i = argv[i]; 
@@ -101,6 +101,13 @@ int Input::parse_input(int argc, char* argv[]) {
         variables->set_load_config_from_file(true);
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_config_input_filename(file);
+      } else if (argv_i == "-omp" ) {
+        i++;
+        int n = strtol(argv[i], NULL, 10);
+        variables->set_number_of_openmp_threads(n);
+      } else if (argv_i.find("--openmp=") != string::npos) {
+        int n = strtol(argv_i.substr(argv_i.find("=")+1).c_str(),NULL,10);
+        variables->set_number_of_openmp_threads(n);
       } else if(argv_i == "-n") {
         i++;
         int n = strtol (argv[i],NULL,10);
@@ -108,7 +115,7 @@ int Input::parse_input(int argc, char* argv[]) {
       } else if(argv_i.find("--number-of-final-results=") != string::npos) {
         int n = strtol (argv_i.substr(argv_i.find("=")+1).c_str(),NULL,10);
         variables->set_number_of_final_results(n);
-      } else if(argv_i == "-w") {
+      } /*else if(argv_i == "-w") {
           int weight;
           string pattern_name, pattern_weight_str;
           i++;
@@ -155,16 +162,16 @@ int Input::parse_input(int argc, char* argv[]) {
           pattern_weight_str = file.substr(file.find(":")+1); //parses pattern_weighting from string
           weight = strtol (pattern_weight_str.c_str(),NULL,10); // converts string to long int
           variables->set_weighting(pattern_name,weight);
-      } else if(argv_i == "-p") {
+      } */ else if(argv_i == "-p") {
         i++;
         file = argv[i];
         variables->set_load_puzzle_from_file(true);
         variables->set_puzzle_input_filename(file);
-      } else if(argv_i.find("--solve-puzzle=") != string::npos) {
+      } else if(argv_i.find("--load-puzzle=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_load_puzzle_from_file(true);
         variables->set_puzzle_input_filename(file);
-      } else if(argv_i == "-l") {
+      } /*else if(argv_i == "-l") {
         i++;
         file = argv[i];
         variables->set_load_results_from_file(true);
@@ -173,7 +180,7 @@ int Input::parse_input(int argc, char* argv[]) {
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_load_results_from_file(true);
         variables->set_results_input_filename(file);
-      } else if(argv_i == "-Op") {
+      } */ else if(argv_i == "-Ot") {
         i++;
         file = argv[i];
         if(file == "VERBOSE") {
@@ -186,7 +193,7 @@ int Input::parse_input(int argc, char* argv[]) {
           variables->set_show_text_results(false);
           variables->set_make_text_verbose(false);
         } else {
-          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          cerr << "Error: -Ot expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
         }
       } else if(argv_i.find("--print-output=") != string::npos) {
@@ -204,7 +211,7 @@ int Input::parse_input(int argc, char* argv[]) {
           cerr << "Error: --print-output expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
         }
-      } else if(argv_i == "-Od") {
+      } else if(argv_i == "-Og") {
         i++;
         file = argv[i];
         if(file == "VERBOSE") {
@@ -217,10 +224,10 @@ int Input::parse_input(int argc, char* argv[]) {
           variables->set_show_graphic_results(false);
           variables->set_make_graphic_verbose(false);
         } else {
-          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          cerr << "Error: -Og expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
         }
-      } else if(argv_i.find("--display-output=") != string::npos) {
+      } else if(argv_i.find("--show-graphic=") != string::npos) {
         file = argv_i.substr(argv_i.find("=")+1);
         if(file == "VERBOSE") {
           variables->set_show_graphic_results(true);
@@ -232,10 +239,29 @@ int Input::parse_input(int argc, char* argv[]) {
           variables->set_show_graphic_results(false);
           variables->set_make_graphic_verbose(false);
         } else {
-          cerr << "Error: -Op expects VERBOSE,TRUE or FALSE as input values" << endl;
+          cerr << "Error: --show-graphic expects VERBOSE,TRUE or FALSE as input values" << endl;
           return BAD_COMMAND_USAGE;
         }
-      } else if(argv_i == "-St") {
+      } else if(argv_i == "-Oc") {
+        i++;
+        file = argv[i];
+        if(file == "TRUE") {
+          variables->set_show_timing_results(true);
+        } else if (file == "FALSE") {
+          variables->set_show_timing_results(false);
+        } else {
+          cerr << "Error: -Oc expects TRUE or FALSE as input values" << endl;
+        }
+      } else if(argv_i.find("--show-timing-results=") != string::npos) {
+        file = argv_i.substr(argv_i.find("=")+1);
+        if(file == "TRUE") {
+          variables->set_show_timing_results(true);
+        } else if (file == "FALSE") {
+          variables->set_show_timing_results(false);
+        } else {
+          cerr << "Error: -Oc expects TRUE or FALSE as input values" << endl;
+        }
+      } /* else if(argv_i == "-St") {
         i++;
         file = argv[i];
         variables->set_save_text_to_file(true);
@@ -253,10 +279,12 @@ int Input::parse_input(int argc, char* argv[]) {
         file = argv_i.substr(argv_i.find("=")+1);
         variables->set_save_graphic_to_file(true);
         variables->set_graphic_output_filename(file);
-      } else if(argv_i == "-h") {
+      } */ else if(argv_i == "-h") {
           cerr << err_msg("option_help", argv[0]);
+          return NO_ERRORS_QUIT;
       } else if(argv_i == "--help") {
           cerr << err_msg("option_help", argv[0]);
+          return NO_ERRORS_QUIT;
       } else {
         cerr << "Error: unrecognised command \"" << argv_i << "\", exiting" << endl;
         return UNRECOGNISED_COMMAND;

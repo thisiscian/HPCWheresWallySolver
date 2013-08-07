@@ -4,5 +4,5 @@ set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/bluetrouser
 set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/findglasses.cpp)
 set_property(GLOBAL APPEND PROPERTY SOURCE ${CMAKE_CURRENT_LIST_DIR}/findfeatures.cpp)
 
-add_library(pattern_tools pattern_tools.cpp)
-target_link_libraries(pattern_tools ${OpenCV_LIBS})
+#add_library(pattern_tools pattern_tools.cpp)
+#target_link_libraries(pattern_tools ${OpenCV_LIBS})

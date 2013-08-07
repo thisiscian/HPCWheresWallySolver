@@ -12,7 +12,7 @@ endif(OpenCV_found)
 
 #if(CMAKE_COMPLIER_IS_GNUCXX)
 #  message("COMPILING WITH GNUCXX")
-  set(CMAKE_CXX_FLAGS "-O2 -pg -fopenmp -I${PROJECT_SOURCE_DIR}/include/")
+  set(CMAKE_CXX_FLAGS "-O2 -g -pg -fopenmp -I${PROJECT_SOURCE_DIR}/include/")
 #endif()
 
 add_definitions(-Wno-varargs)
