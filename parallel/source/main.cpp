@@ -13,9 +13,9 @@ int main(int argc, char* argv[] ) {
   //Red_and_White rw(&bt, 0.5);
   Find_Features ff;
   
-  patterns.push_back(&rw);
+  //patterns.push_back(&rw);
   //patterns.push_back(&fg);
   //patterns.push_back(&bt);
-  //patterns.push_back(&ff);
+  patterns.push_back(&ff);
   controller.start(patterns);
 }

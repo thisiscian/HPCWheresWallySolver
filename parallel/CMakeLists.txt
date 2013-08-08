@@ -6,7 +6,7 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${PROJECT_SOURCE_DIR}/cmake/Modules"
 
 
 include(source)
-set(OpenCV_DIR  /Home/s1256705/opencv-2.4.6.1/test)
+set(OpenCV_DIR  /usr/share/opencv)
 #set(CMAKE_CURRENT_LIST_DIR /Home/s1256705/dissertation/HPCWheresWallySolver/parallel)
 find_package(OpenCV REQUIRED)
 if(OpenCV_found)

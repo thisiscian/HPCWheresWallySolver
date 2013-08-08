@@ -123,16 +123,7 @@ vector<DMatch> slow_image(vector<KeyPoint> scene_keypoints, vector<KeyPoint> obj
       }
     }
     if(max[0]*100.0/object_keypoints.size() <= 25) {break;}
-    if(first) {
-      first = false;
-      cout << max[2] << "--" << max[0] << ": " << object_distance[max[1]][0];
-      for(int i=1; i<object_keypoints.size(); i++) {
-        cout << ", " << object_distance[max[1]][i];
-      }
-      cout << endl;
-    }
     DMatch tmp;
-    cout << max[0]*100.0/object_keypoints.size() << endl;
     tmp.queryIdx = max[2];
     tmp.trainIdx = max[1];
     match_list.push_back(tmp);
@@ -250,22 +241,48 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
   vector <string> objects;
 
   // add all the potential objects to be searched over to the objects list
-//  objects.push_back("feature_samples/wally_from_beach_no_background.png");
+  objects.push_back("feature_samples/wally_from_beach_no_background.png");
   objects.push_back("feature_samples/wally_from_shopping_mall_no_background.png");
+  objects.push_back("feature_samples/wally_from_hometown_no_background.png");
   //objects.push_back("feature_samples/wally_large_generic.png");
 
-  #pragma omp parallel for shared(results, objects)
-  for(int subimage=0; subimage<4; subimage++) {
-    BFMatcher matcher;
-    SIFT sift;
-//    Point2f subimage_center(0,0);
-//    Mat scene_image = image.clone();
-    Point2f subimage_center(image.cols*(1+2*subimage/2)/4,image.rows*(1+2*(subimage%2))/4);
-    Size subimage_size(image.cols/2,image.rows/2);
+  int largest_object_width = 102; //hand checked
+  int largest_object_height = 162; // hand checked
+
+  // calculate best way to split image up amongst processes
+  int num_threads = omp_get_num_threads();
+  int size[2] = {image.cols, image.rows};
+  int split[2] = {1,1};
+  while(num_threads > 1) {
+    int div = 2;
+    while(num_threads%2!=0) {
+      div++;
+    }
+    num_threads /= div;
+    int largest = 0;
+    if((float)(size[1])/split[1] > (float)(size[0])/split[0]) {
+      largest = 1;
+    }
+    split[largest] *= div;
+  }
+
+  BFMatcher matcher;
+  SIFT sift;
+  Size subimage_size;
+  Point2f subimage_center;
+//  #pragma omp parallel for 
+  for(int subimage=0; subimage<omp_get_num_threads(); subimage++) {
+    subimage_size.width = image.cols/split[0];
+    subimage_size.height = image.rows/split[1];
+    subimage_center.x = image.cols*(1+split[0]*(subimage/split[0]))/(2*split[0]);
+    subimage_center.y = image.rows*(1+split[1]*(subimage%split[1]))/(2*split[1]);
+
     Mat scene_image(subimage_size, image.depth());
     getRectSubPix(image, subimage_size, subimage_center, scene_image);
   
-    print_output("generating keypoints in scene", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+    stringstream out;
+    out << "generating keypoints in scene (" << subimage_center.x << "," << subimage_center.y << ")";
+    print_output(out.str(), omp_get_thread_num(), omp_get_num_threads(), info.get_name());
     Mat scene_descriptors, object_descriptors;
     Mat image_mask(scene_image.rows, scene_image.rows, CV_8U, Scalar(255));
     vector<KeyPoint> scene_keypoints;
@@ -285,6 +302,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
 
       sift(object_image, image_mask, object_keypoints, object_descriptors);
       vector<DMatch> match_list = slow_image(scene_keypoints, object_keypoints);
+      //vector<DMatch> match_list = get_image_location(scene_keypoints, object_keypoints);
 
 /*
       Mat test;
@@ -295,7 +313,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       waitKey(0);
 */
   
-      matcher.knnMatch(object_descriptors, scene_descriptors, matches, knn_depth );
+/*      matcher.knnMatch(object_descriptors, scene_descriptors, matches, knn_depth );
 
       print_output("creating transform fitted matches", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       for(int j=0; j<matches.size(); j++) {
@@ -316,16 +334,32 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       min_H.b = 0;
       min_H.c = 0;
       min_H.d = 0;
+*/
 
+      vector<Point2f> obj, scene;
+      if(match_list.size() == 0) {
+        continue;
+      }
+      for(int j=0; j<match_list.size(); j++) {
+        obj.push_back(object_keypoints[match_list[j].trainIdx].pt);
+        scene.push_back(scene_keypoints[match_list[j].queryIdx].pt);
+      }
+
+      cout << "chums" << endl;
+/*
       print_output("analysing homography", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       for(int j=0; j<homography_list.size(); j++) {
         if(homography_quality(homography_list[j]) < homography_quality(min_H)) {
           min_H = homography_list[j];
         }
       }
+*/
 
-      float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
-      Mat H(3,3,CV_32F, content);
+//      float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
+//      Mat H(3,3,CV_32F, content);
+      cout << obj.size() << " " << scene.size() << endl;
+      Mat H = findHomography(obj, scene);
+      cout << H << endl;
 
       vector<Point2f> obj_corners(4), scene_corners(4);
       obj_corners[0] = cvPoint(0,0);
@@ -335,23 +369,28 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
 
       print_output("creating perspective transform", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       perspectiveTransform( obj_corners, scene_corners, H);
-      if(homography_quality(min_H) < 0.01) {
+      cout << "hiya" << endl;
+//      if(if(homography_quality(H) < 0.01) {
         Pattern_Result tmp;
         tmp.info = info;
         tmp.wally_location[0] = (scene_corners[0].x+scene_corners[1].x)/2+subimage_center.x-image.rows/4;
         tmp.wally_location[1] = (scene_corners[0].y+scene_corners[2].y)/2+subimage_center.y-image.cols/4;
         tmp.scale[0] = (scene_corners[2].x-scene_corners[0].x)/2;
         tmp.scale[1] = (scene_corners[2].y-scene_corners[0].y)/2;
-        tmp.certainty = pow((1-homography_quality(min_H)),4);
+        tmp.certainty = fabs(1-determinant(H));
         if(tmp.scale[0] > 0 && tmp.scale[1] > 0)
         {
+          cout << "part1" << endl;
           #pragma omp critical
-          results.push_back(tmp);
+          {
+            results.push_back(tmp);
+          }
+          cout << "part2" << endl;
         }
-      }
-      stringstream tmp;
+  //    }
       print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
     }
+    cout << "chums" << endl;
   }
 
   print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());

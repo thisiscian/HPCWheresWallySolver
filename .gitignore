@@ -7,3 +7,6 @@ CMakeFiles
 bin
 gmon.out
 ww_ut_*
+*.a
+*/CTestTestfile.cmake
+Testing

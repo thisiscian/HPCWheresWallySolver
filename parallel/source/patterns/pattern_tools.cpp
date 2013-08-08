@@ -52,12 +52,13 @@ void wwp::print_output(string message, int thread_num, int num_threads, string p
 //  cout << "\033[" << num_threads << "F" << flush;
   output_stream << "\033[s\033[" << num_threads-thread_num << "F\033[KThread(" << thread_num << ")[" << pattern_name << "]: " << message;
   output_stream << "\n\033[u";
-  cout << output_stream.str() << flush;
+//  cout << output_stream.str() << flush;
 }
 
 vector<wwp::region> wwp::fast_find_regions(Mat input) {
   int x = 0;
   int regions[input.rows][input.cols];
+  cout << "okay" << endl;
   cout << regions << endl;
   x = 20;
 
@@ -223,6 +224,51 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   }
 
   return found_regions;
+}
+
+int wwp::estimate_black_line_thickness(Mat image) {
+  double min_thickness, max_thickness, average_distance_to_zero, last_average_distance_to_zero, standard_deviation, sum_deviation;
+  int count_zero, last_count_zero;
+  Mat sharp_image, black_image, blur_image, distance_map, deviation;
+
+  //Sharpen the image
+  GaussianBlur(image, blur_image, Size(0,0), 1);
+  addWeighted(image, 10.0, blur_image, -9.0, 0, sharp_image);
+
+  //Get mask that describes where black lines are in sharpened image
+  black_image = get_greyscale_in_image(sharp_image, 0, 10, 30);
+  black_image = (black_image > 0);
+
+  //Find the minimum distance between each pixel and the nearest empty pixel, and calculate the average
+  distanceTransform(black_image, distance_map, CV_DIST_L1,3); //CV_DIST_L1 indicates distances are calculated with manhattan distance
+  average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
+  
+  // while the maximum thickness is outside the standard deviation of the average pixel
+  // and the change in the number of pixels between iterations is not appreciable
+  // remove pixels outside a standard deviation from the outside and recalculate the standard deviation
+  do{
+    // store the old non zero count, and the old average distance
+    last_count_zero = countNonZero(distance_map);
+    last_average_distance_to_zero = average_distance_to_zero;
+
+    //Count the average distance to the nearest empty pixel, the maximum distance and the number of zero pixels in the image
+    average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
+    minMaxIdx(distance_map, &min_thickness, &max_thickness, NULL, NULL, black_image);
+    count_zero = distance_map.cols*distance_map.rows - countNonZero(distance_map);
+
+    // calculate standard deviation => for all x_i with i<N; std_dev=sqrt( sum( (x_i-x_avg)^2 )/N )
+    pow(distance_map-average_distance_to_zero,2, deviation);
+    sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
+    sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
+    standard_deviation = sqrt(sum_deviation/countNonZero(distance_map));
+
+    //remove all pixels that are outside the standard deviation and recalculate the distance to the nearest zero pixel
+    distance_map = (distance_map <= average_distance_to_zero+standard_deviation);
+    distanceTransform(distance_map, distance_map, CV_DIST_C,3);
+
+  } while( (average_distance_to_zero+standard_deviation < max_thickness) && (countNonZero(distance_map) > 0.99*last_count_zero) );
+  
+  return last_average_distance_to_zero;
 }
 
 Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int tolerance) {

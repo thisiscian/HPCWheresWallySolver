@@ -33,6 +33,7 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     }
     variables->add_timing_result("Load Image", omp_get_wtime()-start);
     omp_set_num_threads(variables->get_number_of_openmp_threads());
+    setNumThreads(0);
     omp_set_nested(1);
     #pragma omp parallel for shared(image)
     for(int i=0; i<patterns.size(); i++) {

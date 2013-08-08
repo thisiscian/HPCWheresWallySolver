@@ -80,7 +80,7 @@ vector<Pattern_Result> Find_Glasses::start_search(Mat image) {
     standard_deviation = sqrt((sum(near_dev)[0]-countZero*pow(averageDist,2))/countNonZero(distance_map));
     minMaxIdx(distance_map, &mini, &maxi, NULL, NULL, black_image);
     averageDist = (double)(sum(distance_map)[0])/countNonZero(distance_map);
- }
+  }
   
 /*
   while(maxi > averageDist) {

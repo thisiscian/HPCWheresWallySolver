@@ -1,0 +1,3 @@
+add_executable(ww_ut_results_analysis ww_ut_results_analysis.cpp)
+target_link_libraries(ww_ut_results_analysis ${CPPUNIT_LIBRARY} ww_ut_general whereswally)
+add_test(test_results_analysis_class ww_ut_results_analysis)
