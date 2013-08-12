@@ -10,7 +10,7 @@ int main(int argc, char* argv[] ) {
   Find_Glasses fg;
   Blue_Trousers bt;
   Red_and_White rw;
-  //Red_and_White rw(&bt, 0.5);
+  //Red_and_White rw(&fg, 0.5);
   Find_Features ff;
   
   //patterns.push_back(&rw);

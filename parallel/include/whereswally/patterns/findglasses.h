@@ -6,8 +6,9 @@
   
   class Find_Glasses : public Search_Pattern {
     private:
-      double scale;
-      double thresholds;
+      double rescale;
+      double allowed_irregularity;
+      int thresholds;
     public:
     Find_Glasses();
     wwp::region extract_contour_info(std::vector<cv::Point>);

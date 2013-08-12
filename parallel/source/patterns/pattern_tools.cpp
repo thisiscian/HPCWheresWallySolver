@@ -1,5 +1,8 @@
 #include <whereswally/patterns/pattern_tools.h>
 #include <map>
+#include <opencv2/highgui/highgui.hpp>
+#include <omp.h>
+#include <ctime>
 
 using namespace std;
 using namespace cv;
@@ -56,18 +59,7 @@ void wwp::print_output(string message, int thread_num, int num_threads, string p
 }
 
 vector<wwp::region> wwp::fast_find_regions(Mat input) {
-  int x = 0;
   int regions[input.rows][input.cols];
-  cout << "okay" << endl;
-  cout << regions << endl;
-  x = 20;
-
-  // initialise regions to 0
-  for(int i=0; i<input.rows; i++) {
-    for(int j=0; j<input.cols; j++) {
-      regions[i][j] = 0;
-    }
-  }
 
   // calculate rough regions, and region equivalences
   int n_neighbour, w_neighbour;
@@ -75,29 +67,29 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
   int region_count = 0;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(i==0) { 
-        w_neighbour = 0;
-      } else {
-        w_neighbour = input.at<uchar>(i-1,j);
+      if(input.at<uchar>(i,j) == 0 ) {
+        regions[i][j] = 0;
+        continue;
       }
-      if(j==0) {
+      if(i==0) {
         n_neighbour = 0;
       } else {
-        n_neighbour = input.at<uchar>(i,j-1);
+        n_neighbour = regions[i-1][j];
       }
+      if(j==0) { 
+        w_neighbour = 0;
+      } else {
+        w_neighbour = regions[i][j-1];
+      }
+      // if there are different regions north and west of the current pixel, combine them
       if(n_neighbour > 0 && w_neighbour > 0 && n_neighbour != w_neighbour) {
-        int reg, equiv, tmp_reg = 0;
+        int reg, equiv;
         if(n_neighbour > w_neighbour) {
           reg = n_neighbour;
           equiv = w_neighbour;
         } else {
           reg = w_neighbour;
-          equiv = w_neighbour;
-        }
-        while(reg != tmp_reg) {
-          tmp_reg = region_equivalence[reg];
-          region_equivalence[reg] = equiv;
-          reg = tmp_reg;
+          equiv = n_neighbour;
         }
         region_equivalence[reg] = equiv;
       }
@@ -112,7 +104,16 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       }
     }
   }
-
+  map<int,int>::iterator it;
+  for(it=region_equivalence.begin(); it!=region_equivalence.end(); ++it) {
+    int equiv_new =it->second, equiv_old = -1;
+    while(equiv_new != equiv_old) {
+      equiv_old = equiv_new;
+      equiv_new = region_equivalence[equiv_new];
+    }
+    it->second = equiv_new;
+    cout << it->first << " " << it->second << endl;
+  }
   // create a corrected region map
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
@@ -120,18 +121,23 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       regions[i][j] = region_equivalence[regions[i][j]];
     }
   }
+  Mat output(input.rows,input.cols, CV_8U, regions);
+  namedWindow("hi", CV_WINDOW_NORMAL);
+  imshow("hi", output);
+  waitKey(0);
+
 
   // add each region to a list, and determine some basic information about it
   map<int, wwp::region> region_list;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(region_list[regions[i][j]].smallest_x > i) region_list[regions[i][j]].smallest_x = i;
-      if(region_list[regions[i][j]].smallest_y > j) region_list[regions[i][j]].smallest_y = j;
-      if(region_list[regions[i][j]].largest_x < i) region_list[regions[i][j]].largest_x = i;
-      if(region_list[regions[i][j]].largest_y < j) region_list[regions[i][j]].largest_y = j;
+      if(region_list[regions[i][j]].smallest_x > j) region_list[regions[i][j]].smallest_x = j;
+      if(region_list[regions[i][j]].smallest_y > i) region_list[regions[i][j]].smallest_y = i;
+      if(region_list[regions[i][j]].largest_x < j) region_list[regions[i][j]].largest_x = j;
+      if(region_list[regions[i][j]].largest_y < i) region_list[regions[i][j]].largest_y = i;
       region_list[regions[i][j]].size+=1;
-      region_list[regions[i][j]].av_x+=i;
-      region_list[regions[i][j]].av_y+=j;
+      region_list[regions[i][j]].av_x+=j;
+      region_list[regions[i][j]].av_y+=i;
     }
   }
 
@@ -169,10 +175,9 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
     for(int i=0; i<input.rows; i++) {
       for(int j=0; j<input.cols; j++) {
         if(count[i][j] == 0) {continue;}
-        int max = 0;
+        int max = count[i][j];;
         // get the max of the current cell and it's 4 neighbours
-        max = (count[i][j] > max)?count[i][j]:max;
-        max = (i+1 < input.cols && count[i+1][j] > max)?count[i+1][j]:max;
+        max = (i+1 < input.rows && count[i+1][j] > max)?count[i+1][j]:max;
         max = (i-1 > 0 && count[i-1][j] > max)?count[i-1][j]:max;
         max = (j+1 < input.cols && count[i][j+1] > max)?count[i][j+1]:max;
         max = (j-1 > 0 && count[i][j-1] > max)?count[i][j-1]:max;
@@ -203,13 +208,13 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   map<int, wwp::region> region_size;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(region_size[count[i][j]].smallest_x > i) region_size[count[i][j]].smallest_x = i;
-      if(region_size[count[i][j]].smallest_y > j) region_size[count[i][j]].smallest_y = j;
-      if(region_size[count[i][j]].largest_x < i) region_size[count[i][j]].largest_x = i;
-      if(region_size[count[i][j]].largest_y < j) region_size[count[i][j]].largest_y = j;
+      if(region_size[count[i][j]].smallest_x > j) region_size[count[i][j]].smallest_x = j;
+      if(region_size[count[i][j]].smallest_y > i) region_size[count[i][j]].smallest_y = i;
+      if(region_size[count[i][j]].largest_x < j) region_size[count[i][j]].largest_x = j;
+      if(region_size[count[i][j]].largest_y < i) region_size[count[i][j]].largest_y = i;
       region_size[count[i][j]].size+=1;
-      region_size[count[i][j]].av_x+=i;
-      region_size[count[i][j]].av_y+=j;
+      region_size[count[i][j]].av_x+=j;
+      region_size[count[i][j]].av_y+=i;
     }
   }
 
@@ -226,34 +231,77 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
   return found_regions;
 }
 
-int wwp::estimate_black_line_thickness(Mat image) {
-  double min_thickness, max_thickness, average_distance_to_zero, last_average_distance_to_zero, standard_deviation, sum_deviation;
-  int count_zero, last_count_zero;
-  Mat sharp_image, black_image, blur_image, distance_map, deviation;
+double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
+  double min_distance, max_distance;
+  Size image_size(image.cols, image.rows);
+  Mat sharp_image, black_image, blur_image, distance_map(image_size, CV_8U);
 
-  //Sharpen the image
-  GaussianBlur(image, blur_image, Size(0,0), 1);
-  addWeighted(image, 10.0, blur_image, -9.0, 0, sharp_image);
-
+  int num_threads = omp_get_num_threads();
+ 
   //Get mask that describes where black lines are in sharpened image
-  black_image = get_greyscale_in_image(sharp_image, 0, 10, 30);
+  black_image = get_greyscale_in_image(image, 0, limit, tolerance);
   black_image = (black_image > 0);
 
   //Find the minimum distance between each pixel and the nearest empty pixel, and calculate the average
-  distanceTransform(black_image, distance_map, CV_DIST_L1,3); //CV_DIST_L1 indicates distances are calculated with manhattan distance
-  average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
-  
-  // while the maximum thickness is outside the standard deviation of the average pixel
-  // and the change in the number of pixels between iterations is not appreciable
-  // remove pixels outside a standard deviation from the outside and recalculate the standard deviation
-  do{
-    // store the old non zero count, and the old average distance
-    last_count_zero = countNonZero(distance_map);
-    last_average_distance_to_zero = average_distance_to_zero;
+  distanceTransform(black_image, distance_map, CV_DIST_L2,5); //CV_DIST_L1 indicates distances are calculated with manhattan distance
+  minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
 
-    //Count the average distance to the nearest empty pixel, the maximum distance and the number of zero pixels in the image
-    average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
-    minMaxIdx(distance_map, &min_thickness, &max_thickness, NULL, NULL, black_image);
+/*
+  Mat subdist[num_threads], subdev[num_threads];
+  for(int i=0; i<num_threads; i++) {
+    subdist[i] = distance_map.rowRange(i*image.rows, image.rows*(i+1)/num_threads);
+    subdev[i] = deviation.rowRange(i*image.rows, image.rows*(i+1)/num_threads);
+  }
+*/
+
+  map<double, double> prediction_list;
+
+  double best_width=0;
+  double minimum_difference_in_predictions = 10000;
+  int i;
+  int range = max_distance-min_distance;
+  namedWindow("test", CV_WINDOW_AUTOSIZE);
+  #pragma omp parallel for default(none) private(best_width) shared(range, distance_map, prediction_list, max_distance) reduction(min:minimum_difference_in_predictions)
+  for(int i=0;i<range; i++) {
+    double average_prediction, deviation_prediction;
+    double standard_deviation, sum_deviation, average_distance_to_zero;
+    int count_zero;
+    Mat deviation;
+    //remove pixels that have the maximum distance from a zero pixel
+    Mat dist_tmp = (distance_map < max_distance-i) & ( distance_map > 0 );
+    distanceTransform(dist_tmp, dist_tmp, CV_DIST_C,3);
+   
+    average_distance_to_zero = (double)(sum(dist_tmp)[0])/countNonZero(dist_tmp);
+    count_zero = dist_tmp.cols*dist_tmp.rows - countNonZero(dist_tmp);
+    pow(dist_tmp-average_distance_to_zero,2, deviation);
+    sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
+    sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
+    standard_deviation = sqrt(sum_deviation/countNonZero(dist_tmp));
+    average_prediction = (average_distance_to_zero-0.5)/0.25;
+    deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
+
+    // if the two predictions agree better than the last predictions, replace the best width
+    #pragma omp critical
+    if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
+      minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
+      best_width = (average_prediction+deviation_prediction)/2;
+      prediction_list[minimum_difference_in_predictions] = best_width;
+    }
+  }
+  best_width = prediction_list[minimum_difference_in_predictions];
+
+/*
+  // while there are still pixels with different distances, try to find the best fitting width
+  do{
+    average_distance_to_zero = 0;
+    #pragma omp parallel for shared(subdist) reduction(+: average_distance_to_zero)
+    for(int i=0; i<num_threads; i++) {
+      average_distance_to_zero = (double)(sum(distance_map.rowRange(i*image.rows, image.rows*(i+1)/num_threads))[0]);
+    }
+    average_distance_to_zero /= countNonZero(distance_map);
+    //average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
+
+    minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
     count_zero = distance_map.cols*distance_map.rows - countNonZero(distance_map);
 
     // calculate standard deviation => for all x_i with i<N; std_dev=sqrt( sum( (x_i-x_avg)^2 )/N )
@@ -262,13 +310,23 @@ int wwp::estimate_black_line_thickness(Mat image) {
     sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
     standard_deviation = sqrt(sum_deviation/countNonZero(distance_map));
 
-    //remove all pixels that are outside the standard deviation and recalculate the distance to the nearest zero pixel
-    distance_map = (distance_map <= average_distance_to_zero+standard_deviation);
-    distanceTransform(distance_map, distance_map, CV_DIST_C,3);
+    // predict line width using the average and the standard deviation (calculated mathematically)
+    average_prediction = (average_distance_to_zero-0.5)/0.25;
+    deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
 
-  } while( (average_distance_to_zero+standard_deviation < max_thickness) && (countNonZero(distance_map) > 0.99*last_count_zero) );
-  
-  return last_average_distance_to_zero;
+    // if the two predictions agree better than the last predictions, replace the best width
+    if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
+      minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
+      best_width = (average_prediction+deviation_prediction)/2;
+    }
+
+    //remove pixels that have the maximum distance from a zero pixel
+    distance_map = (distance_map < max_distance) & ( distance_map > 0 );
+    distanceTransform(distance_map, distance_map, CV_DIST_C,3);
+    //Count the average distance to the nearest empty pixel, the maximum distance and the number of zero pixels in the image
+  } while( standard_deviation != 0 );
+*/
+  return best_width;
 }
 
 Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int tolerance) {

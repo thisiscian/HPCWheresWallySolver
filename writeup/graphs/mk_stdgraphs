@@ -1,0 +1,24 @@
+#!/usr/bin/env gnuplot
+set key right center
+set border 3
+set tics nomirror out
+set linetype 1 lc rgb "#80D480" lw 5
+set linetype 2 lc rgb "#008200" lw 5
+set linetype 3 lc rgb "#2B2BB2" lw 5
+set linetype 4 lc rgb "#B22B2B" lw 5
+set term pdf enhanced color solid font "URWPalladioL" fontscale 0.5
+
+set xlabel "Number of 'Correct' Elements in List"
+set ylabel "Numerical Value"
+set output "stddev_great_range.pdf"
+plot "dat/stddev_greater_range.dat" u 1:2 w l title "Mean value of all elements",\
+"dat/stddev_greater_range.dat" u 1:3 w l title "Standard Deviation of all elements"
+
+set key top left
+set xlabel "Value of abnormal element"
+set ylabel "Numerical Value"
+set output "stddev_great_abnormal.pdf"
+
+plot "dat/stddev_great_anomality.dat" u 1:2 w l title "Mean value of all elements",\
+"dat/stddev_great_anomality.dat" u 1:3 w l title "Standard Deviation of all elements"
+

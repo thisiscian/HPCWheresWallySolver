@@ -1,0 +1,24 @@
+#!/usr/bin/env gnuplot
+set key center right
+set border 3
+set tics nomirror out
+set linetype 1 lc rgb "#80D480" lw 5
+set linetype 2 lc rgb "#008200" lw 5
+set linetype 3 lc rgb "#2B2BB2" lw 5
+set linetype 4 lc rgb "#B22B2B" lw 5
+set term pdf enhanced color solid font "URWPalladioL" fontscale 0.5
+
+maximum(x,y)=(x>y)?x:y
+diff(x,y)=abs(x-y)
+maxErr(x,y,z)=maximum(diff(x,y),diff(x,z))
+f(x)=(x+2+1/x)/4
+g(x)=(x+2)/4
+
+set xlabel "Line Width"
+set ylabel "Distance"
+set output "oddevenwidth.pdf"
+
+plot [1:5] "dat/test.dat" u 1:(f($1)):(g($1)) w filledcurves title "Error Range in Prediction",\
+g(x) w l title "Predicted Average Distance",\
+"dat/test.dat" u 1:2 w l title "Actual Average Distance",\
+"dat/test.dat" u 1:(maxErr($2,f($1),g($1))) w l title "Maximum Error in either Odd or Even formula"

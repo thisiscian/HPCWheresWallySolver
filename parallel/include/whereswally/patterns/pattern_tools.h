@@ -40,7 +40,7 @@
     std::vector<region> find_regions_from_mask(cv::Mat input);
 
     // from a colour input image, estimate thickness
-    int estimate_black_line_thickness(cv::Mat input);
+    double estimate_black_line_thickness(cv::Mat input, int limit, int tolerance);
 
     // find all instances of a colour between two #rrggbb strings, and some given ratio
     cv::Mat get_colour_in_image(cv::Mat image, std::string colour_one, std::string colour_two, float redgreen, float greenred, float redblue, float bluered, float greenblue, float bluegreen);

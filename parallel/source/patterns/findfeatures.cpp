@@ -283,13 +283,13 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     stringstream out;
     out << "generating keypoints in scene (" << subimage_center.x << "," << subimage_center.y << ")";
     print_output(out.str(), omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+
     Mat scene_descriptors, object_descriptors;
     Mat image_mask(scene_image.rows, scene_image.rows, CV_8U, Scalar(255));
     vector<KeyPoint> scene_keypoints;
     sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
 
     for(int i=0; i<objects.size(); i++) {
-      time_t t = time(NULL);
       vector<homography> homography_list;
       vector< vector< DMatch > > matches, good_matches;
 
@@ -301,8 +301,6 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       print_output("getting object descriptors", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
 
       sift(object_image, image_mask, object_keypoints, object_descriptors);
-      vector<DMatch> match_list = slow_image(scene_keypoints, object_keypoints);
-      //vector<DMatch> match_list = get_image_location(scene_keypoints, object_keypoints);
 
 /*
       Mat test;
@@ -313,7 +311,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       waitKey(0);
 */
   
-/*      matcher.knnMatch(object_descriptors, scene_descriptors, matches, knn_depth );
+      matcher.knnMatch(object_descriptors, scene_descriptors, matches, knn_depth );
 
       print_output("creating transform fitted matches", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       for(int j=0; j<matches.size(); j++) {
@@ -334,33 +332,34 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       min_H.b = 0;
       min_H.c = 0;
       min_H.d = 0;
-*/
 
-      vector<Point2f> obj, scene;
-      if(match_list.size() == 0) {
-        continue;
-      }
-      for(int j=0; j<match_list.size(); j++) {
-        obj.push_back(object_keypoints[match_list[j].trainIdx].pt);
-        scene.push_back(scene_keypoints[match_list[j].queryIdx].pt);
-      }
 
-      cout << "chums" << endl;
-/*
       print_output("analysing homography", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       for(int j=0; j<homography_list.size(); j++) {
         if(homography_quality(homography_list[j]) < homography_quality(min_H)) {
           min_H = homography_list[j];
         }
       }
-*/
 
-//      float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
-//      Mat H(3,3,CV_32F, content);
+      float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
+      Mat H(3,3,CV_32F, content);
+
+/*
+      vector<DMatch> match_list = slow_image(scene_keypoints, object_keypoints);
+      //vector<DMatch> match_list = get_image_location(scene_keypoints, object_keypoints);
+
+      if(match_list.size() == 0) {
+        continue;
+      }
+      vector<Point2f> obj, scene;
+      for(int j=0; j<match_list.size(); j++) {
+        obj.push_back(object_keypoints[match_list[j].trainIdx].pt);
+        scene.push_back(scene_keypoints[match_list[j].queryIdx].pt);
+      }
       cout << obj.size() << " " << scene.size() << endl;
       Mat H = findHomography(obj, scene);
       cout << H << endl;
-
+*/
       vector<Point2f> obj_corners(4), scene_corners(4);
       obj_corners[0] = cvPoint(0,0);
       obj_corners[1] = cvPoint( object_image.cols, 0 );

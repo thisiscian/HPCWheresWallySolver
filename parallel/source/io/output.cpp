@@ -26,7 +26,7 @@ void Output::show_graphic_results() {
   Point center;
   Size scale;
   Scalar colour;
-  for(int i=0; i<final_results.size(); i++) {
+  for(int i=final_results.size()-1; i>=0; i--) {
     center.x = final_results[i].wally_location[0];
     center.y = final_results[i].wally_location[1];
     scale.width = final_results[i].scale[0];
@@ -35,7 +35,7 @@ void Output::show_graphic_results() {
     stringstream text;
     text.precision(3);
     text.width(2);
-    text << i << ": " << final_results[i].certainty*100 << "%" << flush;
+    text << "#" << i+1; // << ": " << final_results[i].certainty*100 << "%" << flush;
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX; 
     int baseline = 0;
     Size textSize = getTextSize(text.str(), fontFace, 0.4, 2, &baseline);

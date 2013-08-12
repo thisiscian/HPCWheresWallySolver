@@ -22,7 +22,7 @@ quick_%: $(SUBFOLDER)/%.tex
 %: $(SUBFOLDER)/%.tex
 	if [ `grep -q biblio $(SUBFOLDER)/$@.tex` ]; then \
 		export TEXINPUTS=.:./tex/:..: && cd $(SUBFOLDER) && \
-	  $(PDF) -draftmode --output-directory ../$(OUTDIR) $@ && cd .. && $(BIB) $(OUTDIR)/$@ && cd $(SUBFOLDER) && $(PDF) -draftmode --output-directory ../$(OUTDIR) $@ && \
+	  $(PDF) -draftmode --output-directory ../$(OUTDIR) $@ && $(PDF) -draftmode --output-directory ../$(OUTDIR) $@ && cd .. && $(BIB) $(OUTDIR)/$@ && cd $(SUBFOLDER) && $(PDF) -draftmode --output-directory ../$(OUTDIR) $@ && \
 		$(PDF) --output-directory ../$(OUTDIR) $@ \
 	;else \
 	  export TEXINPUTS=.:./tex/:..: && cd $(SUBFOLDER) && \

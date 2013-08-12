@@ -13,6 +13,7 @@
     What follows is a list of functions and search patterns that utilise colour analysis.
 
   \subsection{Function: \texttt{get\_colour\_in\_image}}
+    \label{function_getcolinimg}
     \begin{description}
       \item[usage] \texttt{get\_colour\_in\_image(image, colourA, colourB, rg,gr,rb,br,bg,gb)}
       \item[image] The input image, as loaded by OpenCV.
@@ -28,7 +29,7 @@
       \texttt{yellow = get\_colour\_in\_image(input,"\#000000","\#FFFFFF",0.8,0.8,1.1,0,1.1,0)}
     \end{center}
 
-    \begin{figure}[h]
+    \begin{figure}[H]
       \centering
       \begin{subfigure}[B]{0.8\textwidth}
         \centering
@@ -104,18 +105,12 @@
     Once the matrix has been traversed, equivalent labels are merged, and the regions have been d.
     This method, is both simple and memory efficient enough to be suitable for parallelism; temporary labels can be calculated concurrently and the final labels only need a small amount of halo data to be obtained.
 
-    \begin{figure}[h]
+    \begin{figure}[H]
       \centering
       \begin{subfigure}[b]{0.45\textwidth}
         \centering
-        \begin{tabular}{|p{1em}|p{1em}|p{1em}|p{1em}|p{1em}|}
-          \hline
-          1&1&0&0&0\\ \hline
-          1&0&0&1&1\\ \hline
-          0&0&1&1&1\\ \hline
-          0&1&1&1&1\\  \hline
-        \end{tabular}
-        \caption{Input binary matrix, $A$, with dimensions $X,Y$}
+        \includegraphics[width=0.52\textwidth,height=0.09\textheight]{region1}
+        \caption{Input $A$}
       \end{subfigure}
       \begin{subfigure}[b]{0.45\textwidth}
         \centering
@@ -126,7 +121,7 @@
           11&12&13&14&15\\ \hline
           16&17&18&19&20\\  \hline
         \end{tabular}
-        \caption{Unique value mask, $B$, such that $B_{ij}=iY+j$}
+        \caption{$B$, such that $B_{ij}=iY+j$}
       \end{subfigure}
       \begin{subfigure}[b]{0.45\textwidth}
         \centering
@@ -161,40 +156,12 @@
         \end{tabular}
         \caption{The final result, when $C^{t+1} = C^t$}
       \end{subfigure}
-      \caption{A simplistic region detection algorithm in action}
+      \begin{subfigure}[b]{0.45\textwidth}
+        \centering
+        \includegraphics[width=0.52\textwidth, height=0.09\textheight]{region2}
+        \caption{A colour representation of the regions}
+      \end{subfigure}
+      \caption{A simplistic region detection algorithm in action. $nbr(x_{ij}$ is a list of the nearest neighbours of $x_{ij}$}
       \label{simpleregion}
     \end{figure}
-  \subsection{Pattern: Red and White Stripes}
-    This algorithm seeks to find Wally by one of his most identifiable features; his red and white jumper.
-    The algorithm works by producing a binary mask of all the red areas in an image, using \texttt{get\_colour\_in\_image}, and a binary mask of all the white areas in an image, using \texttt{get\_greyscale\_in\_image}.
-    These vertically blurred using a Gaussian blur method, and are then multiplied together per element.
-    
-    Any overlap in the two blurs will lead to a non-zero value in this matrix.
-    Thus, by scanning for non-zero values, regions of the image with red and white on top of each other can be found.
-    For a sufficiently small tolerance, large regions found this way can be said to be regions containing red and white stripes.
-    The tolerance of the pattern is defined by the amount of blur the Gaussian method applies.
-    
-    \subsubsection{Weaknesses}
-      This pattern does have some weaknesses associated with it.
-      Wally is regularly not the only character, or even object, that has red and white stripes.
-      Wenda, seen in Figure \ref{justwenda} clearly wears a similar jumper.
-      Other objects that match this pattern can be seen in red and white skirts, candy canes and more.
-      Prioritisation of results is hard to get correct.
-      Assuming that Wally is the largest region of red and white stripes fails in any situation where that is not true.
-      Attempting to describe the size of Wally's jumper specifically stop the pattern from scaling to images of different sizes.
-      Furthermore, the image itself may be flawed to limits in image size.
-      \begin{figure}[h]
-        \centering
-        \includegraphics[width=0.8\textwidth]{results/redandwhitestripes_fail_small}
-        \caption{
-          The Red and White Stripes pattern failing to find Wally.
-          The blue ring indicates the top result (an umbrella).
-          The green ring indicates Wally's actual location, which is not even ranked in the top 100 results.
-        }
-        \label{rws_fail_small}
-      \end{figure}
-      Figure \ref{rws_fail_small} shows an example where Wally's stripes are so small they begin to overlap.
-      This leaves the white stripes being stained pink by the neighbouring red stripes, and so the true Wally's jumper is ignored by the pattern.
-      Meanwhile, larger and clearer stripes show up, giving a result set of entirely false positives.
 \end{document}
-
