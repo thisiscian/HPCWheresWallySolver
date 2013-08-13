@@ -122,10 +122,6 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
     }
   }
   Mat output(input.rows,input.cols, CV_8U, regions);
-  namedWindow("hi", CV_WINDOW_NORMAL);
-  imshow("hi", output);
-  waitKey(0);
-
 
   // add each region to a list, and determine some basic information about it
   map<int, wwp::region> region_list;
@@ -257,11 +253,11 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   map<double, double> prediction_list;
 
   double best_width=0;
-  double minimum_difference_in_predictions = 10000;
+  //double minimum_difference_in_predictions = 10000;
   int i;
   int range = max_distance-min_distance;
-  namedWindow("test", CV_WINDOW_AUTOSIZE);
-  #pragma omp parallel for default(none) private(best_width) shared(range, distance_map, prediction_list, max_distance) reduction(min:minimum_difference_in_predictions)
+	int minimum_difference_in_predictions = 1000;
+  #pragma omp parallel for default(none) private(best_width, minimum_difference_in_predictions) shared(range, distance_map, prediction_list, max_distance)
   for(int i=0;i<range; i++) {
     double average_prediction, deviation_prediction;
     double standard_deviation, sum_deviation, average_distance_to_zero;
@@ -288,7 +284,8 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
       prediction_list[minimum_difference_in_predictions] = best_width;
     }
   }
-  best_width = prediction_list[minimum_difference_in_predictions];
+	map<double,double>::iterator it = prediction_list.begin();
+  best_width = it->second;
 
 /*
   // while there are still pixels with different distances, try to find the best fitting width

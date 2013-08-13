@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "#threads iteration time"
+for (( x=1; x<=16; x++ )); do
+  for (( y=1; y<=16; y++ )); do
+    echo $y $x $(./bench_thickness $y $x)
+  done
+  echo
+done
+
