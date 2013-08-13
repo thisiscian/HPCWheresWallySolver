@@ -1,6 +1,51 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
   \section{Background Information}
+    \subsection{Parallel Programming}
+    When implementing parallelism, it is desirable to not only speed up a program, but also to use an appropriate number of cores.
+    A useful definition is one of speedup, the amount faster that a parallelised version of a program is to an efficient serial implementation.
+    \begin{equation}
+      \text{Speedup}(N) := \frac{T_\text{serial}}{T_\text{parallel}(N)}
+      \label{speedupdef}
+    \end{equation}
+    Equation \ref{speedupdef} describes the speedup of a system.
+    Here $N$ is the number of computing units (threads, processors etc.), $T_\text{serial}$ is the time the serial program takes and $T_\text{parallel}$ is the parallel time.
+    For most systems, the maximum speedup possible is $N$; 2 computing units working on a parallel program should be twice as fast as a single unit. 
+
+    Most implementations do not achieve this, especially for larger numbers of computing units.
+    It is worth noting that some programs actually produce super-linear speedup \cite{superlinear}.
+    This might happen because multiple processors increase the available cache size beyond the size of the problem
+    This means that minimal calls to main memory are required, which are often the major cause of slow down.
+
+    A fixed size program with a speedup that scales directly with the number of units used, is said to have `strong scaling'.
+    An example of this is having a program that calculates the sum of each element in a 1024x1024x1024 matrix.
+    The number of elements being added is very large, so there is plenty of scope for a massively parallel system.
+
+    Of course, the scaling is not strong at all points.
+    For more than 1024x1024x512 processors (a minimum of two elements per processor is needed for addition), there is not enough work to be done per processor.
+    This inherently has a negative effect on the speedup.
+    The scaling will most likely stop being strong before this, due to Amdahl's law, seen in equation \ref{amdahl}.
+
+    If a program is composed of serial and parallelisable portions, and $\alpha$ is the portion of the program that is purely serial, then the time a parallel program takes is:
+    \begin{equation}
+      T_{parallel}(N) = T_{serial}\left(\alpha-\frac{1-\alpha}{N}\right)
+    \end{equation}
+    Inserting this into the previous definition of speedup in equation \ref{speedupdef}, we see Amdahl's Law emerge.
+    \begin{equation}
+      \text{Speedup(N)} = \frac{T_\text{serial}}{T_\text{parallel}(N)} = \frac{T_\text{serial}}{T_\text{serial}\left(\alpha-frac{1-\alpha}{n}\right)} = \frac{1}{\alpha+\frac{1-\alpha}{N}}
+      \label{amdahl}
+    \end{equation}
+    It is clear that as $N$ tends to large numbers, the speedup approaches the constant value of $1/\alpha$.  
+    
+    In spite of this, parallel programs regularly achieve `weak scaling'.
+    This is the case if a program scales with the number of cores for a fixed amount of work per computing unit.
+    A trivial example of weak scaling is having each processor calculate $\pi$ to 10 digits.
+    The problem size is fixed per processor, but the overall work increases with the number of processors.
+    \subsection{Shared Memory Parallelism}
+      This project will implement parallelism through the shared memory multiprocessing API known as OpenMP.
+    \subsection{Computer Vision Libraries}
+    \subsection{Parallel Computer Vision}
+    \subsection{Parallel Image Recognition}
     \subsection{Shape and Colour Analysis}
     One obvious way of analysing an image is to break it down into shapes and colours.
     In linguistic terms, it is easiest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
@@ -30,7 +75,7 @@
     
     \subsection{Feature Analysis}
     Some of the most reliable computer vision libraries (such as SIFT \cite{sift}), were developed while considering the neuroscience of human vision.
-    Tanaka\cite{tanakahv} and Perrett and Oram\cite{perretthv} found that human object recognition identifies objects with features that are invariant to brightness, scale and position.
+    Tanaka\cite{mechobjrecog} and Perrett and Oram\cite{perretthv} found that human object recognition identifies objects with features that are invariant to brightness, scale and position.
     These results have been used as inspiration for feature analysis.
     This technique finds features; regions of an image which are scale, rotation and illumination invariant.
     These features are most immediately useful when compared with the features of another image.

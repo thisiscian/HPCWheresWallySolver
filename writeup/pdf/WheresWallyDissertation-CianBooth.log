@@ -1,25 +1,15 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.7.10)  29 JUL 2013 08:28
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Arch Linux) (format=pdflatex 2013.8.8)  13 AUG 2013 22:52
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **main
 (./main.tex
 LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
-rman-x-2012-05-30, ngerman-x-2012-05-30, afrikaans, ancientgreek, ibycus, arabi
-c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
-h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
-h, french, friulan, galician, german, ngerman, swissgerman, monogreek, greek, h
-ungarian, icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, ma
-rathi, oriya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, 
-kurmanji, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk,
- polish, portuguese, romanian, romansh, russian, sanskrit, serbian, serbianc, s
-lovak, slovenian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, 
-welsh, loaded.
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
 (/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/share/texmf-dist/tex/latex/base/size12.clo
-File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+(/usr/share/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -35,7 +25,7 @@ File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 ) (./assignmentCian.sty
 Package: assignmentCian 
 
-(/usr/share/texmf/tex/zi4.sty
+(/home/cian/.texlive/texmf-config/tex/zi4.sty
 Package: zi4 2013/06/09 zi4a
 
 (/usr/share/texmf-dist/tex/latex/base/textcomp.sty
@@ -234,10 +224,11 @@ LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
 (/usr/share/texmf-dist/tex/latex/caption/caption.sty
-Package: caption 2013/02/03 v3.3-65 Customizing captions (AR)
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
 
 (/usr/share/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2013/02/03 v1.5-62 caption3 kernel (AR)
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
 \captionmargin=\dimen114
 \captionmargin@=\dimen115
 \captionwidth=\dimen116
@@ -415,7 +406,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 \Hy@SectionHShift=\skip46
 )
 (/usr/share/texmf-dist/tex/latex/mdframed/mdframed.sty
-Package: mdframed 2013/03/09\ 1.8: mdframed
+Package: mdframed 2013/06/21 1.9a: mdframed
 
 (/usr/share/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 (/usr/share/texmf-dist/tex/latex/l3kernel/expl3.sty
@@ -644,6 +635,10 @@ Package color Info: Driver file: pdftex.def on input line 130.
 \mdf@subsubtitlebelowskip@length=\skip89
 \mdf@subsubtitleinneraboveskip@length=\skip90
 \mdf@subsubtitleinnerbelowskip@length=\skip91
+
+(/usr/share/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
+File: md-frame-0.mdf 2013/06/21\ 1.9a: md-frame-0
+)
 \mdf@frametitlebox=\box45
 \mdf@footnotebox=\box46
 \mdf@splitbox@one=\box47
@@ -673,6 +668,10 @@ Package color Info: Driver file: pdftex.def on input line 130.
 \mdf@freevspace@length=\skip113
 \mdf@horizontalwidthofbox@length=\skip114
 \mdf@verticalmarginwhole@length=\skip115
+\mdf@horizontalspaceofbox=\skip116
+\mdfsubtitleheight=\skip117
+\mdfsubsubtitleheight=\skip118
+\c@mdfcountframes=\count155
 
 ****** mdframed patching \endmdf@trivlist
 
@@ -682,24 +681,27 @@ Package color Info: Driver file: pdftex.def on input line 130.
 . LaTeX info: "xparse/define-command"
 . 
 . Defining document command \newmdtheoremenv with arg. spec. 'O{} m o m o ' on
-. line 548.
+. line 607.
 .................................................
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
 . Defining document command \mdtheorem with arg. spec. ' O{} m o m o ' on line
-. 639.
+. 707.
 .................................................
-
-(/usr/share/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
-File: md-frame-0.mdf 2013/03/09\ 1.8: md-frame-0
+\mdf@envdepth=\count156
+\c@mdf@env@i=\count157
+\c@mdf@env@ii=\count158
+\c@mdf@zref@counter=\count159
+Package zref Info: New property: mdf@pagevalue on input line 900.
 )
-\mdf@envdepth=\count155
-\c@mdf@env@i=\count156
-\c@mdf@env@ii=\count157
-\c@mdf@zref@counter=\count158
-Package zref Info: New property: mdf@pagevalue on input line 840.
-\mdf@horizontalspaceofbox=\skip116
+(/usr/share/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count160
+\float@exts=\toks24
+\float@box=\box50
+\@float@everytoks=\toks25
+\@floatcapt=\box51
 ))
 (pdf/WheresWallyDissertation-CianBooth.aux)
 \openout1 = `WheresWallyDissertation-CianBooth.aux'.
@@ -727,7 +729,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 11.
 LaTeX Font Info:    ... okay on input line 11.
 LaTeX Font Info:    Try loading font information for T1+pplx on input line 11.
 
-(/usr/share/texmf-dist/tex/latex/psnfss/t1pplx.fd
+(/usr/share/texmf/tex/latex/psnfss/t1pplx.fd
 File: t1pplx.fd 2004/09/06 font definitions for T1/pplx.
 )
 (/usr/share/texmf-dist/tex/latex/upquote/upquote.sty
@@ -736,17 +738,17 @@ tim
 )
 (/usr/share/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count159
+\scratchcounter=\count161
 \scratchdimen=\dimen160
-\scratchbox=\box50
-\nofMPsegments=\count160
-\nofMParguments=\count161
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count162
+\scratchbox=\box52
+\nofMPsegments=\count162
+\nofMParguments=\count163
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count164
 \MPscratchDim=\dimen161
-\MPnumerator=\count163
-\makeMPintoPDFobject=\count164
-\everyMPtoPDFconversion=\toks25
+\MPnumerator=\count165
+\makeMPintoPDFobject=\count166
+\everyMPtoPDFconversion=\toks27
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -763,11 +765,12 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count165
-\AtBeginShipoutBox=\box51
+\c@lstlisting=\count167
+\AtBeginShipoutBox=\box53
 Package hyperref Info: Link coloring OFF on input line 11.
 
 (/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
@@ -776,7 +779,7 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count166
+\c@section@level=\count168
 )
 LaTeX Info: Redefining \ref on input line 11.
 LaTeX Info: Redefining \pageref on input line 11.
@@ -788,7 +791,7 @@ LaTeX Info: Redefining \nameref on input line 11.
 \openout3 = `WheresWallyDissertation-CianBooth.out'.
 
 
-<logos/logo_black.pdf, id=56, 662.475pt x 191.71625pt>
+<logos/logo_black.pdf, id=148, 662.475pt x 191.71625pt>
 File: logos/logo_black.pdf Graphic file (type pdf)
 
 <use logos/logo_black.pdf>
@@ -796,201 +799,514 @@ Package pdftex.def Info: logos/logo_black.pdf used on input line 16.
 (pdftex.def)             Requested size: 662.47339pt x 191.71577pt.
 LaTeX Font Info:    Try loading font information for OT1+pplx on input line 17.
 
- (/usr/share/texmf-dist/tex/latex/psnfss/ot1pplx.fd
+ (/usr/share/texmf/tex/latex/psnfss/ot1pplx.fd
 File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
 )
 LaTeX Font Info:    Try loading font information for OML+zplm on input line 17.
 
 
-(/usr/share/texmf-dist/tex/latex/psnfss/omlzplm.fd
+(/usr/share/texmf/tex/latex/psnfss/omlzplm.fd
 File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
 )
 LaTeX Font Info:    Try loading font information for OMS+zplm on input line 17.
 
 
-(/usr/share/texmf-dist/tex/latex/psnfss/omszplm.fd
+(/usr/share/texmf/tex/latex/psnfss/omszplm.fd
 File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
 )
 LaTeX Font Info:    Try loading font information for OMX+zplm on input line 17.
 
 
-(/usr/share/texmf-dist/tex/latex/psnfss/omxzplm.fd
+(/usr/share/texmf/tex/latex/psnfss/omxzplm.fd
 File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
 )
 LaTeX Font Info:    Try loading font information for OT1+zplm on input line 17.
 
 
-(/usr/share/texmf-dist/tex/latex/psnfss/ot1zplm.fd
+(/usr/share/texmf/tex/latex/psnfss/ot1zplm.fd
 File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
 )
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 17.
+(Font)              scaled to size 11.40997pt on input line 17.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 17.
+(Font)              scaled to size 8.33606pt on input line 17.
 LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 17.
+(Font)              scaled to size 6.25204pt on input line 17.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 12.50409pt on input line 17.
+(Font)              scaled to size 11.40997pt on input line 17.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 9.37807pt on input line 17.
+(Font)              scaled to size 8.33606pt on input line 17.
 LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 7.29405pt on input line 17.
+(Font)              scaled to size 6.25204pt on input line 17.
 
-<logos/eucrest.pdf, id=57, 363.3575pt x 367.3725pt>
+<logos/eucrest.pdf, id=149, 363.3575pt x 367.3725pt>
 File: logos/eucrest.pdf Graphic file (type pdf)
  <use logos/eucrest.pdf>
 Package pdftex.def Info: logos/eucrest.pdf used on input line 21.
 (pdftex.def)             Requested size: 363.3566pt x 367.37158pt.
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <12> not available
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10.95> not available
 (Font)              Font shape `T1/pplx/b/n' tried instead on input line 24.
 LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <24.88> not available
 (Font)              Font shape `T1/pplx/b/n' tried instead on input line 24.
 
-<img/wallylogo.pdf, id=58, 216.86041pt x 216.83539pt>
+<img/wallylogo.pdf, id=150, 216.86041pt x 216.83539pt>
 File: img/wallylogo.pdf Graphic file (type pdf)
  <use img/wallylogo.pdf>
 Package pdftex.def Info: img/wallylogo.pdf used on input line 27.
-(pdftex.def)             Requested size: 193.68054pt x 193.65784pt.
+(pdftex.def)             Requested size: 164.77298pt x 164.75359pt.
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <20.74> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 29.
 
 [1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map} <./logos/logo_black.pdf> <.
-/logos/eucrest.pdf> <./img/wallylogo.pdf>]
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 34.
+{/home/cian/.texlive/texmf-var/fonts/map/pdftex/updmap/pdftex.map} <./logos/log
+o_black.pdf> <./logos/eucrest.pdf> <./img/wallylogo.pdf>]
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <14.4> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 35.
 
 (pdf/WheresWallyDissertation-CianBooth.toc
-LaTeX Font Info:    Try loading font information for T1+zi4 on input line 9.
- (/usr/share/texmf/tex/t1zi4.fd
+LaTeX Font Info:    Try loading font information for T1+zi4 on input line 20.
+
+(/home/cian/.texlive/texmf-config/tex/t1zi4.fd
 File: t1zi4.fd 2013/06/09 T1/zi4 (Inconsolata)
 ))
 \tf@toc=\write4
 \openout4 = `WheresWallyDissertation-CianBooth.toc'.
 
+ [2]
+(pdf/WheresWallyDissertation-CianBooth.lof)
+\tf@lof=\write5
+\openout5 = `WheresWallyDissertation-CianBooth.lof'.
 
-[2] (./tex/introduction.tex
-<img/just_a_chump.png, id=92, 108.405pt x 142.5325pt>
+
+(pdf/WheresWallyDissertation-CianBooth.lot)
+\tf@lot=\write6
+\openout6 = `WheresWallyDissertation-CianBooth.lot'.
+
+ [3] (./tex/introduction.tex
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <12> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 8.
+pdfTeX warning (ext4): destination with the same identifier (name{page.1}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.52 
+      [1]pdfTeX warning (ext4): destination with the same identifier (name{page
+.2}) has been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.91     A
+          n everyday use of parallel object recognition is with nationwide t...
+[2] <img/just_a_chump.png, id=276, 108.405pt x 142.5325pt>
 File: img/just_a_chump.png Graphic file (type png)
 
 <use img/just_a_chump.png>
-Package pdftex.def Info: img/just_a_chump.png used on input line 40.
+Package pdftex.def Info: img/just_a_chump.png used on input line 113.
 (pdftex.def)             Requested size: 82.44489pt x 108.40057pt.
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10.95> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 41.
- <img/just_wally.png, id=94, 730.73pt x 1561.835pt>
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 114.
+ <img/just_wally.png, id=278, 730.73pt x 1561.835pt>
 File: img/just_wally.png Graphic file (type png)
 
 <use img/just_wally.png>
-Package pdftex.def Info: img/just_wally.png used on input line 46.
+Package pdftex.def Info: img/just_wally.png used on input line 119.
 (pdftex.def)             Requested size: 50.71031pt x 108.40057pt.
- <img/just_wenda.png, id=95, 730.73pt x 1561.835pt>
+ <img/just_wenda.png, id=279, 730.73pt x 1561.835pt>
 File: img/just_wenda.png Graphic file (type png)
 
 <use img/just_wenda.png>
-Package pdftex.def Info: img/just_wenda.png used on input line 52.
+Package pdftex.def Info: img/just_wenda.png used on input line 125.
 (pdftex.def)             Requested size: 50.71031pt x 108.40057pt.
- [3 <./img/just_a_chump.png> <./img/just_wally.png> <./img/just_wenda.png>]) (.
-/tex/background_information.tex
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 4.
- [4])
-(./tex/literature_review.tex [5]) (./tex/colour_analysis.tex
-<img/results/spectrum.png, id=125, 144.54pt x 108.405pt>
+pdfTeX warning (ext4): destination with the same identifier (name{page.3}) has 
+been already used, duplicate ignored
+<to be read again> 
+                   \relax 
+l.144 
+       [3 <./img/just_a_chump.png> <./img/just_wally.png> <./img/just_wenda.png
+>]) (./tex/background_information.tex [4] [5]) (./tex/literature_review.tex)
+(./tex/colour_analysis.tex [6]
+Overfull \hbox (19.37007pt too wide) in paragraph at lines 20--21
+[]\T1/pplx/m/n/10.95 Strings de-scrib-ing the lim-its of colours to al-low, in 
+the form "#RRGGBB" 
+ []
+
+<img/results/spectrum.png, id=322, 144.54pt x 108.405pt>
 File: img/results/spectrum.png Graphic file (type png)
 
 <use img/results/spectrum.png>
-Package pdftex.def Info: img/results/spectrum.png used on input line 35.
+Package pdftex.def Info: img/results/spectrum.png used on input line 36.
 (pdftex.def)             Requested size: 192.74081pt x 144.53778pt.
 
-<img/results/get_yellow_from_image_mask.png, id=126, 2409.0pt x 1806.75pt>
+<img/results/get_yellow_from_image_mask.png, id=323, 2409.0pt x 1806.75pt>
 File: img/results/get_yellow_from_image_mask.png Graphic file (type png)
 
 <use img/results/get_yellow_from_image_mask.png>
 Package pdftex.def Info: img/results/get_yellow_from_image_mask.png used on inp
-ut line 41.
+ut line 42.
 (pdftex.def)             Requested size: 192.68718pt x 144.53778pt.
 
-<img/results/get_yellow_from_image.png, id=127, 2409.0pt x 1806.75pt>
+<img/results/get_yellow_from_image.png, id=324, 2409.0pt x 1806.75pt>
 File: img/results/get_yellow_from_image.png Graphic file (type png)
 
 <use img/results/get_yellow_from_image.png>
 Package pdftex.def Info: img/results/get_yellow_from_image.png used on input li
-ne 47.
+ne 48.
 (pdftex.def)             Requested size: 192.68718pt x 144.53778pt.
+ [7] [8 <./img/results/spectrum.png (PNG copy)> <./img/results/get_yellow_from_
+image_mask.png (PNG copy)> <./img/results/get_yellow_from_image.png (PNG copy)>
+]
+<img/region1.pdf, id=337, 101.22818pt x 81.103pt>
+File: img/region1.pdf Graphic file (type pdf)
+ <use img/region1.pdf>
+Package pdftex.def Info: img/region1.pdf used on input line 112.
+(pdftex.def)             Requested size: 96.3948pt x 65.04086pt.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 10.42007pt on input line 113.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 7.91925pt on input line 113.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 10.42007pt on input line 113.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 7.91925pt on input line 113.
+
+<img/region2.pdf, id=338, 101.22818pt x 81.103pt>
+File: img/region2.pdf Graphic file (type pdf)
+ <use img/region2.pdf>
+Package pdftex.def Info: img/region2.pdf used on input line 161.
+(pdftex.def)             Requested size: 96.3948pt x 65.04086pt.
+)
+(./tex/line_width.tex [9]
+<img/linewidth/line_width.pdf, id=346, 722.7pt x 722.69994pt>
+File: img/linewidth/line_width.pdf Graphic file (type pdf)
+
+<use img/linewidth/line_width.pdf>
+Package pdftex.def Info: img/linewidth/line_width.pdf used on input line 31.
+(pdftex.def)             Requested size: 144.53778pt x 144.53741pt.
+
+<img/linewidth/line_width_cross.pdf, id=347, 722.7pt x 722.7pt>
+File: img/linewidth/line_width_cross.pdf Graphic file (type pdf)
+
+<use img/linewidth/line_width_cross.pdf>
+Package pdftex.def Info: img/linewidth/line_width_cross.pdf used on input line 
+38.
+(pdftex.def)             Requested size: 144.53778pt x 144.53743pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
-[6]
-Overfull \hbox (19.29199pt too wide) in paragraph at lines 96--106
-[]\T1/pplx/m/n/12 More com-pu-ta-tion-ally ef-fi-cient meth-ods ex-ist. Lifeng 
-[[]] de-scribes the method of connected-
- []
+[10 <./img/region1.pdf> <./img/region2.pdf
 
-[7]
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 118.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 118.
-LaTeX Font Info:    Font shape `U/msa/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 118.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 11.40997pt on input line 118.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 8.33606pt on input line 118.
-LaTeX Font Info:    Font shape `U/msb/m/n' will be
-(Font)              scaled to size 6.25204pt on input line 118.
+pdfTeX warning: pdflatex (file ./img/region2.pdf): PDF inclusion: multiple pdfs
+ with page group included in a single page
+>] [11 <./img/linewidth/line_width.pdf> <./img/linewidth/line_width_cross.pdf
+
+pdfTeX warning: pdflatex (file ./img/linewidth/line_width_cross.pdf): PDF inclu
+sion: multiple pdfs with page group included in a single page
+>] <graphs/oddevenwidth.pdf, id=385, 361.35pt x 216.81pt>
+File: graphs/oddevenwidth.pdf Graphic file (type pdf)
+
+<use graphs/oddevenwidth.pdf>
+Package pdftex.def Info: graphs/oddevenwidth.pdf used on input line 111.
+(pdftex.def)             Requested size: 370.74237pt x 222.44672pt.
+ [12] [13 <./graphs/oddevenwidth.pdf>]
+<graphs/stddevwidth.pdf, id=415, 361.35pt x 216.81pt>
+File: graphs/stddevwidth.pdf Graphic file (type pdf)
+
+<use graphs/stddevwidth.pdf>
+Package pdftex.def Info: graphs/stddevwidth.pdf used on input line 197.
+(pdftex.def)             Requested size: 370.74237pt x 222.44672pt.
+ [14]
+<img/original_mask.pdf, id=429, 113.223pt x 113.223pt>
+File: img/original_mask.pdf Graphic file (type pdf)
+
+<use img/original_mask.pdf>
+Package pdftex.def Info: img/original_mask.pdf used on input line 225.
+(pdftex.def)             Requested size: 113.22272pt x 113.22272pt.
+ <img/sane_mask.pdf, id=430, 113.223pt x 113.223pt>
+File: img/sane_mask.pdf Graphic file (type pdf)
+
+<use img/sane_mask.pdf>
+Package pdftex.def Info: img/sane_mask.pdf used on input line 231.
+(pdftex.def)             Requested size: 113.22272pt x 113.22272pt.
+ <img/unsane_mask.pdf, id=431, 113.223pt x 113.223pt>
+File: img/unsane_mask.pdf Graphic file (type pdf)
+
+<use img/unsane_mask.pdf>
+Package pdftex.def Info: img/unsane_mask.pdf used on input line 237.
+(pdftex.def)             Requested size: 113.22272pt x 113.22272pt.
+ [15 <./graphs/stddevwidth.pdf>]
+<graphs/stddev_great_abnormal.pdf, id=445, 361.35pt x 216.81pt>
+File: graphs/stddev_great_abnormal.pdf Graphic file (type pdf)
+
+<use graphs/stddev_great_abnormal.pdf>
+Package pdftex.def Info: graphs/stddev_great_abnormal.pdf used on input line 25
+1.
+(pdftex.def)             Requested size: 296.59502pt x 177.95737pt.
+
+<graphs/stddev_great_range.pdf, id=446, 361.35pt x 216.81pt>
+File: graphs/stddev_great_range.pdf Graphic file (type pdf)
+
+<use graphs/stddev_great_range.pdf>
+Package pdftex.def Info: graphs/stddev_great_range.pdf used on input line 257.
+(pdftex.def)             Requested size: 296.59502pt x 177.95737pt.
+ [16 <./img/original_mask.pdf> <./img/sane_mask.pdf
+
+pdfTeX warning: pdflatex (file ./img/sane_mask.pdf): PDF inclusion: multiple pd
+fs with page group included in a single page
+> <./img/unsane_mask.pdf
+
+pdfTeX warning: pdflatex (file ./img/unsane_mask.pdf): PDF inclusion: multiple 
+pdfs with page group included in a single page
+>] <img/linewidth/linewidth_1_solid.png, id=458, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_1_solid.png Graphic file (type png)
+
+<use img/linewidth/linewidth_1_solid.png>
+Package pdftex.def Info: img/linewidth/linewidth_1_solid.png used on input line
+ 287.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_2_solid.png, id=459, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_2_solid.png Graphic file (type png)
+
+<use img/linewidth/linewidth_2_solid.png>
+Package pdftex.def Info: img/linewidth/linewidth_2_solid.png used on input line
+ 292.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_3_solid.png, id=460, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_3_solid.png Graphic file (type png)
+
+<use img/linewidth/linewidth_3_solid.png>
+Package pdftex.def Info: img/linewidth/linewidth_3_solid.png used on input line
+ 297.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_4_solid.png, id=461, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_4_solid.png Graphic file (type png)
+
+<use img/linewidth/linewidth_4_solid.png>
+Package pdftex.def Info: img/linewidth/linewidth_4_solid.png used on input line
+ 302.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_1_blur.png, id=462, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_1_blur.png Graphic file (type png)
+
+<use img/linewidth/linewidth_1_blur.png>
+Package pdftex.def Info: img/linewidth/linewidth_1_blur.png used on input line 
+308.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_2_blur.png, id=463, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_2_blur.png Graphic file (type png)
+
+<use img/linewidth/linewidth_2_blur.png>
+Package pdftex.def Info: img/linewidth/linewidth_2_blur.png used on input line 
+313.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_3_blur.png, id=464, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_3_blur.png Graphic file (type png)
+
+<use img/linewidth/linewidth_3_blur.png>
+Package pdftex.def Info: img/linewidth/linewidth_3_blur.png used on input line 
+318.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+
+<img/linewidth/linewidth_4_blur.png, id=465, 100.375pt x 100.375pt>
+File: img/linewidth/linewidth_4_blur.png Graphic file (type png)
+
+<use img/linewidth/linewidth_4_blur.png>
+Package pdftex.def Info: img/linewidth/linewidth_4_blur.png used on input line 
+323.
+(pdftex.def)             Requested size: 72.27911pt x 72.2744pt.
+ [17 <./graphs/stddev_great_abnormal.pdf> <./graphs/stddev_great_range.pdf
+
+pdfTeX warning: pdflatex (file ./graphs/stddev_great_range.pdf): PDF inclusion:
+ multiple pdfs with page group included in a single page
+>] <graphs/benchmark/thickness_benchmark.pdf, id=483, 361.35pt x 216.81pt>
+File: graphs/benchmark/thickness_benchmark.pdf Graphic file (type pdf)
+
+<use graphs/benchmark/thickness_benchmark.pdf>
+Package pdftex.def Info: graphs/benchmark/thickness_benchmark.pdf used on input
+ line 371.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
+
+<graphs/benchmark/thickness_time.pdf, id=484, 361.35pt x 216.81pt>
+File: graphs/benchmark/thickness_time.pdf Graphic file (type pdf)
+
+<use graphs/benchmark/thickness_time.pdf>
+Package pdftex.def Info: graphs/benchmark/thickness_time.pdf used on input line
+ 373.
+(pdftex.def)             Requested size: 361.34912pt x 216.80946pt.
 
 
 LaTeX Warning: `h' float specifier changed to `ht'.
 
+) (./tex/red_and_white.tex [18 <./img/linewidth/linewidth_1_solid.png (PNG copy
+)> <./img/linewidth/linewidth_2_solid.png (PNG copy)> <./img/linewidth/linewidt
+h_3_solid.png (PNG copy)> <./img/linewidth/linewidth_4_solid.png (PNG copy)> <.
+/img/linewidth/linewidth_1_blur.png (PNG copy)> <./img/linewidth/linewidth_2_bl
+ur.png (PNG copy)> <./img/linewidth/linewidth_3_blur.png (PNG copy)> <./img/lin
+ewidth/linewidth_4_blur.png (PNG copy)>] <img/rw.pdf, id=491, 80.3pt x 80.3pt>
+File: img/rw.pdf Graphic file (type pdf)
 
-<img/results/redandwhitestripes_fail_small.png, id=148, 332.24126pt x 169.63374
+<use img/rw.pdf>
+Package pdftex.def Info: img/rw.pdf used on input line 21.
+(pdftex.def)             Requested size: 98.87009pt x 98.86668pt.
+ <img/rw1.pdf, id=492, 80.3pt x 80.3pt>
+File: img/rw1.pdf Graphic file (type pdf)
+ <use img/rw1.pdf>
+Package pdftex.def Info: img/rw1.pdf used on input line 26.
+(pdftex.def)             Requested size: 98.87009pt x 98.86668pt.
+
+<img/rw2.pdf, id=493, 80.3pt x 80.3pt>
+File: img/rw2.pdf Graphic file (type pdf)
+ <use img/rw2.pdf>
+Package pdftex.def Info: img/rw2.pdf used on input line 31.
+(pdftex.def)             Requested size: 98.87009pt x 98.86668pt.
+
+<img/rw3.pdf, id=494, 73.073pt x 73.073pt>
+File: img/rw3.pdf Graphic file (type pdf)
+ <use img/rw3.pdf>
+Package pdftex.def Info: img/rw3.pdf used on input line 37.
+(pdftex.def)             Requested size: 98.8695pt x 98.86668pt.
+
+<img/rw4.pdf, id=495, 73.073pt x 73.073pt>
+File: img/rw4.pdf Graphic file (type pdf)
+ <use img/rw4.pdf>
+Package pdftex.def Info: img/rw4.pdf used on input line 42.
+(pdftex.def)             Requested size: 98.8695pt x 98.86668pt.
+
+<img/rw5.pdf, id=496, 73.073pt x 73.073pt>
+File: img/rw5.pdf Graphic file (type pdf)
+ <use img/rw5.pdf>
+Package pdftex.def Info: img/rw5.pdf used on input line 47.
+(pdftex.def)             Requested size: 98.8695pt x 98.86668pt.
+ [19 <./graphs/benchmark/thickness_benchmark.pdf> <./graphs/benchmark/thickness
+_time.pdf
+
+pdfTeX warning: pdflatex (file ./graphs/benchmark/thickness_time.pdf): PDF incl
+usion: multiple pdfs with page group included in a single page
+>]
+<img/results/redandwhitestripes_fail_small.png, id=515, 332.24126pt x 169.63374
 pt>
 File: img/results/redandwhitestripes_fail_small.png Graphic file (type png)
  <use img/results/redandwhitestripes_fail_small.png>
 Package pdftex.def Info: img/results/redandwhitestripes_fail_small.png used on 
-input line 188.
-(pdftex.def)             Requested size: 387.36848pt x 197.7925pt.
+input line 69.
+(pdftex.def)             Requested size: 329.55226pt x 168.26923pt.
+ [20 <./img/rw.pdf> <./img/rw1.pdf
+
+pdfTeX warning: pdflatex (file ./img/rw1.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+> <./img/rw2.pdf
+
+pdfTeX warning: pdflatex (file ./img/rw2.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+> <./img/rw3.pdf
+
+pdfTeX warning: pdflatex (file ./img/rw3.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+> <./img/rw4.pdf
+
+pdfTeX warning: pdflatex (file ./img/rw4.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+> <./img/rw5.pdf
+
+pdfTeX warning: pdflatex (file ./img/rw5.pdf): PDF inclusion: multiple pdfs wit
+h page group included in a single page
+> <./img/results/redandwhitestripes_fail_small.png>]
+<img/rw_test1.png, id=564, 401.5pt x 401.5pt>
+File: img/rw_test1.png Graphic file (type png)
+ <use img/rw_test1.png>
+Package pdftex.def Info: img/rw_test1.png used on input line 96.
+(pdftex.def)             Requested size: 148.29466pt x 148.29535pt.
+
+<img/rw_test3.png, id=565, 401.5pt x 401.5pt>
+File: img/rw_test3.png Graphic file (type png)
+ <use img/rw_test3.png>
+Package pdftex.def Info: img/rw_test3.png used on input line 101.
+(pdftex.def)             Requested size: 148.29466pt x 148.29535pt.
+File: img/rw_test3.png Graphic file (type png)
+
+<use img/rw_test3.png>
+Package pdftex.def Info: img/rw_test3.png used on input line 106.
+(pdftex.def)             Requested size: 148.29466pt x 148.29535pt.
+ <img/rw_test4.png, id=566, 401.5pt x 401.5pt>
+File: img/rw_test4.png Graphic file (type png)
+
+<use img/rw_test4.png>
+Package pdftex.def Info: img/rw_test4.png used on input line 111.
+(pdftex.def)             Requested size: 148.29466pt x 148.29535pt.
+
+<img/parallel_region.pdf, id=568, 161.45319pt x 503.23007pt>
+File: img/parallel_region.pdf Graphic file (type pdf)
+
+<use img/parallel_region.pdf>
+Package pdftex.def Info: img/parallel_region.pdf used on input line 130.
+(pdftex.def)             Requested size: 144.53778pt x 450.54552pt.
+ [21 <./img/rw_test1.png> <./img/rw_test3.png> <./img/rw_test4.png>]) (./tex/im
+plementation.tex) (./tex/results.tex)
+(./tex/conclusion.tex) [22 <./img/parallel_region.pdf>]
+(pdf/WheresWallyDissertation-CianBooth.bbl
+Underfull \hbox (badness 10000) in paragraph at lines 4--7
+[]\T1/pplx/m/n/10.95 UK Miss-ing Per-sons Bu-reau, ``Miss-ing per-sons data and
+
+ []
 
 
-LaTeX Warning: `h' float specifier changed to `ht'.
+Underfull \hbox (badness 10000) in paragraph at lines 4--7
+\T1/pplx/m/n/10.95 anal-y-sis 2010-2011.'' []$\T1/zi4/m/n/10.95 missingpersons 
+. police . uk / en / resources /
+ []
 
-) [8] (pdf/WheresWallyDissertation-CianBooth.bbl)
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 43.
- [9] [10 <./img/results/spectrum.png (PNG copy)> <./img/results/get_yellow_from
-_image_mask.png (PNG copy)> <./img/results/get_yellow_from_image.png (PNG copy)
->] [11 <./img/results/redandwhitestripes_fail_small.png>]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 43.
+
+Underfull \hbox (badness 10000) in paragraph at lines 9--12
+\T1/zi4/m/n/10.95 org . uk / sites / default / files / tcs / u24 / Still-[]Runn
+ing-[]3 _ Full-[]Report _ FINAL .
+ []
+
+
+Underfull \hbox (badness 1057) in paragraph at lines 53--55
+[]\T1/pplx/m/n/10.95 OpenCV, ``Opencv 2.4 cheat sheet (c++).'' []$\T1/zi4/m/n/1
+0.95 docs . opencv . org / trunk / opencv _
+ []
+
+)
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 58.
+ [23]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 58.
  (pdf/WheresWallyDissertation-CianBooth.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 43.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 43.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 58.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 58.
 Package rerunfilecheck Info: File `WheresWallyDissertation-CianBooth.out' has n
 ot changed.
 (rerunfilecheck)             Checksum: <no file>.
-Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 43.
+Package atveryend Info: Empty hook `AtVeryVeryEnd' on input line 58.
  ) 
 Here is how much of TeX's memory you used:
- 15508 strings out of 493488
- 254539 string characters out of 3146892
- 341948 words of memory out of 3000000
- 18473 multiletter control sequences out of 15000+200000
- 54567 words of font info for 116 fonts, out of 3000000 for 9000
+ 15975 strings out of 493315
+ 263160 string characters out of 6143705
+ 353911 words of memory out of 5000000
+ 18935 multiletter control sequences out of 15000+600000
+ 58880 words of font info for 118 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 51i,12n,40p,958b,607s stack positions out of 5000i,500n,10000p,200000b,50000s
-{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf/fonts/en
-c/i4-t1-0.enc}</usr/share/texmf/fonts/type1/Inconsolata-zi4r.pfb></usr/share/te
-xmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-dist/fonts
-/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/type1/public/
-amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfonts/cm/cms
-y10.pfb></usr/share/texmf-dist/fonts/type1/urw/palatino/uplb8a.pfb></usr/share/
-texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></usr/share/texmf-dist/fonts/typ
-e1/urw/palatino/uplri8a.pfb>
-Output written on pdf/WheresWallyDissertation-CianBooth.pdf (11 pages, 1175515 
+ 51i,17n,40p,1032b,610s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}{/usr/share/texmf-dist/fon
+ts/enc/i4-t1-0.enc}</usr/share/texmf-dist/fonts/type1/Inconsolata-zi4r.pfb></us
+r/share/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texmf-
+dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/share/texmf-dist/fonts/typ
+e1/public/amsfonts/cm/cmr10.pfb></usr/share/texmf-dist/fonts/type1/public/amsfo
+nts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/fpl/fplmr.pfb></usr/share/
+texmf-dist/fonts/type1/fpl/fplmri.pfb></usr/share/texmf-dist/fonts/type1/urw/pa
+latino/uplb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></
+usr/share/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
+Output written on pdf/WheresWallyDissertation-CianBooth.pdf (26 pages, 1348853 
 bytes).
 PDF statistics:
- 212 PDF objects out of 1000 (max. 8388607)
- 175 compressed objects within 2 object streams
- 38 named destinations out of 1000 (max. 500000)
- 155 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 656 PDF objects out of 1000 (max. 8388607)
+ 535 compressed objects within 6 object streams
+ 106 named destinations out of 1000 (max. 500000)
+ 494 words of extra memory for PDF output out of 10000 (max. 10000000)
 

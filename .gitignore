@@ -8,5 +8,12 @@ bin
 gmon.out
 ww_ut_*
 *.a
+*.aux
+*.bbl
+*.blg
+*.toc
+*.log
+*.out
 */CTestTestfile.cmake
 Testing
+*/pdf/*

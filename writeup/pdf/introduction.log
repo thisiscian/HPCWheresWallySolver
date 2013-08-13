@@ -1,21 +1,11 @@
-This is pdfTeX, Version 3.1415926-2.4-1.40.13 (TeX Live 2012/Arch Linux) (format=pdflatex 2013.7.10)  15 JUL 2013 13:31
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Arch Linux) (format=pdflatex 2013.8.8)  13 AUG 2013 22:06
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
 **introduction
 (./introduction.tex
 LaTeX2e <2011/06/27>
-Babel <v3.8m> and hyphenation patterns for english, dumylang, nohyphenation, ge
-rman-x-2012-05-30, ngerman-x-2012-05-30, afrikaans, ancientgreek, ibycus, arabi
-c, armenian, basque, bulgarian, catalan, pinyin, coptic, croatian, czech, danis
-h, dutch, ukenglish, usenglishmax, esperanto, estonian, ethiopic, farsi, finnis
-h, french, friulan, galician, german, ngerman, swissgerman, monogreek, greek, h
-ungarian, icelandic, assamese, bengali, gujarati, hindi, kannada, malayalam, ma
-rathi, oriya, panjabi, tamil, telugu, indonesian, interlingua, irish, italian, 
-kurmanji, latin, latvian, lithuanian, mongolian, mongolianlmc, bokmal, nynorsk,
- polish, portuguese, romanian, romansh, russian, sanskrit, serbian, serbianc, s
-lovak, slovenian, spanish, swedish, turkish, turkmen, ukrainian, uppersorbian, 
-welsh, loaded.
+Babel <3.9f> and hyphenation patterns for 78 languages loaded.
 (/usr/share/texmf-dist/tex/latex/subfiles/subfiles.cls
 Document Class: subfiles 2012/05/23 Federico Garcia
 (/usr/share/texmf-dist/tex/latex/tools/verbatim.sty
@@ -27,8 +17,8 @@ Package: verbatim 2003/08/22 v1.5q LaTeX2e package for verbatim enhancements
 Preamble taken from file `../main.tex'
 (../pdf/../main.tex (/usr/share/texmf-dist/tex/latex/base/article.cls
 Document Class: article 2007/10/19 v1.4h Standard LaTeX document class
-(/usr/share/texmf-dist/tex/latex/base/size12.clo
-File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
+(/usr/share/texmf-dist/tex/latex/base/size11.clo
+File: size11.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 )
 \c@part=\count79
 \c@section=\count80
@@ -44,7 +34,7 @@ File: size12.clo 2007/10/19 v1.4h Standard LaTeX file (size option)
 ) (../assignmentCian.sty
 Package: assignmentCian 
 
-(/usr/share/texmf/tex/zi4.sty
+(/home/cian/.texlive/texmf-config/tex/zi4.sty
 Package: zi4 2013/06/09 zi4a
 
 (/usr/share/texmf-dist/tex/latex/base/textcomp.sty
@@ -243,10 +233,11 @@ LaTeX Info: Redefining \[ on input line 2665.
 LaTeX Info: Redefining \] on input line 2666.
 )
 (/usr/share/texmf-dist/tex/latex/caption/caption.sty
-Package: caption 2013/02/03 v3.3-65 Customizing captions (AR)
+Package: caption 2013/05/02 v3.3-89 Customizing captions (AR)
 
 (/usr/share/texmf-dist/tex/latex/caption/caption3.sty
-Package: caption3 2013/02/03 v1.5-62 caption3 kernel (AR)
+Package: caption3 2013/05/02 v1.6-88 caption3 kernel (AR)
+Package caption3 Info: TeX engine: e-TeX on input line 57.
 \captionmargin=\dimen114
 \captionmargin@=\dimen115
 \captionwidth=\dimen116
@@ -421,7 +412,7 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 \Hy@SectionHShift=\skip46
 )
 (/usr/share/texmf-dist/tex/latex/mdframed/mdframed.sty
-Package: mdframed 2013/03/09\ 1.8: mdframed
+Package: mdframed 2013/06/21 1.9a: mdframed
 
 (/usr/share/texmf-dist/tex/latex/l3packages/xparse/xparse.sty
 (/usr/share/texmf-dist/tex/latex/l3kernel/expl3.sty
@@ -650,6 +641,10 @@ Package color Info: Driver file: pdftex.def on input line 130.
 \mdf@subsubtitlebelowskip@length=\skip89
 \mdf@subsubtitleinneraboveskip@length=\skip90
 \mdf@subsubtitleinnerbelowskip@length=\skip91
+
+(/usr/share/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
+File: md-frame-0.mdf 2013/06/21\ 1.9a: md-frame-0
+)
 \mdf@frametitlebox=\box45
 \mdf@footnotebox=\box46
 \mdf@splitbox@one=\box47
@@ -679,6 +674,10 @@ Package color Info: Driver file: pdftex.def on input line 130.
 \mdf@freevspace@length=\skip113
 \mdf@horizontalwidthofbox@length=\skip114
 \mdf@verticalmarginwhole@length=\skip115
+\mdf@horizontalspaceofbox=\skip116
+\mdfsubtitleheight=\skip117
+\mdfsubsubtitleheight=\skip118
+\c@mdfcountframes=\count155
 
 ****** mdframed patching \endmdf@trivlist
 
@@ -688,26 +687,28 @@ Package color Info: Driver file: pdftex.def on input line 130.
 . LaTeX info: "xparse/define-command"
 . 
 . Defining document command \newmdtheoremenv with arg. spec. 'O{} m o m o ' on
-. line 548.
+. line 607.
 .................................................
 .................................................
 . LaTeX info: "xparse/define-command"
 . 
 . Defining document command \mdtheorem with arg. spec. ' O{} m o m o ' on line
-. 639.
+. 707.
 .................................................
-
-(/usr/share/texmf-dist/tex/latex/mdframed/md-frame-0.mdf
-File: md-frame-0.mdf 2013/03/09\ 1.8: md-frame-0
+\mdf@envdepth=\count156
+\c@mdf@env@i=\count157
+\c@mdf@env@ii=\count158
+\c@mdf@zref@counter=\count159
+Package zref Info: New property: mdf@pagevalue on input line 900.
 )
-\mdf@envdepth=\count155
-\c@mdf@env@i=\count156
-\c@mdf@env@ii=\count157
-\c@mdf@zref@counter=\count158
-Package zref Info: New property: mdf@pagevalue on input line 840.
-\mdf@horizontalspaceofbox=\skip116
-))))
-(../pdf/introduction.aux)
+(/usr/share/texmf-dist/tex/latex/float/float.sty
+Package: float 2001/11/08 v1.3d Float enhancements (AL)
+\c@float@type=\count160
+\float@exts=\toks24
+\float@box=\box50
+\@float@everytoks=\toks25
+\@floatcapt=\box51
+)))) (../pdf/introduction.aux)
 \openout1 = `introduction.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 2.
@@ -724,7 +725,8 @@ LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
 LaTeX Font Info:    Checking defaults for TS1/cmr/m/n on input line 2.
 LaTeX Font Info:    Try loading font information for TS1+cmr on input line 2.
- (/usr/share/texmf-dist/tex/latex/base/ts1cmr.fd
+
+(/usr/share/texmf-dist/tex/latex/base/ts1cmr.fd
 File: ts1cmr.fd 1999/05/25 v2.5h Standard LaTeX font definitions
 )
 LaTeX Font Info:    ... okay on input line 2.
@@ -732,7 +734,7 @@ LaTeX Font Info:    Checking defaults for PD1/pdf/m/n on input line 2.
 LaTeX Font Info:    ... okay on input line 2.
 LaTeX Font Info:    Try loading font information for T1+pplx on input line 2.
 
-(/usr/share/texmf-dist/tex/latex/psnfss/t1pplx.fd
+(/usr/share/texmf/tex/latex/psnfss/t1pplx.fd
 File: t1pplx.fd 2004/09/06 font definitions for T1/pplx.
 )
 (/usr/share/texmf-dist/tex/latex/upquote/upquote.sty
@@ -741,17 +743,17 @@ tim
 )
 (/usr/share/texmf-dist/tex/context/base/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
-\scratchcounter=\count159
+\scratchcounter=\count161
 \scratchdimen=\dimen160
-\scratchbox=\box50
-\nofMPsegments=\count160
-\nofMParguments=\count161
-\everyMPshowfont=\toks24
-\MPscratchCnt=\count162
+\scratchbox=\box52
+\nofMPsegments=\count162
+\nofMParguments=\count163
+\everyMPshowfont=\toks26
+\MPscratchCnt=\count164
 \MPscratchDim=\dimen161
-\MPnumerator=\count163
-\makeMPintoPDFobject=\count164
-\everyMPtoPDFconversion=\toks25
+\MPnumerator=\count165
+\makeMPintoPDFobject=\count166
+\everyMPtoPDFconversion=\toks27
 ) (/usr/share/texmf-dist/tex/latex/oberdiek/epstopdf-base.sty
 Package: epstopdf-base 2010/02/09 v2.5 Base part for package epstopdf
 
@@ -768,11 +770,12 @@ File: epstopdf-sys.cfg 2010/07/13 v1.3 Configuration of (r)epstopdf for TeX Liv
 e
 ))
 Package caption Info: Begin \AtBeginDocument code.
+Package caption Info: float package is loaded.
 Package caption Info: hyperref package is loaded.
 Package caption Info: listings package is loaded.
 Package caption Info: End \AtBeginDocument code.
-\c@lstlisting=\count165
-\AtBeginShipoutBox=\box51
+\c@lstlisting=\count167
+\AtBeginShipoutBox=\box53
 Package hyperref Info: Link coloring OFF on input line 2.
 
 (/usr/share/texmf-dist/tex/latex/hyperref/nameref.sty
@@ -781,7 +784,7 @@ Package: nameref 2012/10/27 v2.43 Cross-referencing by name of section
 (/usr/share/texmf-dist/tex/generic/oberdiek/gettitlestring.sty
 Package: gettitlestring 2010/12/03 v1.4 Cleanup title references (HO)
 )
-\c@section@level=\count166
+\c@section@level=\count168
 )
 LaTeX Info: Redefining \ref on input line 2.
 LaTeX Info: Redefining \pageref on input line 2.
@@ -791,46 +794,130 @@ LaTeX Info: Redefining \nameref on input line 2.
 \@outlinefile=\write3
 \openout3 = `introduction.out'.
 
-LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <17.28> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 3.
 LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <14.4> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 9.
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 3.
 LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <12> not available
-(Font)              Font shape `T1/pplx/b/n' tried instead on input line 23.
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 8.
+ [1
+
+{/home/cian/.texlive/texmf-var/fonts/map/pdftex/updmap/pdftex.map}]
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10.95> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 62.
 
 
-LaTeX Warning: Citation `sift' on page 1 undefined on input line 23.
+LaTeX Warning: Reference `justachump' on page 2 undefined on input line 62.
 
-Package atveryend Info: Empty hook `BeforeClearDocument' on input line 25.
-[1
 
-{/var/lib/texmf/fonts/map/pdftex/updmap/pdftex.map}]
-Package atveryend Info: Empty hook `AfterLastShipout' on input line 25.
+LaTeX Warning: Reference `justwally' on page 2 undefined on input line 63.
+
+
+LaTeX Warning: Reference `justwenda' on page 2 undefined on input line 64.
+
+<img/just_a_chump.png, id=23, 108.405pt x 142.5325pt>
+File: img/just_a_chump.png Graphic file (type png)
+
+<use img/just_a_chump.png>
+Package pdftex.def Info: img/just_a_chump.png used on input line 74.
+(pdftex.def)             Requested size: 82.44489pt x 108.40057pt.
+LaTeX Font Info:    Font shape `T1/pplx/bx/n' in size <10> not available
+(Font)              Font shape `T1/pplx/b/n' tried instead on input line 75.
+ <img/just_wally.png, id=25, 730.73pt x 1561.835pt>
+File: img/just_wally.png Graphic file (type png)
+
+<use img/just_wally.png>
+Package pdftex.def Info: img/just_wally.png used on input line 80.
+(pdftex.def)             Requested size: 50.71031pt x 108.40057pt.
+ <img/just_wenda.png, id=26, 730.73pt x 1561.835pt>
+File: img/just_wenda.png Graphic file (type png)
+
+<use img/just_wenda.png>
+Package pdftex.def Info: img/just_wenda.png used on input line 86.
+(pdftex.def)             Requested size: 50.71031pt x 108.40057pt.
+
+
+LaTeX Warning: Citation `missingpersons' on page 2 undefined on input line 97.
+
+LaTeX Font Info:    Try loading font information for OT1+pplx on input line 103
+.
+(/usr/share/texmf/tex/latex/psnfss/ot1pplx.fd
+File: ot1pplx.fd 2004/09/06 font definitions for OT1/pplx.
+)
+LaTeX Font Info:    Try loading font information for OML+zplm on input line 103
+.
+
+(/usr/share/texmf/tex/latex/psnfss/omlzplm.fd
+File: omlzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OML/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMS+zplm on input line 103
+.
+
+(/usr/share/texmf/tex/latex/psnfss/omszplm.fd
+File: omszplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMS/zplm.
+)
+LaTeX Font Info:    Try loading font information for OMX+zplm on input line 103
+.
+
+(/usr/share/texmf/tex/latex/psnfss/omxzplm.fd
+File: omxzplm.fd 2002/09/08 Fontinst v1.914 font definitions for OMX/zplm.
+)
+LaTeX Font Info:    Try loading font information for OT1+zplm on input line 103
+.
+
+(/usr/share/texmf/tex/latex/psnfss/ot1zplm.fd
+File: ot1zplm.fd 2002/09/08 Fontinst v1.914 font definitions for OT1/zplm.
+)
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 103.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 103.
+LaTeX Font Info:    Font shape `U/msa/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 103.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 11.40997pt on input line 103.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 8.33606pt on input line 103.
+LaTeX Font Info:    Font shape `U/msb/m/n' will be
+(Font)              scaled to size 6.25204pt on input line 103.
+
+
+LaTeX Warning: Citation `stillrunning' on page 2 undefined on input line 104.
+
+[2 <../img/just_a_chump.png> <../img/just_wally.png> <../img/just_wenda.png>]
+
+LaTeX Warning: Citation `electrofishing' on page 3 undefined on input line 115.
+
+
+Package atveryend Info: Empty hook `BeforeClearDocument' on input line 145.
+[3] [4]
+Package atveryend Info: Empty hook `AfterLastShipout' on input line 145.
  (../pdf/introduction.aux)
-Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 25.
-Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 25.
+Package atveryend Info: Executing hook `AtVeryEndDocument' on input line 145.
+Package atveryend Info: Executing hook `AtEndAfterFileList' on input line 145.
 Package rerunfilecheck Info: File `introduction.out' has not changed.
 (rerunfilecheck)             Checksum: <no file>.
 
 
 LaTeX Warning: There were undefined references.
 
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
  ) 
 Here is how much of TeX's memory you used:
- 15207 strings out of 493488
- 249571 string characters out of 3146892
- 324097 words of memory out of 3000000
- 18297 multiletter control sequences out of 15000+200000
- 17681 words of font info for 30 fonts, out of 3000000 for 9000
+ 15482 strings out of 493315
+ 253903 string characters out of 6143705
+ 337384 words of memory out of 5000000
+ 18673 multiletter control sequences out of 15000+600000
+ 30179 words of font info for 58 fonts, out of 8000000 for 9000
  957 hyphenation exceptions out of 8191
- 60i,5n,42p,529b,327s stack positions out of 5000i,500n,10000p,200000b,50000s
+ 60i,8n,42p,603b,517s stack positions out of 5000i,500n,10000p,200000b,80000s
 {/usr/share/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/share/texmf-dist/fon
 ts/type1/urw/palatino/uplb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/palatin
 o/uplr8a.pfb>
-Output written on ../pdf/introduction.pdf (1 page, 36652 bytes).
+Output written on ../pdf/introduction.pdf (4 pages, 434808 bytes).
 PDF statistics:
- 29 PDF objects out of 1000 (max. 8388607)
- 23 compressed objects within 1 object stream
- 5 named destinations out of 1000 (max. 500000)
- 9 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 62 PDF objects out of 1000 (max. 8388607)
+ 47 compressed objects within 1 object stream
+ 13 named destinations out of 1000 (max. 500000)
+ 40 words of extra memory for PDF output out of 10000 (max. 10000000)
 
