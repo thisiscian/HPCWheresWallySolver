@@ -10,7 +10,7 @@
     \end{equation}
     Equation \ref{speedupdef} describes the speedup of a system.
     Here $N$ is the number of computing units (threads, processors etc.), $T_\text{serial}$ is the time the serial program takes and $T_\text{parallel}$ is the parallel time.
-    For most systems, the maximum speedup possible is $N$; 2 computing units working on a parallel program should be twice as fast as a single unit. 
+    For most systems, the maximum speedup possible is $N$; 2 computing units working on a problem will solve it twice as fast as a single unit. 
 
     Most implementations do not achieve this, especially for larger numbers of computing units.
     It is worth noting that some programs actually produce super-linear speedup \cite{superlinear}.
@@ -21,7 +21,7 @@
     An example of this is having a program that calculates the sum of each element in a 1024x1024x1024 matrix.
     The number of elements being added is very large, so there is plenty of scope for a massively parallel system.
 
-    Of course, the scaling is not strong at all points.
+    Of course, the scaling is not strong for an infinite number of processors.
     For more than 1024x1024x512 processors (a minimum of two elements per processor is needed for addition), there is not enough work to be done per processor.
     This inherently has a negative effect on the speedup.
     The scaling will most likely stop being strong before this, due to Amdahl's law, seen in equation \ref{amdahl}.
@@ -39,6 +39,8 @@
     
     In spite of this, parallel programs regularly achieve `weak scaling'.
     This is the case if a program scales with the number of cores for a fixed amount of work per computing unit.
+
+
     A trivial example of weak scaling is having each processor calculate $\pi$ to 10 digits.
     The problem size is fixed per processor, but the overall work increases with the number of processors.
     \subsection{Shared Memory Parallelism}
@@ -89,6 +91,6 @@
     A beyond Wally example would be in detecting employees going into work on a flexitime basis.
     This would use photos of each employee combined with CCTV to note the time that workers enter and leave their workplace.
     Users would not need any form of ID other than their own faces, and this can be combined with existing security systems.    
-
+    \biblio
 \end{document}
 

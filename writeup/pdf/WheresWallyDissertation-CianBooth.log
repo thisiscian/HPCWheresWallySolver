@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Arch Linux) (format=pdflatex 2013.8.8)  13 AUG 2013 22:52
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (TeX Live 2013/Arch Linux) (format=pdflatex 2013.8.8)  14 AUG 2013 07:40
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -923,8 +923,8 @@ been already used, duplicate ignored
                    \relax 
 l.144 
        [3 <./img/just_a_chump.png> <./img/just_wally.png> <./img/just_wenda.png
->]) (./tex/background_information.tex [4] [5]) (./tex/literature_review.tex)
-(./tex/colour_analysis.tex [6]
+>]) (./tex/background_information.tex [4] [5]) (./tex/literature_review.tex
+[6]) (./tex/colour_analysis.tex
 Overfull \hbox (19.37007pt too wide) in paragraph at lines 20--21
 []\T1/pplx/m/n/10.95 Strings de-scrib-ing the lim-its of colours to al-low, in 
 the form "#RRGGBB" 
@@ -1302,7 +1302,7 @@ nts/cm/cmsy10.pfb></usr/share/texmf-dist/fonts/type1/fpl/fplmr.pfb></usr/share/
 texmf-dist/fonts/type1/fpl/fplmri.pfb></usr/share/texmf-dist/fonts/type1/urw/pa
 latino/uplb8a.pfb></usr/share/texmf-dist/fonts/type1/urw/palatino/uplr8a.pfb></
 usr/share/texmf-dist/fonts/type1/urw/palatino/uplri8a.pfb>
-Output written on pdf/WheresWallyDissertation-CianBooth.pdf (26 pages, 1348853 
+Output written on pdf/WheresWallyDissertation-CianBooth.pdf (26 pages, 1348932 
 bytes).
 PDF statistics:
  656 PDF objects out of 1000 (max. 8388607)
