@@ -1,9 +1,13 @@
 #!/bin/bash
 
-echo "#threads iteration time"
-for (( x=1; x<=16; x++ )); do
-  for (( y=1; y<=16; y++ )); do
-    echo $y $x $(./bench_thickness $y $x)
+iterations=4
+echo "#threads datasize time_p "
+for (( x=1; x<=$iterations; x++ )); do
+	datasize=$(echo "scale=10; $x/$iterations" | bc )
+	serial=$(./bench_thickness $nthreads $datasize 100) 
+	echo $nthreads $datasize $serial $serial
+  for (( nthreads=2; nthreads<=16; nthreads*=2 )); do
+    echo $nthreads $x $(./bench_thickness $nthreads $x 100) $serial
   done
   echo
 done
