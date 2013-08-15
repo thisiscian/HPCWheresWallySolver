@@ -7,7 +7,8 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 
 include(source)
-set(OpenCV_DIR /Home/s1256705/opencv-2.4.6.1/test)
+set(OpenCV_DIR /usr/share/opencv)
+#set(OpenCV_DIR /Home/s1256705/opencv-2.4.6.1/test)
 find_package(OpenCV REQUIRED)
 if(OpenCV_found)
   include_directories(${OpenCV_INCLUDE_DIR})

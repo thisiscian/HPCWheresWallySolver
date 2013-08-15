@@ -1,5 +1,5 @@
 #!/usr/bin/env gnuplot
-set key top right
+set key bottom right
 set border 3
 set tics nomirror out
 set linetype 1 lc rgb "#80D480" lw 5
@@ -12,9 +12,9 @@ set xlabel "Number of Threads"
 set ylabel "Speedup"
 set output "thickness_benchmark.pdf"
 
-plot [:][1:3]for[i=0:3] "thickness.dat" index i u 1:($4/$3) w lp title "#iterations=".(2**(i)), x title "linear speedup"
+plot [:][1:5]for[i=0:3] "thickness.dat" index i u 1:($5/$3) w lp title "relative problem size=".(i+1), x title "linear speedup"
 
-
+set key top right
 set output "thickness_time.pdf"
 set ylabel "time (s)"
-plot for[i=0:3] "thickness.dat" index i u 1:3 w lp title "#iterations=".(2**(i))
+plot for[i=0:3] "thickness.dat" index i u 1:3 w lp title "relative problem size=".(i+1)

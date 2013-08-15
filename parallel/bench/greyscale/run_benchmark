@@ -1,0 +1,20 @@
+#!/bin/bash
+
+iterations=4
+echo "#threads datasize time_p "
+for (( x=1; x<=$iterations; x++ )); do
+	datasize=$(echo "scale=10; $x/$iterations" | bc )
+	serial=$(./bench_greyscale 1 $datasize 100) 
+	echo 1 $datasize $serial $serial
+  for (( nthreads=2; nthreads<=32; nthreads*=2 )); do
+    echo $nthreads $datasize $(./bench_greyscale $nthreads $datasize 100) $serial
+  done
+    echo 48 $datasize $(./bench_greyscale 48 $datasize 100) $serial
+    echo 52 $datasize $(./bench_greyscale 52 $datasize 100) $serial
+    echo 56 $datasize $(./bench_greyscale 56 $datasize 100) $serial
+    echo 60 $datasize $(./bench_greyscale 60 $datasize 100) $serial
+    echo 64 $datasize $(./bench_greyscale 64 $datasize 100) $serial
+  echo
+	echo
+done
+

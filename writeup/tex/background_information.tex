@@ -1,7 +1,122 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
-  \section{Background Information}
-    \subsection{Parallel Programming}
+\section{Background Information}
+  \subsection{Computer Vision}
+    Computer vision is a wide ranging field, with a large variety of algorithms and libraries available for use.
+    It is involved with topics such as artificial intelligence \cite{aivis}, machine vision \cite{robovision}, and image processing.
+    Computer vision also draws upon a large range of established fields, such as mathematics, physics and neurobiology.
+    
+%%    In 1965, Roberts wrote the first paper on computer vision \cite{machine3d}.
+%%    Since then, 
+    Computer vision techniques can be used for numerous tasks, including motion analysis, image restoration and object recognition.
+
+    Motion analysis attempts to determine estimates of object velocities in a stream of images.
+    This could be due to the motion of the camera, motion of visible objects, or a combination of the two.
+    This has broad uses, but has seen a rise in public interest with devices like the Xbox Kinect\cite{kinect}.
+    The Kinect enables the user to interface with the Xbox through by tracking the motion of their body.
+    Users do not need any control to select menu options, scroll windows or even play games.
+    This is both a good example of how computer vision can be applied, and a good indication of how ready it is for everyday use.
+
+    Image restoration is the recovery of corrupt or otherwise marred images.
+    One of the most interesting applications of this is in the recovery of medical image \cite{imagerecovery}.
+    Obtaining high resolution images from MRI scans normally requires a large number of measurements.
+    This is time consuming, which can be distressing for the patient and expensive for the hospital.
+    However, taking a smaller number of measurements on purpose can help to improve the situation without forgoing quality.
+    In this case, this is because image restoration allows the reconstruction of high resolution images with only a small amount of input data.
+    
+    The computer vision topic that concerns Where's Wally? images the most is object recognition.
+    This is covered in depth in the following section.
+    
+  \subsection{Object Recognition}
+    Finding Wally in a Where's Wally? puzzle is, by definition, a problem of object recognition.
+    Wally must be correctly identified from other characters, furniture and even food.
+    To this end, the image needs to be analysed so that the correct Wally can be located.
+    We discuss three of most directly useful techniques for defining objects in a cartoon.
+    \subsection{Shape and Colour Analysis}
+      One obvious way of analysing an image is to break it down into shapes and colours.
+      In linguistic terms, it is easiest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
+      This is conceptually simple to explain and understand, and thus is more intuitive to program.
+
+      Most images are saved as raster images (e.g. PNG, BMP, GIF), which is a 2D array of colours that directly map to pixels on the screen.
+      This is opposed to vector images, which store the location and colour of geometric primitives (squares, circles, triangles, etc.).
+      It is often much simpler to perform shape and colour analysis on vector images.
+      However, input devices such as webcams and scanners typically produce images in raster formats.
+      This is because the input devices do not have the capability of recognising objects in the images they produce.
+
+      Regardless of format, methods of colour analysis are simple to implement programmatically.
+      This is because colour is intrinsic to all methods of storing the properties of an image.
+      It is nearly impossible to describe a specific object without discussing some aspect of it's colour, even it that colour is on the greyscale.
+
+      Shape analysis, on the other hand, is considerably more difficult for raster images.
+      Shape boundaries must be specifically located.
+      Global boundares are normally found through edge detection.
+      Global boundaries here, is a single object composed of every boundary in the image.
+      To find the specific boundaries, which are required to detect shapes, more analysis is required.
+      The global boundaries is analysed to find points of boundary intersection, and the curvature between these points.
+      The group of curves must then be examined to find the sort of shapes exist.
+
+      Shape and colour analysis allows for a descriptional, heuristic method for locating characters.
+      No previous image of Wally is required, only a description, such as "red and white stripes" or "black glasses".
+      This allows users to extend the solution past Wally, and towards other characters, who have not previously been seen.
+      Care must be taken, however, as this form of analysis can lead to false positives.
+      To combat this, many different types of analysis should be combined.
+      For example, a match for "red and white jumpers" that also has a nearby match for "skin colour" would produce a result that has more confidence of being correct.
+
+      An example of the usefulness of this, beyond Where's Wally, could be found in augmented reality (AR) technology, such as Google Glass.
+
+      A common experience is losing ones keys.
+      Users with access to AR devices could use colour and shape analysis to enhance their own searching (i.e. if they are visible, but in a cluttered area).
+      As keys, with some exceptions, have a few well defined shapes and possible colour schemes; the device would not have to store what the specific keys look like in advance.
+      Assuming that parallelism is available in such devices, this technique could potentially provide real time analysis of the scene, significantly helping the user.
+    \subsubsection{Feature Analysis}
+      Some of the most reliable computer vision algorithms (such as SIFT \cite{sift}), were developed while considering the neuroscience of human vision.
+      Tanaka\cite{mechobjrecog} and Perrett and Oram\cite{perretthv} studied this in detail.
+      They found that human vision identifies objects with features that are invariant to brightness, scale and position.
+      Explicitly, this means that humans are able to recognise the same objects under differing light levels, at different distances to us, and in different positions in a room.
+      These results have been used as inspiration for feature analysis.
+
+      This technique finds `features'; regions of an image which are scale, rotation and illumination invariant.
+      These features are most immediately useful when compared with the features of another image.
+      For example, the features from a solo image Wally can be used to locate the same Wally in a group image.
+
+      The image that is being searched is often referred to as the Scene.
+      Images that are being searched for in the Scene, are known as Objects
+      (Scene and Object are capitalised here to avoid confusion with the more general term of object).
+      The keypoints of objects are known properties, and can be searched against the unknown keypoints of the scene.
+
+      This method generally requires an existing image to find Wally, which restricts the flexibility of the search.
+      When correctly implemented, this method is very reliable.
+      If Wally is not obscured, results found can be assigned high confidence.
+      Normally though, Wally is obscured, so this method should be combined with other techniques.
+      This helps to provide more flexibility.
+
+      Feature analysis is useful in the manufacturing industry.
+      Mass produced products need to be checked for defects.
+      Due to the regularity of most production systems, this is ideal for feature analysis.
+      If products in the Scene do not match the keypoints of the list of Objects, then the product can be determined to be faulty.
+      This can easily be parallelised; multiple production streams can be scanned simultaneously. %% flesh this sentence a bit
+  \subsection{Computer Vision Libraries}
+    This development of computer vision has led to the creation of many libraries made soley for the purpose of solving computer vision problems.
+    Arguably, the chief among these is OpenCV.
+
+    OpenCV is an open source library used for implementing a wide range of computer vision techniques. 
+    Using in-built functions, users have immediate and easy access to complicated algorithms.
+    It is available in three of the most major operating systems, linux, mac and windows.
+    OpenCV is aimed at developing real-time solutions to computer vision problems \cite{learningopencv}.
+    The online documentation for OpenCV is extensive, and include tutorials for common topics, such as image recognition.
+    These properties make OpenCV ideal for implementing computer vision on a wide scale.
+    
+    %% other libraries
+    Another computer vision library is libCVD, based in Cambridge University.
+    This is a versatile library, which is designed for speed and portability.
+    Unlike OpenCV, it stores in pixels in easily accessible STL vectors.
+    This is useful, because it makes accessing pixels more intuitive.
+    However, libCVD does not have the range of implemented computer vision techniques found in OpenCV.
+    It also lacks the level of documentation that OpenCV offers.
+    LibCVD is sometimes used in combination with OpenCV \cite{translatar}.
+    This allows the user access to the breadth of functions available in OpenCV, as well as the 
+
+  \subsection{Parallel Programming}
     When implementing parallelism, it is desirable to not only speed up a program, but also to use an appropriate number of cores.
     A useful definition is one of speedup, the amount faster that a parallelised version of a program is to an efficient serial implementation.
     \begin{equation}
@@ -58,147 +173,101 @@
     It is clear that Gustafson's Law produces better scaling, as long as $N$ scales with $P$.
     A trivial example of weak scaling is calculating $\pi$ to 10 digits on each processor, and then adding that to some shared variable.
     The problem size is fixed per processor, but the overall work increases with the number of processors.
-    \subsection{Shared Memory Parallelism}
-      This project will implement parallelism through the shared memory multiprocessing API known as OpenMP.
-  
-      %% what is shared memory
-      Shared memory multiprocessing is a form of parallelism that relies on the presence of shared memory.
-      This is a region of memory that can be accessed equally by several processors.
-      Normal examples of this are in multicore systems, which have a shared L2 or L3 cache.
-      Having shared memory allows data to be easily shared amongst processors.
-      This removes redundant copying of data from main memory, and reduces the overall cache usage.
-      Using less of the available cache means that a larger amount of other values can be stored, also reducing calls to main memory.
-      In a similar way, messages can also be passed between processors at high speeds.
-      Communication through a local cache is considerably faster than typical messaging systems.
-      Most recently manufactured computers are multicore, so it is likely that everyday devices will be able to benefit from shared memory parallelism.
+  \subsection{Shared Memory Parallelism}
+    This project will implement parallelism through the shared memory multiprocessing API known as OpenMP.
 
-      %% openmp
-      OpenMP implements shared memory multiprocessing through the use of directives and routines.
-      A directive is a compiler flag that informs the compiler that the user intends for a specific behaviour to occur.
-      These are simple to include into a program, often requiring little to no changes to a serial program to parallelise it.
-      Listing \ref{parhey} shows the simplicity of implementing parallelism.
-      \lstset{language=C++}
-      \begin{lstlisting}[caption = 'A simple loop parallelised with OpenMP', label=parhey]
-        // a simple for loop
-        int x[4];
-        for(int i=0; i<4; i++) {
-          x[i] = i;
-        }
+    %% what is shared memory
+    Shared memory multiprocessing is a form of parallelism that relies on the presence of shared memory.
+    This is a region of memory that can be accessed equally by several processors.
+    Normal examples of this are in multicore systems, which have a shared L2 or L3 cache.
+    Having shared memory allows data to be easily shared amongst processors.
+    This removes redundant copying of data from main memory, and reduces the overall cache usage.
+    Using less of the available cache means that a larger amount of other values can be stored, also reducing calls to main memory.
+    In a similar way, messages can also be passed between processors at high speeds.
+    Communication through a local cache is considerably faster than typical messaging systems.
+    Most recently manufactured computers are multicore, so it is likely that everyday devices will be able to benefit from shared memory parallelism.
 
-        // and again parallelised with OpenMP
-        int y[4];
-        #pragma omp parallel for default(none) shared(y)
-        for(int i=0; i<4; i++) {
-          y[i] = i;
-        }
-      \end{lstlisting}
+    %% openmp
+    OpenMP implements shared memory multiprocessing through the use of directives and routines.
+    A directive is a compiler flag that informs the compiler that the user intends for a specific behaviour to occur.
+    These are simple to include into a program, often requiring little to no changes to a serial program to parallelise it.
+    Listing \ref{parhey} shows the simplicity of implementing parallelism.
+    \lstset{language=C++}
+    \begin{lstlisting}[caption = 'A simple loop parallelised with OpenMP', label=parhey]
+      // a simple for loop
+      int x[4];
+      for(int i=0; i<4; i++) {
+        x[i] = i;
+      }
 
-      %% issues with shared memory multiprocessing
-      There are some issues that come with the use of shared memory multiprocessing.
-      The main one is that scaling is often poor.
-      This is due to the fact that there is a fixed amount of processors attached to any block of shared memory.
-      Once the system is scaled beyond this amount, the program starts to become dominated by the speed of message between the two memory systems.
-      Futhermore, the speed at which the CPU can write to the memory is limited.
-      Increasing the number of processors attempting to write to memory through the same CPU causes a bottleneck to occur.
- 
-      %%Shared memory as opposed to message passing.
-      Another popular form of parallelism is through message passing.
-      This is, unsurprisngly, the practice of passing messages between processors.
-      In this way, data can be shared between processors, allowing for processors to interact.
-      Unlike shared memory parallelism, message passing protocols typically do not rely on shared memory.
-      Instead, messages are often sent over the bus, meaning that the processors being used can be in different nodes.
+      // and again parallelised with OpenMP
+      int y[4];
+      #pragma omp parallel for default(none) shared(y)
+      for(int i=0; i<4; i++) {
+        y[i] = i;
+      }
+    \end{lstlisting}
 
-      One of the most commonly implemented standard is the Message Passing Interface (MPI).
-      MPI scales to very large numbers of processors.
-      However, converting existing code for use in MPI is time consuming, often considerably increasing the maintenance for the code.
-      Listing \ref{parMPI} shows one potential way to parallelise the same loop from listing \ref{parhey} using MPI.
-      \begin{lstlisting}[caption = 'A simple loop parallelised with MPI', label=parMPI]
-        // a simple for loop
-        int x[4];
-        for(int i=0; i<4; i++) {
-          x[i] = i;
-        }
+    %% issues with shared memory multiprocessing
+    There are some issues that come with the use of shared memory multiprocessing.
+    The main one is that scaling is often poor.
+    This is due to the fact that there is a fixed amount of processors attached to any block of shared memory.
+    Once the system is scaled beyond this amount, the program starts to become dominated by the speed of message between the two memory systems.
+    Futhermore, the speed at which the CPU can write to the memory is limited.
+    Increasing the number of processors attempting to write to memory through the same CPU causes a bottleneck to occur.
 
-        // and again parallelised with MPI
-        int y[4];
-        int rank;
-        MPI_Status status;
-        MPI_Comm_rank(&rank);
-        if(rank == 0) {
-          y[0] = 0;
-          MPI_Recv(&y[1], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
-          MPI_Recv(&y[2], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
-          MPI_Recv(&y[3], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
-        } else {
-          MPI_Send(rank,1, MPI_INT,0,0, MPI_COMM_WORLD);
-        }
-      \end{lstlisting}
+    %%Shared memory as opposed to message passing.
+    Another popular form of parallelism is through message passing.
+    This is, unsurprisngly, the practice of passing messages between processors.
+    In this way, data can be shared between processors, allowing for processors to interact.
+    Unlike shared memory parallelism, message passing protocols typically do not rely on shared memory.
+    Instead, messages are often sent over the bus, meaning that the processors being used can be in different nodes.
 
-      MPI requires experienced users to useful, the uninitiated may have difficulty implementing the correct method of parallelism for a given problem.
-      Users of a parallel computer vision system may have to produce definitions as they go.
-      The complexity of MPI restricts the amount of users who could generate new definitions.
-      This runs counter to an everyday use of parallel computer vision; expertise would be required to tailor it every problem it could be applied to.
-      
-      OpenMP is a good fit for implementing parallelism for everyday parallel computer vision.
-      Existing code can be easily modified, and parallelism does not require expertise in parallel techniques.
-      The scalability issues associated with shared memory parallelism are unlikely to be prominent in everyday systems.
-      %% wrap up better you chump
-      
-    \subsection{Computer Vision Libraries}
-      Computer vision is a sprawling discipline, with decades of research behind it.
-      This has led to the development of large libraries that can solve many computer vision problems.
-      
-      %% opencv
-      OpenCV is an open source library used for implementing a wide range of computer vision techniques. 
-      It is available in three of the most major operating systems, linux, mac and windows.
-      OpenCV is aimed at developing real-time solutions to computer vision problems \cite{learningopencv}.
-      %% other libraries
+    One of the most commonly implemented standard is the Message Passing Interface (MPI).
+    MPI scales to very large numbers of processors.
+    However, converting existing code for use in MPI is time consuming, often considerably increasing the maintenance for the code.
+    Listing \ref{parMPI} shows one potential way to parallelise the same loop from listing \ref{parhey} using MPI.
+    \begin{lstlisting}[caption = 'A simple loop parallelised with MPI', label=parMPI]
+      // a simple for loop
+      int x[4];
+      for(int i=0; i<4; i++) {
+        x[i] = i;
+      }
 
-    \subsection{Parallel Computer Vision}
-    \subsection{Parallel Image Recognition} %%??
-    \subsection{Shape and Colour Analysis}
-    One obvious way of analysing an image is to break it down into shapes and colours.
-    In linguistic terms, it is easiest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
-    This is conceptually simple to explain and understand, and thus is more intuitive to program.
-    Most images are saved as raster images (e.g. PNG, BMP, GIF), which is a 2D array of colours that directly map to set of pixels on the screen.
-    This is opposed to vector images that store the location and colour of geometric primitives (squares, circles, triangles, etc.).
-    Vector images, rather than raster images, are directly easier to perform shape and colour analysis on.
-    However, input devices such as webcams and scanners typically produce images in raster formats.
+      // and again parallelised with MPI
+      int y[4];
+      int rank;
+      MPI_Status status;
+      MPI_Comm_rank(&rank);
+      if(rank == 0) {
+        y[0] = 0;
+        MPI_Recv(&y[1], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
+        MPI_Recv(&y[2], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
+        MPI_Recv(&y[3], 1, MPI_INT,0,0,MPI_COMM_WORLD, &status);
+      } else {
+        MPI_Send(rank,1, MPI_INT,0,0, MPI_COMM_WORLD);
+      }
+    \end{lstlisting}
 
-    Regardless of format, methods of colour analysis are simple to implement programmatically.
-    This is because colour is intrinsic to all methods of storing the data of an image.
-    Shape analysis is less simple for raster images.
-    Shape boundaries must be found, which is normally done through edge detection.
-    These boundaries are then analysed to find points of intersection, and the curvature between them.
-    The group of curves must then be examined to find what shapes exist.
-
-    These methods allow for a descriptional, heuristic method for locating characters.
-    No previous image of Wally is required, only a description, such as "red and white stripes" or "black glasses".
-    This allows users to extend the solution past Wally, and towards other characters, who do not have to be seen prior.
-    This form of analysis can lead to false positives, and should be combined with other results.
-
-    An example of the usefulness of this, beyond Where's Wally, could be found in augmented reality technology, such as Google Glass.
-    A common problem people experience is losing their keys.
-    Users with access to AR devices could use colour and shape analysis to enhance their searching (i.e. if they are visible, but in a cluttered area).
-    As keys generally have a few well defined shapes and colour schemes, the device would not have to store what the keys look like in advance.
-    Assuming that parallelism is available, this could potentially be done faster than the human eye can search, helping the user significantly.
+    MPI requires experienced users to useful, the uninitiated may have difficulty implementing the correct method of parallelism for a given problem.
+    Users of a parallel computer vision system may have to produce definitions as they go.
+    The complexity of MPI restricts the amount of users who could generate new definitions.
+    This runs counter to an everyday use of parallel computer vision; expertise would be required to tailor it every problem it could be applied to.
     
-    \subsection{Feature Analysis}
-    Some of the most reliable computer vision algorithms (such as SIFT \cite{sift}), were developed while considering the neuroscience of human vision.
-    Tanaka\cite{mechobjrecog} and Perrett and Oram\cite{perretthv} found that human object recognition identifies objects with features that are invariant to brightness, scale and position.
-    These results have been used as inspiration for feature analysis.
-    This technique finds features; regions of an image which are scale, rotation and illumination invariant.
-    These features are most immediately useful when compared with the features of another image.
-    For example, the features from an image of just Wally can be used to locate Wally in a normal puzzle image.
-
-    This method generally requires an existing image to find Wally, which restricts the flexibility of the search.
-    However, this method is very reliable, as long as Wally is not obscured, it will likely locate him correctly.
-    Normally, Wally is obscured, so this method should be combined with other techniques.
-
-    Feature analysis benefits from task farming when there is an image needs to be searched for a large number of sub-images.
-    A beyond Wally example would be in detecting employees going into work on a flexitime basis.
-    This would use photos of each employee combined with CCTV to note the time that workers enter and leave their workplace.
-    Users would not need any form of ID other than their own faces, and this can be combined with existing security systems.    
-    \biblio
+    OpenMP is a good fit for implementing parallelism for everyday parallel computer vision.
+    Existing code can be easily modified, and parallelism does not require expertise in parallel techniques.
+    The scalability issues associated with shared memory parallelism are unlikely to be prominent in everyday systems.
+    %% wrap up better you chump
+  \subsection{Parallel Computer Vision}
+    Computer Vision poses an interesting challenge for parallelisation.
+    In some regards, computer vision is a typical data parallel problem.
+    Data parallelism, uses the available computing units to act on subsets of the total data.
+    Such program simply needs to act as efficiently as possible on multi-dimensional arrays (normally 2 physical dimensions each with 3 colour dimensions).
+    This a common form of parallelism, implemented in fields such as parallel fourier transforms, simulation of crystalline matter or analysing a database.
+    Image processing, a subset of computer vision, normally falls under this category.
+    
+    More complicated elements of computer vision begin to fit task parallelism better.
+    
+  \biblio
 \end{document}
 

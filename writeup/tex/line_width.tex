@@ -1,25 +1,25 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
   \section{Line Width Estimation}
-
   In cartoon images, characters and objects are regularly bounded by black lines.
-  Within some image style, these lines can be taken as a reference point for the scale of the image.
+  Within a given image style, these lines can be taken as a reference point for the scale of the image.
   For example, take one image with lines that are 4 pixels wide and another with lines that are 2 pixels wide.
-  It can be assumed that the first image is at twice the scale of the second.
-  This is useful for putting an upper limit on how large a match between an object and a scene can be.
-  Estimating the line width can be done through the combination of a few techniques.
+  It can be inferred that the first image is twice the scale of the second.
+  This can be used to put an upper limit on how large a match between an Object and a Scene can be.
+  Estimating the line width can be done using a combination of a few techniques.
 
-  For simple images, with lines that do not intersect, a few steps need only be followed.
-  The first is to produce a mask of all the black in the image.
-  The next step is to count the distance to the nearest zero-valued pixel (called zero-distance hereafter).
-  This can be done with the OpenCV \texttt{distanceTransform} function. %% reference this
-  The final step is to find the maximum zero-distance in the image.
+  For images with no intesecting lines, only a few steps need be followed.
+  \begin{itemize}
+    \item Produce a mask of all the black in the image.
+    \item Count the distance to the nearest zero-valued pixel (called zero-distance hereafter). This can be done with the OpenCV \texttt{distanceTransform} function. %% reference this
+    \item Find the maximum zero-distance in the image.
+  \end{itemize}
   In the example image, figure \ref{lineseven}, a 7 pixel wide line has a maximum zero-distance of 4.
   For an 8 pixel wide line, it follows that the zero-distance would be 4.
-  Thus, finding the maximum zero-distance could resolve line width of simple images to within 1 pixel.
+  The maximum zero-distance can resolve line width of simple images to within 1 pixel.
 
-  More complicated images, with intersecting lines, this method fails to produce correct results.
-  Figure \ref{linecross} shows a situation where the method is incorrect.
+  For images with intersecting lines, this method will fail to produce correct results.
+  Figure \ref{linecross} shows a situation where the method fails.
   Two orthogonal 3 pixel wide lines cross over each other, creating a maximum zero-distance of 4.
   This would indicate that the line width of this image is 7 or 8, which is wrong by nearly a factor of 3.
   Images with large regions of black shading would cause this method to fail with larger errors.
@@ -39,16 +39,21 @@
       \caption{Two intersecting lines, that are 3 pixels wide. The point of intersection produces a maximum zero-distance of 4}
       \label{linecross}
     \end{subfigure}
-    \caption{Two examples of lines with their zero-distances calculated.}
+    \caption[
+      Examples of the zero-distance of black lines  
+    ]{
+      Two examples of lines with their zero-distances calculated.
+    }
     \label{linewidthexamples}
   \end{figure}
 
-  A more complicated method, described below, relies on two statistical properties of the image;
-     the average distance of the pixels, and standard deviation of each pixel from the average distance.
+  A more complicated method, described in section \ref{zerodistsec}, relies on two statistical properties of the image;
+     the average zero-distance of the pixels and standard deviation of each pixel from that average.
   \subsection{Average Distance to a Zero Valued Pixel}
-    By simple inspection of figure \ref{lineseven}, it is clear that the average distance is dependent upon something approaching a sum of incremental integers.
+    \label{zerodistsec}
+    Inspecting figure \ref{lineseven}, it is clear that the average distance is dependent upon something approaching a sum of incremental integers.
     Lines with even and odd widths will differ slightly; even values have two maximum zero-distances, odd values only have one.
-    This can be seen in equation \ref{pixeldistanceexample}, where PixelDistance$(n)$ lists the zero-distances in an $n$ pixel wide line.
+    This can be seen in equations \ref{pixeldistanceexample}, where PixelDistance$(n)$ lists the zero-distances in an $n$ pixel wide line.
     \begin{align}
       \text{PixelDistances}(4) &= \{1,2,2,1\}\notag\\
       \text{PixelDistances}(5) &= \{1,2,3,2,1\}\notag\\
@@ -57,14 +62,14 @@
     \end{align}
     For a general $N$-pixel wide line, the sum of all values is in the range $[0,N/2]$ on one side, and $[N/2,0]$ on the other.
     This has the mathematical form of a geometric series.
-    This geometric can be conveniently expressed as simple formula, described in equation \ref{geometricsum}.
+    This particular geometric series can be conveniently expressed as simple formula, described in equation \ref{geometricsum}.
     \begin{equation}
       \text{Sum}(N):=\sum_{i=0}^{N} i = \frac{N(N+1)}{2}
       \label{geometricsum}
     \end{equation}
   
-    First, we consider even valued widths, as this is the simplest case.
-    This is can be calculated as twice the sum of integers in the range $[0,N/2]$, as seen in equation \ref{sumeven}.
+    Even valued widths are considered first, as this is the simplest case to analyse.
+    This can be calculated as twice the sum of integers in the range $[0,N/2]$, as seen in equation \ref{sumeven}.
     \begin{align}
       \text{EvenSum}(N):&=2\text{ Sum}(N/2)\notag\\
                         &=2\sum_{i=0}^{N/2}i\notag\\
@@ -109,11 +114,13 @@
     \begin{figure}[H]
       \centering
       \includegraphics[width=0.9\textwidth]{graphs/oddevenwidth.pdf}
-      \caption{Graph showing the estimation of the average distance to a zero valued pixel using the Odd and Even formulae.}
+      \caption[
+        Relationship between line width and mean zero-distance 
+      ]{Graph showing the estimation of the average distance to a zero valued pixel using the Odd and Even formulae.}
       \label{oddevenwidth}
     \end{figure}
 
-    Equation \ref{avgdistwidth} shows that there is an approximately linear relationship between the average zero-distance and the width of the line drawn.
+    Equation \ref{avgdistwidth} shows that there is an approximate linear relationship between the average zero-distance and the width of the line drawn.
     It is possible to invert this equation.
     This produces a formula, equation \ref{linewidtheq}, to calculate line width from the average zero-distance.
 
@@ -130,12 +137,11 @@
     This means that this method can be used only as a upper bound on the scaling between two images.
 
   \subsection{Standard Deviation in Distance to Zero Valued Pixels}
-    The line width can also be deduced from another calculable property of the system; the standard deviation.
+    The line width can be deduced from another calculable property of the system; the standard deviation.
     Standard deviation, here, is defined to be the normalised deviance of all pixels from the average position of each pixel, $x_i$.
     \[\text{StdDev}(N) := \sqrt{\frac{\sum \left(x_i-\text{AvgDist}(N)\right)^2}{N}}\]
     
-    To simplify the mathematics, we act on summation for now.
-    We will call this operand Deviance.
+    The sum, here called Deviance within the square root can be simplified.
     \[\text{Deviance}(N) := \sum_{i=0}^N\left(x_i-\text{AvgDist}(N)\right)^2 =
       \begin{cases}
         DevEven(N) \text{ if } N \text{ is even}\\
@@ -144,7 +150,7 @@
     \]
     As before, $x_i$ will take values from $[0,..,N,...0]$, and AvgDist$(N)$ is defined in equation \ref{avgdistwidth}.
     We will show the method for finding the standard deviation for even valued widths, odd values follow from above.
-    We can now write this equation (ignoring the nominal differences between odd and even values of $N$) as
+    We write the even equation as
     \begin{align}
       \text{DevEven}(N) &= 2\sum_{i=0}^{N/2}\left(i-\frac{N+2}{4}\right)\notag\\
         &=2\sum_{i=0}^{N/2}\left(i^2-2i\frac{N+2}{4}+\frac{(N+2)(N+2)}{16}\right)\notag\\
@@ -159,13 +165,12 @@
       \sum_{i=0}^N i^2 = \frac{1}{6}N(N+1)(2N+1)
       \label{geometricsumsq}
     \end{equation}
-    We can now continue expanding DevEven$(N)$;
+    Continuing the expansion of DevEven$(N)$;
     \begin{align}
       \text{DevEven}(N) &= \frac{1}{3}\frac{N}{2}(N/2+1)(N+1) - \frac{N(N+2)(N+2)}{4}+\frac{N(N+2)(N+2)}{16}\notag\\
-        &=...\notag\\
-     ...&=\frac{1}{48}\left(N^3-4N\right)
+      &=\frac{1}{48}\left(N^3-4N\right)
     \end{align}
-    Using this formula for DevEven, we can now calculate the standard deviance.
+    Using this formula for DevEven, the even width standard deviation becomes
     \begin{align}
       \text{StdDevEven}&=\sqrt{\frac{\text{DevEven}(N)}{N}}\notag\\
         &=\sqrt{\frac{N^3-4N}{48N}}\notag\\
@@ -195,7 +200,9 @@
     \begin{figure}[H]
       \centering
       \includegraphics[width=0.9\textwidth]{graphs/stddevwidth.pdf}
-      \caption{Graph showing the relationship between line width and the Standard Deviation of pixel distance to zero valued pixels.}
+      \caption[
+        Relationship between line width and standard deviation
+      ]{Graph showing the relationship between line width and the Standard Deviation of pixel distance to zero valued pixels.}
       \label{stddevwidth}
     \end{figure}
 
@@ -237,7 +244,9 @@
         \includegraphics{unsane_mask}
         \caption{The image after too many maxima have been removed, which would also distort the equation}
       \end{subfigure}
-      \caption{A representation of the removal of the highest zero-distance pixels, to reveal a sane mask}
+      \caption[
+        Maximum zero-distance reduction to produce sane mask
+      ]{A representation of the removal of the highest zero-distance pixels, to reveal a sane mask}
       \label{sanemasking}
     \end{figure}
 
@@ -257,7 +266,9 @@
           \includegraphics[width=0.9\textwidth]{graphs/stddev_great_range}
           \caption{Changing the ratio of normal data to abnormal data}
         \end{subfigure}
-        \caption{The response of mean and standard deviation to various types of erroneous data}
+        \caption[
+          Sensitivity of mean and standard to errors
+        ]{The response of mean and standard deviation to various types of erroneous data}
         \label{stddev_image}
       \end{figure}
     
@@ -277,7 +288,7 @@
       The base image contains vertical lines that are increasingly further apart from each other, with lines connecting each point.
       This can be seen in figure \ref{solid_linewidth}.
       There are two types of test, solid lines, which have clearly defined boundaries, and aliased lines, which are more realistic.
-      The results of using this method of each of these images is listed in table \ref{linewidthtable}
+      The results of using this method of each of these images is listed in table \ref{linewidthtable}.
       The line widths are almost all correctly predicted to within 1 pixel, with the exception of 1 pixel on a solid line.
       As discussed earlier, this has been anticipated.
     \begin{figure}[H]
@@ -323,7 +334,9 @@
         \includegraphics[height=0.1\textheight]{linewidth/linewidth_4_blur.png}
         \caption{4 pixel aliased}
       \end{subfigure}
-      \caption{
+      \caption[
+          Test images for \texttt{estimate\_black\_line\_thickness}
+        ]{
         Images used to test \texttt{estimate\_black\_line\_thickness}.
         They are designed to stress estimation, with lines that overlap regularly.
         The top row are solid pixels, with clear boundaries.
@@ -332,7 +345,7 @@
       \label{solid_linewidth}
 
     \end{figure}
-    \begin{figure}[H]
+    \begin{table}[H]
       \centering
       \begin{tabular}{|c|c|c|}
         \hline
@@ -347,14 +360,16 @@
         4&4.21705&4.33824\\
         \hline
       \end{tabular}
-      \caption{
+      \caption[
+        Table of estimated line widths of test images
+      ]{
         A comparison of the line width analysis technique on images from \ref{solid_linewidth}
         All but one of the values are within 1 pixel of the actual value.
         The anomalous 1 pixel result can be mistaken as a 2 pixel width.
         The technique cannot guarantee distinction between 1 and 2 pixels.
       }
       \label{linewidthtable}
-  \end{figure}
+  \end{table}
 
   \subsection{Parallelism}
     Analysing the line width is a parallelisable task.
@@ -368,13 +383,15 @@
 
     \begin{figure}[h]
       \centering
+      \includegraphics{benchmark/thickness_time.pdf}
+
       \includegraphics{benchmark/thickness_benchmark.pdf}
 
-      \includegraphics{benchmark/thickness_time.pdf}
-      \caption{Speedup of line width analysis due to parallelism}
+      \caption[
+        Time and Speedup of parallel line width analysis
+      ]{Time for 200 repetitionsSpeedup of line width analysis due to parallelism}
       \label{thicknessbenchmark}
     \end{figure}
-    \textit{I will put in some results here when I put them together}
     \biblio
 
 \end{document}
