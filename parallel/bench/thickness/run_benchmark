@@ -4,11 +4,12 @@ iterations=4
 echo "#threads datasize time_p "
 for (( x=1; x<=$iterations; x++ )); do
 	datasize=$(echo "scale=10; $x/$iterations" | bc )
-	serial=$(./bench_thickness $nthreads $datasize 100) 
-	echo $nthreads $datasize $serial $serial
+	serial=$(./bench_thickness 1 $datasize 100) 
+	echo 1 $datasize $serial $serial
   for (( nthreads=2; nthreads<=16; nthreads*=2 )); do
-    echo $nthreads $x $(./bench_thickness $nthreads $x 100) $serial
+    echo $nthreads $datasize $(./bench_thickness $nthreads $datasize 100) $serial
   done
   echo
+	echo
 done
 
