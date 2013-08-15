@@ -6,9 +6,14 @@ for (( x=1; x<=$iterations; x++ )); do
 	datasize=$(echo "scale=10; $x/$iterations" | bc )
 	serial=$(./bench_thickness 1 $datasize 100) 
 	echo 1 $datasize $serial $serial
-  for (( nthreads=2; nthreads<=16; nthreads*=2 )); do
+  for (( nthreads=2; nthreads<=32; nthreads*=2 )); do
     echo $nthreads $datasize $(./bench_thickness $nthreads $datasize 100) $serial
   done
+    echo 48 $datasize $(./bench_thickness 48 $datasize 100) $serial
+    echo 52 $datasize $(./bench_thickness 52 $datasize 100) $serial
+    echo 56 $datasize $(./bench_thickness 56 $datasize 100) $serial
+    echo 60 $datasize $(./bench_thickness 60 $datasize 100) $serial
+    echo 64 $datasize $(./bench_thickness 64 $datasize 100) $serial
   echo
 	echo
 done

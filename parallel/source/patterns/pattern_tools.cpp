@@ -288,23 +288,30 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
   high = (high_in>low_in) ? high_in : low_in;
   low  = (high_in>low_in) ? low_in : high_in;
 
-  Mat rgb[3], red, green, blue, rg, rb, gb;
-  split(image, rgb);
-  // essentially calculates saturation for each colour
-  blue = (rgb[0] >= low-tolerance) & (rgb[0] <= high+tolerance);
-  green = (rgb[1] >= low-tolerance) & (rgb[1] <= high+tolerance);
-  red = (rgb[2] >= low-tolerance) & (rgb[2] <= high+tolerance);
+	int num_threads = omp_get_max_threads();
+	Mat out(image.size(), CV_8U);
+  #pragma omp parallel for default(none) firstprivate(high,low,num_threads, tolerance) shared(image,out)
+	for(int i=0; i<num_threads; i++) {
+		Mat rgb[3], red, green, blue, rg, rb, gb;
+		split(image.rowRange(i*(image.rows-1)/num_threads,(i+1)*(image.rows-1)/num_threads), rgb);
 
-  // gets all colours with the correct saturation value
-  Mat color_magnitude = blue & green & blue;
+		// essentially calculates saturation for each colour
+		blue = (rgb[0] >= low-tolerance) & (rgb[0] <= high+tolerance);
+		green = (rgb[1] >= low-tolerance) & (rgb[1] <= high+tolerance);
+		red = (rgb[2] >= low-tolerance) & (rgb[2] <= high+tolerance);
 
-  // finds colours which are within tolerance of each other -> nearly greys
-  rg = ( (rgb[1]-tolerance) <= rgb[2] ) & ( rgb[2] <= rgb[1]+tolerance );
-  rb = ( (rgb[2]-tolerance) <= rgb[0] ) & ( rgb[0] <= rgb[2]+tolerance );
-  gb = ( (rgb[0]-tolerance) <= rgb[1] ) & ( rgb[1] <= rgb[0]+tolerance );
+		// gets all colours with the correct saturation value
+		Mat color_magnitude = blue & green & blue;
 
-  Mat similar_colours = rg & rb & gb;
-  Mat out = color_magnitude & similar_colours;
+		// finds colours which are within tolerance of each other -> nearly greys
+		rg = ( (rgb[1]-tolerance) <= rgb[2] ) & ( rgb[2] <= rgb[1]+tolerance );
+		rb = ( (rgb[2]-tolerance) <= rgb[0] ) & ( rgb[0] <= rgb[2]+tolerance );
+		gb = ( (rgb[0]-tolerance) <= rgb[1] ) & ( rgb[1] <= rgb[0]+tolerance );
+		Mat similar_colours = rg & rb & gb;
+		Mat subout = out.rowRange(i*(out.rows-1)/num_threads,(i+1)*(out.rows-1)/num_threads);
+		Mat result = color_magnitude & similar_colours;
+		result.copyTo(subout);
+	}
   return out;
 }
 

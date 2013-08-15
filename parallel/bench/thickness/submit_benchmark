@@ -1,5 +1,5 @@
 #!/bin/bash
-#$ -pe omp 16 -cwd -V -e err_$JOB_NAME-$JOB_ID -o out_$JOB_NAME-$JOB_ID  
+#$ -pe omp 64 -cwd -V -e err_$JOB_NAME-$JOB_ID -o out_$JOB_NAME-$JOB_ID  
 if [[ x$1x == xCOMx ]]; then
 	./run_benchmark
 else
