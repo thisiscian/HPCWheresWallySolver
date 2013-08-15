@@ -9,7 +9,7 @@
     Regions with red and white stripes can be found using a few simple techniques.
     Here, we find two masks (arrays with binary values) that describe the location of sufficiently red and white regions in the image.
     The term sufficiently is used, as defining 'red' and 'white' is not a simple task for a computer.
-    The function \texttt{get\_colour\_in\_image}, discussed in section \ref{function_getcolinimg}, covers the issues with colour definiton.
+    The function \texttt{get\_colour\_in\_image}, discussed in section \ref{function_getcolinimg}, covers the issues with colour definition.
 
     Once the masks have been created, they are vertically blurred using a Gaussian blur.
     This is done so that when the two masks are multiplied together, there will be non-zero values found in overlapping areas.
@@ -59,8 +59,8 @@
     Finding Wally by his stripes is not wholly reliable.
     Although Wally is one of the few characters to wear red and white, he is not the only one.
     A good example of this is Wenda, figure \ref{justwenda}, who wears a similar jumper.
-    Futhermore, objects in the image regularly have a red and white motiff, such as skirts, umbrellas and cakes.
-    Without user intervention, it is hard to prioritise results based soley on this information.
+    Furthermore, objects in the image regularly have a red and white motif, such as skirts, umbrellas and cakes.
+    Without user intervention, it is hard to prioritise results based solely on this information.
     One method is to identify the largest regions of red and white stripes in the image as most likely to be Wally.
     This is often incorrect because of the presence of large red and white objects, see figure \ref{rws_fail_small}.
 
@@ -85,7 +85,7 @@
     If the value is too small, Wally's jumper as a whole is never located.
     Too large and too many incorrect regions are included in the definition of Wally's jumper.
     The size of Wally's stripes are not a known property, so a guess must be made as to a good value.
-    One way of doing this is by estimating the average linewidth of the image, and extrapolating the size of stripes from there.
+    One way of doing this is by estimating the average line width of the image, and extrapolating the size of stripes from there.
     For low resolution images, however, the ratio of stripe size to line width varies wildly, making it hard to estimate correct values.
     
   \subsection{Testing}
@@ -124,7 +124,7 @@
     It must then find out if it's regions are equivalent to regions in another thread.
     This can be done by sending the top row to the process above it, and the left column to the process left of it.
     By comparing the two regions a halo element is assigned, the equivalence between threads can be established.
-    Figure \ref{parregionfind} displays this graphically.
+    Figure \ref{parrregionfind} displays this graphically.
     \begin{figure}[H]
       \centering
       \includegraphics[width=0.2\textheight]{parallel_region}
@@ -136,5 +136,6 @@
       }
       \label{parrregionfind}
     \end{figure}
+    \biblio
     
 \end{document}
