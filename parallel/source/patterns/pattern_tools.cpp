@@ -228,11 +228,13 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
 }
 
 double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
+  double best_width;
   double min_distance, max_distance;
+	int count;
   Size image_size(image.cols, image.rows);
   Mat sharp_image, black_image, blur_image, distance_map(image_size, CV_8U);
 
-  int num_threads = omp_get_num_threads();
+  int num_threads = omp_get_max_threads();
  
   //Get mask that describes where black lines are in sharpened image
   black_image = get_greyscale_in_image(image, 0, limit, tolerance);
@@ -242,88 +244,43 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   distanceTransform(black_image, distance_map, CV_DIST_L2,5); //CV_DIST_L1 indicates distances are calculated with manhattan distance
   minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
 
-/*
-  Mat subdist[num_threads], subdev[num_threads];
-  for(int i=0; i<num_threads; i++) {
-    subdist[i] = distance_map.rowRange(i*image.rows, image.rows*(i+1)/num_threads);
-    subdev[i] = deviation.rowRange(i*image.rows, image.rows*(i+1)/num_threads);
-  }
-*/
-
-  map<double, double> prediction_list;
-
-  double best_width=0;
-  //double minimum_difference_in_predictions = 10000;
-  int i;
   int range = max_distance-min_distance;
-	int minimum_difference_in_predictions = 1000;
-  #pragma omp parallel for default(none) private(best_width, minimum_difference_in_predictions) shared(range, distance_map, prediction_list, max_distance)
-  for(int i=0;i<range; i++) {
-    double average_prediction, deviation_prediction;
-    double standard_deviation, sum_deviation, average_distance_to_zero;
-    int count_zero;
-    Mat deviation;
-    //remove pixels that have the maximum distance from a zero pixel
-    Mat dist_tmp = (distance_map < max_distance-i) & ( distance_map > 0 );
-    distanceTransform(dist_tmp, dist_tmp, CV_DIST_C,3);
-   
-    average_distance_to_zero = (double)(sum(dist_tmp)[0])/countNonZero(dist_tmp);
-    count_zero = dist_tmp.cols*dist_tmp.rows - countNonZero(dist_tmp);
-    pow(dist_tmp-average_distance_to_zero,2, deviation);
-    sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
-    sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
-    standard_deviation = sqrt(sum_deviation/countNonZero(dist_tmp));
-    average_prediction = (average_distance_to_zero-0.5)/0.25;
-    deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
 
-    // if the two predictions agree better than the last predictions, replace the best width
-    #pragma omp critical
-    if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
-      minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
-      best_width = (average_prediction+deviation_prediction)/2;
-      prediction_list[minimum_difference_in_predictions] = best_width;
-    }
+  Mat subdist[num_threads];
+  for(int i=0; i<num_threads; i++) {
+    subdist[i] = distance_map.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
   }
-	map<double,double>::iterator it = prediction_list.begin();
-  best_width = it->second;
 
-/*
-  // while there are still pixels with different distances, try to find the best fitting width
-  do{
-    average_distance_to_zero = 0;
-    #pragma omp parallel for shared(subdist) reduction(+: average_distance_to_zero)
-    for(int i=0; i<num_threads; i++) {
-      average_distance_to_zero = (double)(sum(distance_map.rowRange(i*image.rows, image.rows*(i+1)/num_threads))[0]);
-    }
-    average_distance_to_zero /= countNonZero(distance_map);
-    //average_distance_to_zero = (double)(sum(distance_map)[0])/countNonZero(distance_map);
+  #pragma omp parallel for default(none) firstprivate(range,max_distance, num_threads) shared(subdist) reduction(+: best_width) reduction(+: count)
+	for(int i=0; i<num_threads; i++) {
+		int minimum_difference_in_predictions = 1;
+		for(int j=0; j<range; j++) {
+			double average_prediction, deviation_prediction;
+			double standard_deviation, sum_deviation, average_distance_to_zero;
+			int count_zero;
+			Mat deviation;
 
-    minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
-    count_zero = distance_map.cols*distance_map.rows - countNonZero(distance_map);
+			//remove pixels that have the maximum distance from a zero pixel
+			Mat dist_tmp = (subdist[i] < max_distance-j) & ( subdist[i] > 0 );
+			distanceTransform(dist_tmp, dist_tmp, CV_DIST_C,3);
+		 
+			average_distance_to_zero = (double)(sum(dist_tmp)[0])/countNonZero(dist_tmp);
+			count_zero = dist_tmp.cols*dist_tmp.rows - countNonZero(dist_tmp);
+			pow(dist_tmp-average_distance_to_zero,2, deviation);
+			sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
+			sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
+			standard_deviation = sqrt(sum_deviation/countNonZero(dist_tmp));
+			average_prediction = (average_distance_to_zero-0.5)/0.25;
+			deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
 
-    // calculate standard deviation => for all x_i with i<N; std_dev=sqrt( sum( (x_i-x_avg)^2 )/N )
-    pow(distance_map-average_distance_to_zero,2, deviation);
-    sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
-    sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
-    standard_deviation = sqrt(sum_deviation/countNonZero(distance_map));
-
-    // predict line width using the average and the standard deviation (calculated mathematically)
-    average_prediction = (average_distance_to_zero-0.5)/0.25;
-    deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
-
-    // if the two predictions agree better than the last predictions, replace the best width
-    if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
-      minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
-      best_width = (average_prediction+deviation_prediction)/2;
-    }
-
-    //remove pixels that have the maximum distance from a zero pixel
-    distance_map = (distance_map < max_distance) & ( distance_map > 0 );
-    distanceTransform(distance_map, distance_map, CV_DIST_C,3);
-    //Count the average distance to the nearest empty pixel, the maximum distance and the number of zero pixels in the image
-  } while( standard_deviation != 0 );
-*/
-  return best_width;
+			if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
+				minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
+				best_width = (average_prediction+deviation_prediction)/2;
+				count = 1;
+			}
+		}
+	}
+  return best_width/count;
 }
 
 Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int tolerance) {
