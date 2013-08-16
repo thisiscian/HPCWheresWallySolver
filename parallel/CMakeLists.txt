@@ -16,7 +16,7 @@ endif(OpenCV_found)
 
 #if(CMAKE_COMPLIER_IS_GNUCXX)
 #  message("COMPILING WITH GNUCXX")
-  set(CMAKE_CXX_FLAGS "-O2 -fopenmp -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
+  set(CMAKE_CXX_FLAGS "-O2 -g -fopenmp -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
 #endif()
 
 make_directory(bin)

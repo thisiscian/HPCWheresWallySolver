@@ -229,10 +229,10 @@ vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
 
 double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   double best_width;
-  double min_distance, max_distance;
+  double min_distance=DBL_MAX, max_distance=0;
 	int count;
   Size image_size(image.cols, image.rows);
-  Mat sharp_image, black_image, blur_image, distance_map(image_size, CV_8U);
+  Mat black_image, distance_map(image_size, CV_8U, Scalar(0));
 
   int num_threads = omp_get_max_threads();
  
@@ -243,6 +243,7 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   //Find the minimum distance between each pixel and the nearest empty pixel, and calculate the average
   distanceTransform(black_image, distance_map, CV_DIST_L2,5); //CV_DIST_L1 indicates distances are calculated with manhattan distance
   minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
+  black_image.release();
 
   int range = max_distance-min_distance;
 
@@ -250,7 +251,7 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   for(int i=0; i<num_threads; i++) {
     subdist[i] = distance_map.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
   }
-
+  distance_map.release();
   #pragma omp parallel for default(none) firstprivate(range,max_distance, num_threads) shared(subdist) reduction(+: best_width) reduction(+: count)
 	for(int i=0; i<num_threads; i++) {
 		int minimum_difference_in_predictions = 1;
@@ -268,6 +269,7 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
 			count_zero = dist_tmp.cols*dist_tmp.rows - countNonZero(dist_tmp);
 			pow(dist_tmp-average_distance_to_zero,2, deviation);
 			sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
+      deviation.release();
 			sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
 			standard_deviation = sqrt(sum_deviation/countNonZero(dist_tmp));
 			average_prediction = (average_distance_to_zero-0.5)/0.25;
@@ -280,6 +282,9 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
 			}
 		}
 	}
+  for(int i=0; i<num_threads; i++) {
+    subdist[i].release();
+  }
   return best_width/count;
 }
 
