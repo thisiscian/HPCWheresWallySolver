@@ -1,7 +1,7 @@
 cmake_minimum_required (VERSION 2.6)
 project (HPCWheresWallySolver)
 set (wheres_wally_VERSION_MAJOR 0)
-set (wheres_wally_VERSION_MINOR 0)
+set (wheres_wally_VERSION_MINOR 9)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 "${PROJECT_SOURCE_DIR}/cmake/Modules")
 
@@ -16,7 +16,7 @@ endif(OpenCV_found)
 
 #if(CMAKE_COMPLIER_IS_GNUCXX)
 #  message("COMPILING WITH GNUCXX")
-  set(CMAKE_CXX_FLAGS "-O2 -g -fopenmp -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
+  set(CMAKE_CXX_FLAGS "-g -fopenmp -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
 #endif()
 
 make_directory(bin)

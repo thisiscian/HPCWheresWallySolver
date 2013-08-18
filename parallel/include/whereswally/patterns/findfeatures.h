@@ -9,11 +9,26 @@
   
   class Find_Features : public Search_Pattern {
     private:
-    int minHessian;
-    int knn_depth;
+    //helper functions
+    double dist(cv::Point2f pt1, cv::Point2f pt2);
+    double dist(cv::Point2f pt);
+    int count_order(std::vector<double> list);
+    int compare_rows(float x[], float y[], int x_len, int y_len);
+    double homography_quality(wwp::homography H);
+    wwp::homography calculate_scale_and_translation(std::vector< std::vector<cv::DMatch > > matches, std::vector<cv::KeyPoint> object_keypoints, std::vector<cv::KeyPoint> scene_keypoints, int i, int j, int k, int l);
+
+    //methods to get matches
+    std::vector<cv::DMatch> find_matches_with_equivalent_distances(std::vector<cv::KeyPoint> object_keypoints,std::vector<cv::KeyPoint> scene_keypoints, cv::Mat object_descriptors, cv::Mat scene_descriptors);
+    std::vector<cv::DMatch> find_matches_with_equivalent_ratios(std::vector<cv::KeyPoint> object_keypoints,std::vector<cv::KeyPoint> scene_keypoints, cv::Mat object_descriptors, cv::Mat scene_descriptors);
+    std::vector<cv::DMatch> find_matches_with_matcher(cv::Mat object_descriptors, cv::Mat scene_descriptors);
+    std::vector<cv::DMatch> find_symmetric_matches_with_matcher(cv::Mat object_descriptors, cv::Mat scene_descriptors);
+    std::vector< std::vector<cv::DMatch> > find_n_degree_matches_with_matcher(cv::Mat object_descriptors, cv::Mat scene_descriptors, int n);
+
+    //methods to find perspective change between matches
+    cv::Mat find_homography_within_minimum_distance(std::vector<cv::KeyPoint> object_keypoints, std::vector<cv::KeyPoint> scene_keypoints, std::vector<cv::DMatch> match_list, float tolerance);
+    cv::Mat find_homography_with_translational_invariance(std::vector<cv::KeyPoint> object_keypoints, std::vector<cv::KeyPoint> scene_keypoints, std::vector< std::vector <cv::DMatch> > match_list);
     public:
     Find_Features();
-    std::vector<cv::KeyPoint> get_keypoints_from_image(cv::Mat image);
     std::vector<Pattern_Result> start_search(cv::Mat image);
   };
 

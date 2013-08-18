@@ -1,9 +1,9 @@
 /*
- *    Part of the serial 'Where's Wally Solver' program.
+ * Part of the HPCWheresWallySolver program.
  *
- *    Defines the Output class, used for outputting and saving data
+ * Defines the Output class, used for outputting data
  *
- *    cian booth - this.is.cian@gmail.com
+ *   cian booth - this.is.cian@gmail.com
  *
  */
 
@@ -27,13 +27,12 @@
 
       // print textual results to the terminal or save to a file
       void show_text_results();
-      void save_text_to_file();
   
       // display graphical results or save to a file
       void show_graphic_results();
-      void save_graphic_to_file();
 
-      void save_results_to_file();
+      void show_timing_results();
+
 
     public:
       Output(IO_Variables *variables);

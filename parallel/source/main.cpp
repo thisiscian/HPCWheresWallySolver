@@ -6,16 +6,20 @@ using namespace cv;
 int main(int argc, char* argv[] ) {
   IO_Control controller(argc, argv);
 
-  vector<Search_Pattern*> patterns;
+  //-- Define patterns that will be used to search for Wally
   Find_Glasses fg;
   Blue_Trousers bt;
   Red_and_White rw;
-  //Red_and_White rw(&fg, 0.5);
+  Red_and_White rw_fg(&fg, 0.5);
   Find_Features ff;
   
-  //patterns.push_back(&rw);
+  //-- Add patterns to list
+  vector<Search_Pattern*> patterns;
+  patterns.push_back(&rw);
   //patterns.push_back(&fg);
   //patterns.push_back(&bt);
-  patterns.push_back(&ff);
+  //patterns.push_back(&ff);
+
+  //-- Start the search for Wally
   controller.start(patterns);
 }

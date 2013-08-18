@@ -1,12 +1,12 @@
 /*
- *    Part of the serial 'Where's Wally Solver' program.
+ * Part of the HPCWheresWallySolver program.
  *
- *    Defines the IO_Control class, used for control over all I/O operations.
- *    Contains the IO_Variables class (io_variables.h) that allows the Input
- *      class (input.h), the Output class (output.h) and the Result_Analysis
- *      class (result_analysis.h) to interact.
+ * Defines the IO_Control class, used for control over all I/O operations.
+ * Contains the IO_Variables class (io_variables.h) that allows the Input
+ *   class (input.h), the Output class (output.h) and the Result_Analysis
+ *   class (result_analysis.h) to interact.
  *
- *    cian booth - this.is.cian@gmail.com
+ *   cian booth - this.is.cian@gmail.com
  *
  */
 

@@ -112,7 +112,6 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       equiv_new = region_equivalence[equiv_new];
     }
     it->second = equiv_new;
-    cout << it->first << " " << it->second << endl;
   }
   // create a corrected region map
   for(int i=0; i<input.rows; i++) {

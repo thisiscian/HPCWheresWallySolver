@@ -1,12 +1,18 @@
 #include "whereswally/io/output.h"
-
 using namespace std;
 using namespace cv;
+
+//**
+//** CLASS INITIALISATION;
+//** 
 
 Output::Output(IO_Variables *new_variables) {
   variables = new_variables;
 }
 
+//**
+//** OUTPUT FUNCTIONS
+//**
 void Output::show_text_results() {
   cout << "Found potential Wallys in the following locations:" << endl;
   for(int i=0; i<final_results.size(); i++ ) {
@@ -18,14 +24,12 @@ void Output::show_text_results() {
   cout << endl;
 }
 
-void Output::save_text_to_file() {
-}
-
 void Output::show_graphic_results() {
   Mat image = variables->get_loaded_image();
   Point center;
   Size scale;
   Scalar colour;
+  // for the top results, draw a circle indicating Wally's location and a box labelling the result
   for(int i=final_results.size()-1; i>=0; i--) {
     center.x = final_results[i].wally_location[0];
     center.y = final_results[i].wally_location[1];
@@ -51,10 +55,13 @@ void Output::show_graphic_results() {
   destroyWindow(window_name);
 }
 
-void Output::save_graphic_to_file() {
-}
-
-void Output::save_results_to_file() {
+void Output::show_timing_results() {
+  vector<Time_Message> timing_results = variables->get_timing_results();
+  cout << "Section Timings (in seconds)" << endl;
+  cout << "----------------------------" << endl;
+  for(int i=0; i<timing_results.size(); i++) { 
+    cout << timing_results[i].message << ": " << timing_results[i].time << endl;
+  }
 }
 
 vector<Pattern_Result> Output::get_final_results() {
@@ -73,10 +80,6 @@ void Output::output() {
     show_graphic_results();
   }
   if( variables->get_show_timing_results() ) {
-    cout << "Section Timings (in seconds)" << endl;
-    cout << "----------------------------" << endl;
-    for(int i=0; i<variables->timing_results.size(); i++) { 
-      cout << variables->timing_results[i].message << ": " << variables->timing_results[i].time << endl;
-    }
+    show_graphic_results();
   }
 }

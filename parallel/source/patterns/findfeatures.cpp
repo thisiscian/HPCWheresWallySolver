@@ -14,205 +14,21 @@ using namespace std;
 using namespace cv;
 using namespace wwp;
 
-typedef struct {
-  float intersections;
-  int i;
-  int j;
-} triple;
-
+// initialise Find_Features class
 Find_Features::Find_Features() {
   info.set_name("Find Features");
   info.set_description("Locate Wally by SURF feature matching");
   info.set_confidence(0.9);
-  minHessian = 100;
-  knn_depth = 1;
 }
 
-vector<KeyPoint> Find_Features::get_keypoints_from_image(Mat image) {
-  vector<KeyPoint> keypoints;
-  Mat scene_descriptors;
-  SurfFeatureDetector surf_detector(minHessian);
-
-  // assume they have a specific transparency background colour
-  Mat image_mask = get_colour_in_image(image, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
-  image_mask = image_mask < 125;
-
-  surf_detector.detect(image, keypoints, image_mask);
-  return keypoints;
-}
-
-double dist(Point2f pt1, Point2f pt2) {
-  float accuracy = 100.0;
-  return floor((int)(sqrt((pow(pt1.x-pt2.x,2)) + (pow(pt1.y-pt2.y,2)))*accuracy))/accuracy;
-}
-
-
-class Count_Order {
-  private:
-    int count;
-  public:
-    bool operator()(double i, double j) { if(i<=j) {count++; return true;} else {return false;}}
-    int reorderings() {return count;}
-    Count_Order() {
-      count = 0;
-    }
-};
-
-int compare_rows(float x[], float y[], int x_len, int y_len) {
-  int i=0;
-  int j=0;
-  
-  vector<double> unordered;
-  double minimum[2] = {0,DBL_MAX}, maximum[2] = {0,0};
-  for(int i=0; i<x_len; i++) {
-    cout << i << " " << x_len << endl;
-    bool add = false;
-    for(int j=0; j<y_len; j++) {
-      if(fabs(x[i] - y[j]) < 0.1) {
-        add = true;
-        break;
-      }
-    }
-    if(add) {
-      unordered.push_back(x[i]);
-      if(minimum[1] > x[i]) { 
-        minimum[0] = i;
-        minimum[1] = x[i];
-      }
-      if(maximum[1] < x[i]) { 
-        maximum[0] = i;
-        maximum[1] = x[i];
-      }
-    }
-  }
-  int count = maximum[0]-minimum[0];
-  Count_Order co;
-  sort(unordered.begin(), unordered.end(), co);
-  return count-co.reorderings();
-}
-
-vector<DMatch> slow_image(vector<KeyPoint> object_keypoints,vector<KeyPoint> scene_keypoints) {
-  cout << "starting slow" << endl;
-  vector<DMatch> match_list;
-  cout << scene_keypoints.size() << " " << object_keypoints.size() << endl;
-  float scene_distance[scene_keypoints.size()][scene_keypoints.size()];
-  float object_distance[object_keypoints.size()][object_keypoints.size()];
-  cout << "made arrays" << endl;
-  
-  for(int i=0; i<scene_keypoints.size(); i++) {
-    for(int j=0; j<scene_keypoints.size(); j++) {
-      scene_distance[i][j] = dist(scene_keypoints[i].pt, scene_keypoints[j].pt);
-    }
-  }
-
-  cout << "made scene" << endl;
-  for(int i=0; i<object_keypoints.size(); i++) {
-    for(int j=0; j<object_keypoints.size(); j++) {
-      object_distance[i][j] = dist(object_keypoints[i].pt, object_keypoints[j].pt);
-    }
-  }
-
-  cout << "made object" << endl;
-  int match_quality[object_keypoints.size()][scene_keypoints.size()];
-  for(int i=0; i<object_keypoints.size(); i++) {
-    for(int j=0; j<scene_keypoints.size(); j++) {
-      match_quality[i][j] = 0;
-    }
-  }
-
-  cout << "comparing rows" << endl;
-  for(int i=0; i<object_keypoints.size(); i++) {
-    for(int j=0; j<scene_keypoints.size(); j++) {
-      cout << "rows:" << i << " " << j << endl;
-      match_quality[i][j] = compare_rows(object_distance[i], scene_distance[j], object_keypoints.size(), scene_keypoints.size());
-    }
-  }
-
-  for(int i=0; i<object_keypoints.size(); i++) {
-    int max_match[2]={0,0};
-    for(int j=0; j<scene_keypoints.size(); j++ ){
-      if(match_quality[i][j] > max_match[0]) { max_match[0] = match_quality[i][j]; max_match[1] = j;}
-    }
-    DMatch tmp;
-    tmp.queryIdx = i;
-    tmp.trainIdx = max_match[1];
-    match_list.push_back(tmp);
-  }
-  cout << "returning" << endl;
-  return match_list;
-}
-
-vector<DMatch> get_image_location(vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints) {
-  vector< multimap<float, int> > best_match(object_keypoints.size());
-  vector< multiset<float> > scene_distance(scene_keypoints.size()), object_distance(object_keypoints.size());
-
-  // calculate the distances bet
-  for(int i=0; i<scene_keypoints.size(); ++i) {
-    for(int j=0; j<scene_keypoints.size(); ++j) {
-      if(i==j) { continue; }
-      scene_distance[i].insert(dist(scene_keypoints[i].pt,scene_keypoints[j].pt));
-    }
-  } 
-
-  for(int i=0; i<object_keypoints.size(); ++i) {
-    for(int j=0; j<object_keypoints.size(); ++j) {
-      if(i==j) { continue; }
-      object_distance[i].insert(dist(object_keypoints[i].pt,object_keypoints[j].pt));
-    }
-  } 
-
-  vector<float>::iterator it;
-  vector<float> keypoint_intersection;
-  for(int i=0; i<object_distance.size(); i++) {
-    for(int j=0; j<scene_distance.size(); j++) {
-      keypoint_intersection.clear();
-      keypoint_intersection.resize(object_distance[i].size());
-      it = set_intersection(object_distance[i].begin(), object_distance[i].end(), scene_distance[j].begin(), scene_distance[j].end(), keypoint_intersection.begin()); 
-      keypoint_intersection.resize(it-keypoint_intersection.begin());
-      if(keypoint_intersection.size() >= 0*object_distance[i].size() && keypoint_intersection.size() > 0) {
-        best_match[i].insert(pair<float,int>(keypoint_intersection.size()*100.0/object_distance[i].size(), j));
-      }
-    }
-  }
-
-  vector<DMatch> match_list;
-  multimap<float,int>::reverse_iterator rit;
-  triple max = {0,-1,-1}; 
-  do {
-    max.intersections = 0;
-    max.i = -1;
-    max.j = -1;
-    for(int i=0; i<best_match.size(); ++i) {
-      rit = best_match[i].rbegin();
-      for(rit=best_match[i].rbegin(); rit!=best_match[i].rend(); ++rit) {
-        if(rit->first > max.intersections) {
-          bool cont = false;
-          for(int j=0; j<match_list.size(); j++) {
-            if(i == match_list[j].trainIdx) {cont = true;}
-          }
-          if(cont) {continue;}
-          max.intersections = rit->first;
-          max.i = i;
-          max.j = rit->second;
-          break;
-        }
-      }
-    }
-    if( max.intersections <= 0) {break;}
-    DMatch tmp;
-    tmp.queryIdx = max.j;
-    tmp.trainIdx = max.i;
-    match_list.push_back(tmp);
-  } while(true);
-  cout << endl;
-  cout << "match_list size = " << match_list.size() << endl;
-  cout << endl;
-
-  return match_list;
-}
+//--                                   --//
+//--                                   --//
+//--  Helper Functions and Structures  --//
+//--                                   --//
+//--                                   --//
 
 // identify best quality homography
-double homography_quality(homography H) {
+double Find_Features::homography_quality(homography H) {
   if(H.a <= 0 || H.c <= 0) {
     return 10;
   }
@@ -221,7 +37,62 @@ double homography_quality(homography H) {
   return fabs(1-min_scale);
 }
 
-homography calculate_scale_and_translation(vector< vector<DMatch > > matches, vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, int i, int j, int k, int l) {
+
+// calculates the euclidean distance between two points
+double Find_Features::dist(Point2f pt1, Point2f pt2) {
+  return sqrt((pow(pt1.x-pt2.x,2)) + (pow(pt1.y-pt2.y,2)));
+}
+
+double Find_Features::dist(Point2f pt) {
+  return sqrt(pow(pt.x,2) + (pow(pt.y,2)));
+}
+
+// counts the elements of a vector that are ordered
+int Find_Features::count_order(vector<double> list) {
+  int count=0;
+  vector<double>::iterator it=list.begin();
+  int old_val = *it;
+  ++it;
+  while(it!=list.end()) {
+    if(old_val < *it) {
+      ++count; 
+    }
+    old_val = *it;
+    ++it;
+  }
+  return count+1; // count+1 because last element is always ordered
+}
+
+// Calculates how many ordered elements parts row y has in common with row x
+// This is done by creating a list of each element that x has in common with y
+// This order of this list is then calculated using 'count_order'
+/* 
+ * EXAMPLES
+ *
+ *  x = (0,1,2),  y = (0,1,2),        commonality = 3
+ *  x = (0,2,1),  y = (0,2,1,3,4),    commonality = 3
+ *  x = (0,1,2),  y = (0,1,2,0,1,2),  commonality = 3
+ *  x = (0,1,2),  y = (2,1,0),        commonality = 1
+ *  x = (0,2),    y = (0,1,2),        commonality = 2
+ *  x = (0,2,1),  y = (0,1,2),        commonality = 2
+ *
+ */
+int Find_Features::compare_rows(float x[], float y[], int x_len, int y_len) {
+  vector<double> unordered;
+  for(int i=0; i<x_len; i++) {
+    bool add = false;
+    for(int j=0; j<y_len; j++) {
+      if(fabs(x[i] - y[j]) < 0.1) {
+        unordered.push_back(x[i]);
+        break;
+      }
+    }
+  }
+  return count_order(unordered);
+}
+
+// creates an artifical homography that can match 
+homography Find_Features::calculate_scale_and_translation(vector< vector<DMatch > > matches, vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, int i, int j, int k, int l) {
   int match_one_scene_id = matches[i][j].trainIdx;
   int match_one_object_id = matches[i][j].queryIdx;
   int match_two_scene_id = matches[k][l].trainIdx;
@@ -242,34 +113,201 @@ homography calculate_scale_and_translation(vector< vector<DMatch > > matches, ve
   return H;
 }
 
-vector<DMatch> compare_scales(vector<KeyPoint> object, vector<KeyPoint> scene, vector<DMatch> match_list, double max_scale) {
-  vector<DMatch>::iterator x,y;
-  map< double, vector<DMatch> > good_match_list;
-  for(x=match_list.begin(); x!=match_list.end(); ++x) {
-    y=x+1;
-    for(; y!=match_list.end(); ++y) {
-      Point2f a, b, c,d;    
-      a = object[x->queryIdx].pt;
-      b = object[y->queryIdx].pt;
-      c = scene[x->trainIdx].pt;
-      d = scene[y->trainIdx].pt;
+//--                               --//
+//--                               --//
+//--  Methods for finding matches  --//
+//--                               --//
+//--                               --//
 
-      double object_distance = sqrt(pow(a.x-b.x,2)+(a.y-b.y,2));
-      double scene_distance = sqrt(pow(c.x-d.x,2)+(c.y-d.y,2));
-      double scale = object_distance/scene_distance;
-      if(scale <= floor(max_scale)+1) {
-        good_match_list[floor(scale*1000)/1000.0].push_back(*y);
+vector<DMatch> Find_Features::find_matches_with_equivalent_distances(vector<KeyPoint> object_keypoints,vector<KeyPoint> scene_keypoints, Mat object_descriptors, Mat scene_descriptors) {
+  BFMatcher matcher;
+  vector<DMatch> match_list;
+
+  matcher.match(object_descriptors, scene_descriptors, match_list);
+  float scene_distance[scene_keypoints.size()][scene_keypoints.size()];
+  float object_distance[object_keypoints.size()][object_keypoints.size()];
+  
+  for(int i=0; i<scene_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      scene_distance[i][j] = dist(scene_keypoints[i].pt, scene_keypoints[j].pt);
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<object_keypoints.size(); j++) {
+      object_distance[i][j] = dist(object_keypoints[i].pt, object_keypoints[j].pt);
+    }
+  }
+
+  int match_quality[object_keypoints.size()][scene_keypoints.size()];
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      match_quality[i][j] = 0;
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      match_quality[i][j] = compare_rows(object_distance[i], scene_distance[j], object_keypoints.size(), scene_keypoints.size());
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    int max_match[2]={0,0};
+    for(int j=0; j<scene_keypoints.size(); j++ ){
+      if(match_quality[i][j] > max_match[0]) { max_match[0] = match_quality[i][j]; max_match[1] = j;}
+    }
+    DMatch tmp;
+    tmp.queryIdx = i;
+    tmp.trainIdx = max_match[1];
+    match_list.push_back(tmp);
+  }
+  return match_list;
+}
+
+vector<DMatch> Find_Features::find_matches_with_equivalent_ratios(vector<KeyPoint> object_keypoints,vector<KeyPoint> scene_keypoints, Mat object_descriptors, Mat scene_descriptors) {
+  BFMatcher matcher;
+  vector<DMatch> match_list;
+
+  matcher.match(object_descriptors, scene_descriptors, match_list);
+  float scene_distance[scene_keypoints.size()][scene_keypoints.size()];
+  float object_distance[object_keypoints.size()][object_keypoints.size()];
+  
+  for(int i=0; i<scene_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      scene_distance[i][j] = dist(scene_keypoints[j].pt)/dist(scene_keypoints[i].pt);
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<object_keypoints.size(); j++) {
+      object_distance[i][j] = dist(object_keypoints[j].pt)/dist(object_keypoints[i].pt);
+    }
+  }
+
+  int match_quality[object_keypoints.size()][scene_keypoints.size()];
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      match_quality[i][j] = 0;
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    for(int j=0; j<scene_keypoints.size(); j++) {
+      match_quality[i][j] = compare_rows(object_distance[i], scene_distance[j], object_keypoints.size(), scene_keypoints.size());
+    }
+  }
+
+  for(int i=0; i<object_keypoints.size(); i++) {
+    int max_match[2]={0,0};
+    for(int j=0; j<scene_keypoints.size(); j++ ){
+      if(match_quality[i][j] > max_match[0]) { max_match[0] = match_quality[i][j]; max_match[1] = j;}
+    }
+    DMatch tmp;
+    tmp.queryIdx = i;
+    tmp.trainIdx = max_match[1];
+    match_list.push_back(tmp);
+  }
+  return match_list;
+}
+
+// finds first-degree matches between two descriptors 
+vector<DMatch> Find_Features::find_matches_with_matcher(Mat object_descriptors, Mat scene_descriptors) {
+  BFMatcher matcher;
+  vector<DMatch> match_list;
+
+  matcher.match(object_descriptors, scene_descriptors, match_list);
+  return match_list;
+}
+
+// finds matches such that each keypoint in a pair is the best match of the other keypoint 
+vector<DMatch> Find_Features::find_symmetric_matches_with_matcher(Mat object_descriptors, Mat scene_descriptors) {
+  BFMatcher matcher(NORM_L2, true);
+  vector<DMatch> match_list;
+
+  matcher.match(object_descriptors, scene_descriptors, match_list);
+  return match_list;
+}
+
+// finds n-degree matches between two descriptors
+vector< vector<DMatch> > Find_Features::find_n_degree_matches_with_matcher(Mat object_descriptors, Mat scene_descriptors, int n) {
+  BFMatcher matcher;
+  vector< vector<DMatch> > match_list;
+
+  matcher.knnMatch(object_descriptors, scene_descriptors, match_list, n);
+  return match_list;
+}
+
+//--                                                                        --//
+//--                                                                        --//
+//--  Methods to create transformation matrix (homography) between matches  --//
+//--                                                                        --//
+//--                                                                        --//
+
+
+Mat Find_Features::find_homography_within_minimum_distance(vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, vector<DMatch> match_list, float tolerance) {
+  double min_distance = DBL_MAX;
+  vector<Point2f> object_position, scene_position;
+  for(int i=0; i<match_list.size(); i++) {
+    double distance = match_list[i].distance;
+    if(distance < min_distance) {
+      min_distance = distance;
+    }
+  }
+
+  for(int i=0; i<match_list.size(); i++) {
+    double distance = match_list[i].distance;
+    if(tolerance == 0 || distance < tolerance*min_distance) {
+      object_position.push_back(object_keypoints[match_list[i].queryIdx].pt);
+      scene_position.push_back(scene_keypoints[match_list[i].trainIdx].pt);
+    }
+  }
+  if(object_position.size() < 4) {
+    return Mat(3,3,CV_32F,Scalar(1));
+  }
+  return findHomography(object_position, scene_position, CV_RANSAC);
+}
+
+Mat Find_Features::find_homography_with_translational_invariance(vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, vector< vector <DMatch> > match_list) {
+  vector<homography> homography_list;
+  map<homography, vector<DMatch> > scale_and_translation_matches;
+  
+  print_output("creating transform fitted matches", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+  for(int j=0; j<match_list.size(); j++) {
+    for(int k=0; k<match_list[j].size(); k++) {
+      for(int l=j+1; l<match_list.size(); l++) {
+        for(int m=0; m<match_list[l].size(); m++) {
+          homography H = calculate_scale_and_translation(match_list, object_keypoints, scene_keypoints, j,k,l,m);
+          homography_list.push_back(H);
+          scale_and_translation_matches[H].push_back(match_list[j][k]);
+          scale_and_translation_matches[H].push_back(match_list[l][m]);
+        }
       }
     }
   }
-  map<int,vector<DMatch> > size_list;
-  map<double,vector<DMatch> >:: iterator it=good_match_list.begin();
-  for(; it!=good_match_list.end(); ++it) { 
-    size_list[it->second.size()] = it->second;
+
+  homography min_H;
+  min_H.a = 0;
+  min_H.b = 0;
+  min_H.c = 0;
+  min_H.d = 0;
+
+  for(int j=0; j<homography_list.size(); j++) {
+    if(homography_quality(homography_list[j]) < homography_quality(min_H)) {
+      min_H = homography_list[j];
+    }
   }
-  return size_list.rbegin()->second;
+
+  float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
+  Mat H(3,3,CV_32F, content);
+  return H;
 }
 
+//--                                                           --//
+//--                                                           --//
+//--  Functions that matches the scene image to object images  --//
+//--                                                           --//
+//--                                                           --//
 
 vector<Pattern_Result> Find_Features::start_search(Mat image) {
   stringstream output_stream;
@@ -281,24 +319,27 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
   vector <string> objects;
 
   // add all the potential objects to be searched over to the objects list
-  //objects.push_back("feature_samples/wally_from_beach_no_background.png");
+  objects.push_back("feature_samples/wally_from_beach_no_background.png");
+  objects.push_back("feature_samples/wally_from_beach_with_background.png");
   objects.push_back("feature_samples/wally_from_shopping_mall_no_background.png");
-  //objects.push_back("feature_samples/wally_from_hometown_no_background.png");
+  objects.push_back("feature_samples/wally_from_shopping_mall_with_background.png");
+  objects.push_back("feature_samples/wally_from_hometown_no_background.png");
   //objects.push_back("feature_samples/wally_large_generic.png");
 
   int largest_object_width = 102; //hand checked
   int largest_object_height = 162; // hand checked
 
   // calculate best way to split image up amongst processes
-  int num_threads = omp_get_num_threads();
+  int num_threads = omp_get_max_threads();
   int size[2] = {image.cols, image.rows};
   int split[2] = {1,1};
-  while(num_threads > 1) {
+  int tmp_num_threads = num_threads;
+  while(tmp_num_threads > 1) {
     int div = 2;
-    while(num_threads%2!=0) {
+    while(tmp_num_threads%2!=0) {
       div++;
     }
-    num_threads /= div;
+    tmp_num_threads /= div;
     int largest = 0;
     if((float)(size[1])/split[1] > (float)(size[0])/split[0]) {
       largest = 1;
@@ -306,168 +347,48 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     split[largest] *= div;
   }
 
-  BFMatcher matcher;
-  SIFT sift;
-  Size subimage_size;
-  Point2f subimage_center;
-//  #pragma omp parallel for 
-  for(int subimage=0; subimage<omp_get_max_threads(); subimage++) {
-    subimage_size.width = image.cols/split[0];
-    subimage_size.height = image.rows/split[1];
-    subimage_center.x = image.cols*((1+split[0]*((float)(subimage))/split[0]))/(2*split[0]);
-    subimage_center.y = image.rows*(1+split[1]*(subimage%split[1]))/(2*split[1]);
-
-    Mat scene_image(subimage_size, image.depth());
-    getRectSubPix(image, subimage_size, subimage_center, scene_image);
-  
-    stringstream out;
-    out << "generating keypoints in scene (" << subimage_center.x << "," << subimage_center.y << ")";
-    print_output(out.str(), omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-
-    Mat scene_descriptors, object_descriptors;
-    Mat image_mask(scene_image.rows, scene_image.rows, CV_8U, Scalar(255));
+  #pragma omp parallel for default(none) shared(image, objects, results) firstprivate(scene_thickness, num_threads, split)
+  for(int subimage=0; subimage<num_threads; ++subimage) {
+    Mat scene_descriptors;
     vector<KeyPoint> scene_keypoints;
+    Size subimage_size;
+    Point2f subimage_center;
+    SIFT sift;
+
+    int x[2] = { (subimage/split[0])*(image.rows-1)/split[1], (subimage/split[0]+1)*(image.rows-1)/split[1] };
+    int y[2] = { (subimage%split[0])*(image.cols-1)/split[0], (subimage%split[0]+1)*(image.cols-1)/split[0] };
+
+    //Mat scene_image(subimage_size, image.type());
+    Mat scene_image = image(
+      Range(x[0],x[1]),
+      Range(y[0],y[1])
+    );
+
     sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
 
+    print_output("preparing to analyse objects", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
     for(int i=0; i<objects.size(); i++) {
-      vector<DMatch> match_list, good_match_list;
+      Mat object_descriptors, image_mask, object_image;
       vector<KeyPoint> object_keypoints;
-      Mat object_image = imread(objects[i], CV_LOAD_IMAGE_COLOR);
-      double object_thickness = estimate_black_line_thickness(object_image,50,50);
-      double scale = object_thickness/scene_thickness;
+      vector<DMatch> match_list;
+      double object_thickness, certainty;
+      double scale;
+
+      object_image = imread(objects[i], CV_LOAD_IMAGE_COLOR);
+      object_thickness = estimate_black_line_thickness(object_image,50,50);
+      scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
+
       image_mask = get_colour_in_image(object_image, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
       image_mask = image_mask != 255;
       print_output("getting object descriptors", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
 
       sift(object_image, image_mask, object_keypoints, object_descriptors);
-//      matcher.match(object_descriptors, scene_descriptors, match_list);
-      good_match_list = slow_image(object_keypoints, scene_keypoints);
-//      good_match_list = compare_scales(object_keypoints,scene_keypoints, match_list, scale);
-      cout << good_match_list.size() << endl;
-      Mat test;
-      namedWindow("i", CV_WINDOW_AUTOSIZE);
-      drawMatches(object_image, object_keypoints, scene_image, scene_keypoints, good_match_list, test);
-      imshow("i", test);
-      waitKey(0);
-/*
-      double mind=DBL_MAX,maxd=0;
-      double mean_distance = 0;
-      for(int i=0; i<match_list.size(); i++) {
-        mean_distance += match_list[i].distance;
-        if(match_list[i].distance > maxd) {maxd=match_list[i].distance;}
-        if(match_list[i].distance < mind) {mind=match_list[i].distance;}
-      }
-      mean_distance/=match_list.size();
-      double standard_deviation = 0;
-      for(int i=0; i<match_list.size(); i++) {
-        standard_deviation += pow(match_list[i].distance-mean_distance,2);
-      }
-      standard_deviation = sqrt(standard_deviation/match_list.size());
-      cout << mean_distance << " " << standard_deviation << endl;
-      cout << maxd << " " << mind << endl;
-      for(int i=0;i<match_list.size(); i++) {
-        if(fabs(match_list[i].distance-mean_distance) < standard_deviation) {
-          good_match_list.push_back(match_list[i]);
-        }
-      }      
-*/
-/*
-      namedWindow("i", CV_WINDOW_AUTOSIZE);
-      imshow("i", object_image);
-      waitKey(0);
-      imshow("i", image_mask);
-      waitKey(0);
 
-      Mat test;
-      cout << match_list.size() << endl;
-      cout << scene_keypoints.size() << " " << object_keypoints.size() << endl;
-      drawMatches(object_image, object_keypoints, scene_image, scene_keypoints, match_list, test);
-      imshow("i", test);
-      waitKey(0);
-*/
-  
-/*
-      print_output("creating transform fitted matches", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-      for(int j=0; j<matches.size(); j++) {
-        for(int k=0; k<matches[j].size(); k++) {
-          for(int l=j+1; l<matches.size(); l++) {
-            for(int m=0; m<matches[l].size(); m++) {
-              homography H = calculate_scale_and_translation(matches, object_keypoints, scene_keypoints, j,k,l,m);
-              homography_list.push_back(H);
-              scale_and_translation_matches[H].push_back(matches[j][k]);
-              scale_and_translation_matches[H].push_back(matches[l][m]);
-            }
-          }
-        }
-      }
-
-      homography min_H;
-      min_H.a = 0;
-      min_H.b = 0;
-      min_H.c = 0;
-      min_H.d = 0;
-
-
-      print_output("analysing homography", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-      for(int j=0; j<homography_list.size(); j++) {
-        if(homography_quality(homography_list[j]) < homography_quality(min_H)) {
-          min_H = homography_list[j];
-        }
-      }
-
-      float content[9] = {min_H.a,0,min_H.b,0,min_H.c,min_H.d,0,0,1};
-      Mat H(3,3,CV_32F, content);
-
-      vector<DMatch> match_list = slow_image(object_keypoints, scene_keypoints);
-      //vector<DMatch> match_list = get_image_location(object_keypoints, scene_keypoints);
-
-      if(match_list.size() == 0) {
-        continue;
-      }
-*/
-/*
-      map<double,int> point_slope;
-      vector<Point2f> obj, scene;
-      Mat avg_H(3,3,CV_32F, Scalar(0));
-      for(int j=0; j<match_list.size(); j++) {
-        Point2f a = object_keypoints[match_list[j].trainIdx].pt;
-        Point2f b = scene_keypoints[match_list[j].queryIdx].pt;
-        double slope = (a.y-b.y)/(a.x-b.x);
-        slope = floor(slope*10)/10.0;
-        point_slope[slope] += 1;
-      }
-
-      double most_common_slope = 0;
-      int slope_count = 0;
-      cout << match_list.size() << " " << point_slope.size() << endl;
-      for(map<double,int>::iterator it=point_slope.begin(); it!=point_slope.end(); ++it) {
-        if(it->second > slope_count) {
-          most_common_slope = it->first;
-          slope_count = it->second;
-        }
-      }
-      cout << most_common_slope << " " << slope_count << endl;
-
-      for(int j=0; j<match_list.size(); j++) {  
-        point2f a = object_keypoints[match_list[j].trainidx].pt;
-        point2f b = scene_keypoints[match_list[j].queryidx].pt;
-        double slope = (a.y-b.y)/(a.x-b.x);
-        slope = floor(slope*10)/10.0;
-        if(fabs(slope-most_common_slope) < 0.1) {
-          scene.push_back(object_keypoints[match_list[j].trainidx].pt);
-          obj.push_back(scene_keypoints[match_list[j].queryidx].pt);
-        }
-      }
-      mat h = findhomography(obj, scene,cv_ransac);
-      cout << H << endl;
-*/
-      vector<Point2f> obj, scene;
-      for(int j=0; j<good_match_list.size(); j++) {  
-        scene.push_back(object_keypoints[good_match_list[j].trainIdx].pt);
-        obj.push_back(scene_keypoints[good_match_list[j].queryIdx].pt);
-      }
-      Mat H = findHomography(obj, scene, CV_RANSAC);
-      cout << H << endl;
+      match_list = find_matches_with_matcher(object_descriptors, scene_descriptors);
+      //    match_list = find_matches_with_equivalent_ratios(object_keypoints,scene_keypoints, object_descriptors, scene_descriptors);
+      Mat H = find_homography_within_minimum_distance(object_keypoints, scene_keypoints, match_list,0);
+      // certainty decided by how close the elements H_{2,0} and H_{2,1} are to their expected value, zero
+      certainty = pow(1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1)),16);
 
       vector<Point2f> obj_corners(4), scene_corners(4);
       obj_corners[0] = cvPoint(0,0);
@@ -477,23 +398,21 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
 
       print_output("creating perspective transform", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       perspectiveTransform( obj_corners, scene_corners, H);
-//      if(homography_quality(H) < 0.01) {
-        Pattern_Result tmp;
-        tmp.info = info;
-        tmp.wally_location[0] = (scene_corners[0].x+scene_corners[1].x)/2+subimage_center.x-image.rows/4;
-        tmp.wally_location[1] = (scene_corners[0].y+scene_corners[2].y)/2+subimage_center.y-image.cols/4;
-        tmp.scale[0] = (scene_corners[2].x-scene_corners[0].x)/2;
-        tmp.scale[1] = (scene_corners[2].y-scene_corners[0].y)/2;
-        cout << H.at<double>(2,0) << " " << H.at<double>(2,1) << endl;
-        tmp.certainty = 1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1));
-//        if(tmp.scale[0] > 0 && tmp.scale[1] > 0)
-//        {
-//          #pragma omp critical
-//          {
-            results.push_back(tmp);
-//          }
-//        }
-  //    }
+
+      Pattern_Result tmp;
+      tmp.info = info;
+      tmp.wally_location[0] = (scene_corners[0].x+scene_corners[1].x)/2+y[0];
+      tmp.wally_location[1] = (scene_corners[0].y+scene_corners[2].y)/2+x[0];
+      tmp.scale[0] = (scene_corners[2].x-scene_corners[0].x)/2;
+      tmp.scale[1] = (scene_corners[2].y-scene_corners[0].y)/2;
+      tmp.certainty = certainty;
+      if(tmp.certainty >= 0 && tmp.scale[0] > 0 && tmp.scale[1] > 0 && tmp.scale[0] <= scale*object_image.rows && tmp.scale[1] <= scale*object_image.cols)
+      {
+        #pragma omp critical
+        {
+          results.push_back(tmp);
+        }
+      }
       object_image.release();
       print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
     }
