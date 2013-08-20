@@ -1,3 +1,11 @@
+/*
+ * Part of the HPCWheresWallySolver program.
+ *
+ * Defines the information that a pattern carries
+ *
+ *   cian booth - this.is.cian@gmail.com
+ *
+ */
 #ifndef hpc_whereswally_serial_pattern_information
 #define hpc_whereswally_serial_pattern_information
 

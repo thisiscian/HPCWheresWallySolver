@@ -1,3 +1,12 @@
+/*
+ * Part of the HPCWheresWallySolver program.
+ *
+ * Defines the class that contains information on results that have been calculated
+ * Also defines the class that users extend to define their own pattern
+ *
+ *   cian booth - this.is.cian@gmail.com
+ *
+ */
 #ifndef hpc_whereswally_serial_search_pattern
 #define hpc_whereswally_serial_search_pattern
 

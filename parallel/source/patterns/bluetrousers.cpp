@@ -16,14 +16,6 @@ Blue_Trousers::Blue_Trousers() {
   next_certainty = 0;
 }
 
-Blue_Trousers::Blue_Trousers(Search_Pattern *next_pattern, float next_cert) {
-  info.set_name("Blue Trousers");
-  info.set_description("Locate Wally by the blue of his trousers");
-  info.set_confidence(0.7);
-  next = next_pattern;
-  next_certainty = next_cert;
-}
-
 //**
 //**  SEARCH PATTERN
 //**

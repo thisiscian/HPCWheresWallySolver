@@ -28,9 +28,8 @@ Time_Message::Time_Message(string msg, double t) {
 }
 
 //**
-//** GET/SET FOR VARIABLES
+//** GET/SET METHODS
 //**
-
 
 void IO_Variables::set_number_of_final_results(int result_count){
   if(result_count > 0) {

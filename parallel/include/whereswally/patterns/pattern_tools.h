@@ -1,3 +1,11 @@
+/*
+ * Part of the HPCWheresWallySolver program.
+ *
+ * Tools used by various patterns
+ *
+ *   cian booth - this.is.cian@gmail.com
+ *
+ */
 #ifndef hpc_whereswally_serial_pattern_tools
 #define hpc_whereswally_serial_pattern_tools
 

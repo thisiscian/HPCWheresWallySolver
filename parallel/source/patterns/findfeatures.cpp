@@ -1,15 +1,4 @@
 #include <whereswally/patterns.h>
-#include <omp.h>
-#include <ctime>
-#include <iostream>
-#include <iomanip>
-#include <sstream>
-#include <cfloat>
-#include <map>
-#include <set>
-#include <algorithm>
-#include <cmath>
-#include "opencv2/highgui/highgui.hpp"
 using namespace std;
 using namespace cv;
 using namespace wwp;
@@ -17,7 +6,6 @@ using namespace wwp;
 //**
 //**  CLASS INITIALISATION
 //** 
-
 
 Find_Features::Find_Features() {
   info.set_name("Find Features");
@@ -29,7 +17,7 @@ Find_Features::Find_Features() {
 //** HELPER FUNCTIONS
 //**
 
-// calculates the euclidean distance between two points
+//-- calculates the euclidean distance between two points
 double Find_Features::dist(Point2f pt1, Point2f pt2) {
   return sqrt((pow(pt1.x-pt2.x,2)) + (pow(pt1.y-pt2.y,2)));
 }
@@ -52,7 +40,7 @@ int Find_Features::count_order(vector<double> list) {
     old_val = *it;
     ++it;
   }
-  return count+1; // count+1 because last element is always ordered
+  return count+1; //-- count+1 because last element is always ordered
 }
 
 //-- Calculates how many ordered elements parts row y has in common with row x
@@ -82,33 +70,9 @@ int Find_Features::compare_rows(float x[], float y[], int x_len, int y_len) {
   return count_order(unordered);
 }
 
-// creates an artifical homography that can match 
-homography Find_Features::calculate_scale_and_translation(vector< vector<DMatch > > matches, vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, int i, int j, int k, int l) {
-  int match_one_scene_id = matches[i][j].trainIdx;
-  int match_one_object_id = matches[i][j].queryIdx;
-  int match_two_scene_id = matches[k][l].trainIdx;
-  int match_two_object_id = matches[k][l].queryIdx;
-
-  Point2f match_one_object_point = object_keypoints[match_one_object_id].pt;
-  Point2f match_two_object_point = object_keypoints[match_two_object_id].pt;
-
-  Point2f match_one_scene_point = scene_keypoints[match_one_scene_id].pt;
-  Point2f match_two_scene_point = scene_keypoints[match_two_scene_id].pt;
-  
-  homography H;
-
-  H.a = (match_one_object_point.x-match_two_object_point.x)/(match_one_scene_point.x-match_two_scene_point.x);
-  H.b = match_one_scene_point.x -H.a*match_one_object_point.x;
-  H.c = (match_one_object_point.y-match_two_object_point.y)/(match_one_scene_point.y-match_two_scene_point.y);
-  H.d = match_one_scene_point.y -H.c*match_one_object_point.y;  
-  return H;
-}
-
-//--                               --//
-//--                               --//
-//--  Methods for finding matches  --//
-//--                               --//
-//--                               --//
+//**
+//** MATCHING METHODS
+//**
 
 vector<DMatch> Find_Features::find_matches_with_equivalent_distances(vector<KeyPoint> object_keypoints,vector<KeyPoint> scene_keypoints, Mat object_descriptors, Mat scene_descriptors) {
   BFMatcher matcher;
@@ -229,16 +193,15 @@ vector< vector<DMatch> > Find_Features::find_n_degree_matches_with_matcher(Mat o
   return match_list;
 }
 
-//--                                                                        --//
-//--                                                                        --//
-//--  Methods to create transformation matrix (homography) between matches  --//
-//--                                                                        --//
-//--                                                                        --//
-
+//**
+//** HOMOGRAPHY GENERATORS
+//**
 
 Mat Find_Features::find_homography_within_minimum_distance(vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, vector<DMatch> match_list, float tolerance) {
   double min_distance = DBL_MAX;
   vector<Point2f> object_position, scene_position;
+  
+  //-- find the minimum distance between matches
   for(size_t i=0; i<match_list.size(); i++) {
     double distance = match_list[i].distance;
     if(distance < min_distance) {
@@ -246,6 +209,7 @@ Mat Find_Features::find_homography_within_minimum_distance(vector<KeyPoint> obje
     }
   }
 
+  //-- find the perspective change using matches that have sufficiently low distance
   for(size_t i=0; i<match_list.size(); i++) {
     double distance = match_list[i].distance;
     if(tolerance == 0 || distance < tolerance*min_distance) {
@@ -253,61 +217,24 @@ Mat Find_Features::find_homography_within_minimum_distance(vector<KeyPoint> obje
       scene_position.push_back(scene_keypoints[match_list[i].trainIdx].pt);
     }
   }
-  if(object_position.size() < 4) {
+  if(object_position.size() < 4) { //-- findHomography does not run with less than 4 matches
     return Mat(3,3,CV_32F,Scalar(1));
   }
   return findHomography(object_position, scene_position, CV_RANSAC);
 }
 
-Mat Find_Features::find_homography_with_translational_invariance(vector<KeyPoint> object_keypoints, vector<KeyPoint> scene_keypoints, vector< vector <DMatch> > match_list) {
-  vector<homography> homography_list;
-  map<homography, vector<DMatch> > scale_and_translation_matches;
-  
-  print_output("creating transform fitted matches", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-  for(size_t j=0; j<match_list.size(); j++) {
-    for(size_t k=0; k<match_list[j].size(); k++) {
-      for(size_t l=j+1; l<match_list.size(); l++) {
-        for(size_t m=0; m<match_list[l].size(); m++) {
-          homography H = calculate_scale_and_translation(match_list, object_keypoints, scene_keypoints, j,k,l,m);
-          homography_list.push_back(H);
-          scale_and_translation_matches[H].push_back(match_list[j][k]);
-          scale_and_translation_matches[H].push_back(match_list[l][m]);
-        }
-      }
-    }
-  }
-
-  homography min_H;
-  min_H.a = 0;
-  min_H.b = 0;
-  min_H.c = 0;
-  min_H.d = 0;
-
-  for(size_t j=0; j<homography_list.size(); j++) {
-    if(homography_quality(homography_list[j]) < homography_quality(min_H)) {
-      min_H = homography_list[j];
-    }
-  }
-
-  float content[9] = {min_H.a,0.0,min_H.b,0.0,min_H.c,min_H.d,0.0,0.0,1.0};
-  Mat H(3,3,CV_32F, content);
-  return H;
-}
 
 //**
 //**  SEARCH PATTERN
 //**
 
 vector<Pattern_Result> Find_Features::start_search(Mat image) {
-  stringstream output_stream;
-  print_output("starting", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
-
   double scene_thickness = estimate_black_line_thickness(image,50,50);
 
   vector<Pattern_Result> results;
   vector <string> objects;
 
-  // add all the potential objects to be searched over to the objects list
+  //-- add all the potential objects to be searched over to the objects list
   objects.push_back("feature_samples/wally_from_beach_no_background.png");
   objects.push_back("feature_samples/wally_from_beach_with_background.png");
   objects.push_back("feature_samples/wally_from_shopping_mall_no_background.png");
@@ -332,57 +259,49 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     }
     split[largest] *= div;
   }
-
+  
+  //-- decompose the image into chunks
   #pragma omp parallel for default(none) shared(image, objects, results) firstprivate(scene_thickness, num_threads, split)
   for(int subimage=0; subimage<num_threads; ++subimage) {
-    Mat scene_descriptors;
-    vector<KeyPoint> scene_keypoints;
-    Size subimage_size;
-    Point2f subimage_center;
-    SIFT sift;
-
+    //-- get the appropriate subimage from the main image
     int x[2] = { (subimage/split[0])*(image.rows-1)/split[1], (subimage/split[0]+1)*(image.rows-1)/split[1] };
     int y[2] = { (subimage%split[0])*(image.cols-1)/split[0], (subimage%split[0]+1)*(image.cols-1)/split[0] };
 
-    //Mat scene_image(subimage_size, image.type());
-    Mat scene_image = image(
-      Range(x[0],x[1]),
-      Range(y[0],y[1])
-    );
+    Mat scene_image = image(Range(x[0],x[1]),Range(y[0],y[1]));
 
-    sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
+    Mat scene_descriptors;
+    vector<KeyPoint> scene_keypoints;
+    SIFT sift;
 
-    print_output("preparing to analyse objects", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
+        sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
+
     for(size_t i=0; i<objects.size(); i++) {
       Mat object_descriptors, image_mask, object_image;
       vector<KeyPoint> object_keypoints;
-      vector<DMatch> match_list;
-      double object_thickness, certainty;
-      double scale;
 
       object_image = imread(objects[i], CV_LOAD_IMAGE_COLOR);
-      object_thickness = estimate_black_line_thickness(object_image,50,50);
-      scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
-      //resize(object_image, object_image, Size(1/scale,1/scale),0,0,INTER_AREA); //inter_area is good for resizing to smaller images
+      double object_thickness = estimate_black_line_thickness(object_image,50,50);
+      double scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
 
+      //-- mask all FUSHCIA (#FF00FF) colours to ensure that transparent colours don't get matched
       image_mask = get_colour_in_image(object_image, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
       image_mask = image_mask != 255;
-      print_output("getting object descriptors", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
 
       sift(object_image, image_mask, object_keypoints, object_descriptors);
 
-      match_list = find_matches_with_matcher(object_descriptors, scene_descriptors);
+      //-- match the 
+      vector<DMatch> match_list = find_matches_with_matcher(object_descriptors, scene_descriptors);
       Mat H = find_homography_within_minimum_distance(object_keypoints, scene_keypoints, match_list,0);
-      //-- certainty decided by how close the elements H_{2,0} and H_{2,1} are to their expected value, zero
-      certainty = pow(1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1)),16);
 
+      //-- certainty decided by how close the elements H_{2,0} and H_{2,1} are to their expected value, zero
+      double certainty = pow(1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1)),16);
+
+      //-- defines the box that bounds the scene image match
       vector<Point2f> obj_corners(4), scene_corners(4);
       obj_corners[0] = cvPoint(0,0);
       obj_corners[1] = cvPoint( object_image.cols, 0 );
       obj_corners[2] = cvPoint( object_image.cols, object_image.rows );
       obj_corners[3] = cvPoint( 0, object_image.rows );
-
-      print_output("creating perspective transform", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
       perspectiveTransform( obj_corners, scene_corners, H);
 
       Pattern_Result tmp;
@@ -400,10 +319,8 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
         }
       }
       object_image.release();
-      print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
     }
     scene_image.release();
   }
-  print_output("done", omp_get_thread_num(), omp_get_num_threads(), info.get_name());
   return results;
 }

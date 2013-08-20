@@ -63,23 +63,10 @@ bool wwp::operator<(wwp::homography lhs, wwp::homography rhs) {
 }
 
 //**
-//**  DEBUGGING TOOLS
-//**
-
-void wwp::print_output(string message, int thread_num, int num_threads, string pattern_name) {
-  stringstream output_stream;
-//  cout << "\033[" << num_threads << "F" << flush;
-  output_stream << "\033[s\033[" << num_threads-thread_num << "F\033[KThread(" << thread_num << ")[" << pattern_name << "]: " << message;
-  output_stream << "\n\033[u";
-//  cout << output_stream.str() << flush;
-}
-
-
-//**
 //**  COLOUR ANALYSIS TOOLS
 //**
 
-//-- finds regions using a quick algorithm
+//-- finds regions using the quick Connected Component Labelling algorithm
 vector<wwp::region> wwp::fast_find_regions(Mat input) {
   vector< vector<int> > region_array(input.rows);
     
@@ -176,7 +163,7 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
 
   //-- normalize average positions and add to the list of regions discovered
   vector<wwp::region> found_regions;
-  for(vector<wwp::region>::iterator it=++region_list.begin(); it!=region_list.end(); ++it) {
+  for(vector<wwp::region>::iterator it=region_list.begin(); it!=region_list.end(); ++it) {
     it->av_x /= it->size;
     it->av_y /= it->size;
     found_regions.push_back(*it);

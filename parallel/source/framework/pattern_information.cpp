@@ -28,7 +28,7 @@ const bool Pattern_Information::operator!=(const Pattern_Information &rhs) {
 }
 
 //**
-//**  GET/SET
+//**  GET/SET METHODS
 //**
 
 void Pattern_Information::set_name(std::string new_name) {

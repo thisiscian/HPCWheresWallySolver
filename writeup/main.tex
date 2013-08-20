@@ -5,7 +5,7 @@
 %\subtitle{Solving Where's Wally Puzzles Computationally}
 \def\biblio {
   \bibliographystyle{ieeetr}
-  \bibliography{whereswally}
+  \bibliography{/home/cian/Project/HPCWheresWallySolver/writeup/whereswally}
 }
 
 \begin{document}
@@ -31,29 +31,31 @@
     \vspace{1em}
   \end{center}
   \pagestyle{empty}
-  \pagebreak
-  \abstract{...}
+  \newpage
+    \mbox{}
+  \newpage
+  \abstract{
+    A report on the potential of parallel computer vision for everyday use.
+    Discussed within are algorithms and libraries that could make this a possibility.
+    Special focus is put on the computer vision library OpenCV.
+    Where's Wally? puzzles are used as a test case for parallel object recognition.
+  }
   \pagebreak
   \tableofcontents
-  \pagebreak
   \listoffigures
-  \pagebreak
   \listoftables
-  \pagebreak
   \listoflistings
   \pagestyle{empty}
   \pagebreak
   \section*{Acknowledgements}
     Many thanks go to my supervisor, Alistair Grant, for directing me to such an interesting project, and keeping me on the rails.
+  \pagestyle{empty}
   \pagebreak
-  \setcounter{page}{1}
   \pagestyle{plain}
+  \setcounter{page}{1}
   \subfile{introduction}
   \subfile{background_information}
-  \subfile{literature_review}
-  \subfile{colour_analysis}
-  \subfile{line_width}
-  \subfile{red_and_white}
+  \subfile{algorithms}
   \subfile{implementation}
   \subfile{results}
   \subfile{conclusion}

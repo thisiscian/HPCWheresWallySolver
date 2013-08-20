@@ -11,8 +11,9 @@ Output::Output(IO_Variables *new_variables) {
 }
 
 //**
-//** OUTPUT FUNCTIONS
+//** HELPER FUNCTIONS
 //**
+
 void Output::show_text_results() {
   cout << "Found potential Wallys in the following locations:" << endl;
   for(size_t i=0; i<final_results.size(); i++ ) {
@@ -78,6 +79,10 @@ void Output::show_timing_results() {
   }
 }
 
+//**
+//** GET/SET METHODS
+//**
+
 vector<Pattern_Result> Output::get_final_results() {
   return final_results;
 }
@@ -85,6 +90,10 @@ vector<Pattern_Result> Output::get_final_results() {
 void Output::set_final_results(std::vector<Pattern_Result> results) {
   final_results = results;
 }
+
+//**
+//**  OUTPUT DATA
+//**
 
 void Output::output() {
   if( variables->get_show_text_results() ) {

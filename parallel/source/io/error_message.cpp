@@ -1,6 +1,10 @@
 #include "whereswally/io/error_message.h"
 using namespace std;
 
+//**
+//**  HELPER FUNCTIONS
+//**
+
 //-- Print error for entering bad numbers for -n option
 string Error_Message::bad_number_of_final_results(va_list vl) {
   stringstream output;
@@ -123,7 +127,7 @@ string Error_Message::bad_option_show_timing(va_list vl) {
 string Error_Message::bad_option_help(va_list vl) {
   stringstream output;
   string prog_name = va_arg(vl, char*);
-  output << "usage: " << prog_name << " [options [files]]" << endl;
+  output << "usage: " << prog_name << " [flag [option]] [file]" << endl;
   output << "\t-omp,--openmp=N\tSets the number of threads that OpenMP can use" << endl;
   output << "\t-n,--number-of-final-results=N\tSets the number of results to be output" << endl;
   output << "\t-p,--load-puzzle=FILE\tAttempts to locate Wally in FILE" << endl;
@@ -141,6 +145,10 @@ string Error_Message::unrecognised_error(string bad_error) {
   output << endl;
   return output.str();
 }
+
+//**
+//**  ERROR FUNCTION
+//**
 
 //-- Given specific inputs, print error message
 string Error_Message::operator()(string key, ...) {

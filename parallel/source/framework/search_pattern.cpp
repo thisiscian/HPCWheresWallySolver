@@ -6,6 +6,7 @@ using namespace cv;
 //**  RELATIONAL OPERATORS
 //**
 
+//-- entire pattern result must be equal
 const bool operator==(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   bool check = true;
   Pattern_Information li = lhs.info;
@@ -20,6 +21,11 @@ const bool operator==(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   return check;
 }
 
+const bool operator!=(const Pattern_Result &lhs, const Pattern_Result &rhs) {
+  return !(lhs == rhs);
+}
+
+//-- pattern must be equal except for the certainty
 const bool operator>(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   bool check = true;
   Pattern_Information li = lhs.info;
@@ -33,12 +39,8 @@ const bool operator>(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   check &= (lhs.certainty > rhs.certainty);
   return check;
 }
-const bool operator!=(const Pattern_Result &lhs, const Pattern_Result &rhs) {
-  return !(lhs == rhs);
-}
-
 //**
-//**  MISC
+//**  GET/SET METHODS
 //**
 
 const Pattern_Information Search_Pattern::get_pattern_information() {

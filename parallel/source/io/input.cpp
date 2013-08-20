@@ -64,7 +64,7 @@ string wwp::get_option_variable(int *num, int argc, char* argv[]) {
 }
 
 //**
-//**  INPUT FUNCTIONS
+//**  INPUT PARSING
 //** 
 
 //-- set final results if format is correct
@@ -228,6 +228,10 @@ int Input::parse_input(int argc, char* argv[]) {
   }
   return err;
 }
+
+//**
+//**  INPUT FILES
+//**
 
 //-- load the puzzle image from file
 Mat Input::load_image() {

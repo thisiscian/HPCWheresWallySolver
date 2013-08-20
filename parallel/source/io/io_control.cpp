@@ -30,16 +30,12 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
   if(variables->get_load_puzzle_from_file()) {
     double start = omp_get_wtime();
     Mat image = input->load_image();
+
     //-- get time to load image from file; purely serial
     variables->add_timing_result("Load Image", omp_get_wtime()-start);
 
-    //-- make room for each thread to print it's current task
-    for(int i=0; i<variables->get_number_of_openmp_threads(); i++) {
-      cout << endl;
-    }
-
+    //-- parallelise over tasks, spare threads will go towards parallelising the tasks themselves
     omp_set_num_threads(variables->get_number_of_openmp_threads());
-    setNumThreads(0);
     omp_set_nested(1);
     #pragma omp parallel for default(none) shared(image, patterns)
     for(size_t i=0; i<patterns.size(); i++) {
@@ -53,6 +49,7 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     }
   }
   variables->add_timing_result("Total Time", omp_get_wtime()-solve_start);
+
   Results_Analysis analyser;
   analyser.calculate_final_results(variables->get_number_of_final_results(), variables->get_results() );
   output->set_final_results( analyser.get_final_results() );

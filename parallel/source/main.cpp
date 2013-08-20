@@ -10,7 +10,6 @@ int main(int argc, char* argv[] ) {
   Find_Glasses fg;
   Blue_Trousers bt;
   Red_and_White rw;
-//  Red_and_White rw_fg(&fg, 0.5);
   Find_Features ff;
   
   //-- Add patterns to list

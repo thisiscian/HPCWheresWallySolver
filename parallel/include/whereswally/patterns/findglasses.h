@@ -1,3 +1,11 @@
+/*
+ * Part of the HPCWheresWallySolver program.
+ *
+ * Find Wally with his glasses
+ *
+ *   cian booth - this.is.cian@gmail.com
+ *
+ */
 #ifndef hpc_whereswally_pattern_find_glasses
 #define hpc_whereswally_pattern_find_glasses
 

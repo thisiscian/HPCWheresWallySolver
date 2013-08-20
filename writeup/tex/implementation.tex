@@ -1,5 +1,23 @@
 \documentclass[../main.tex]{subfiles}
 \begin{document}
   \section{Implementation}
-    \biblio
+    \subsection{Red And White}
+      Regions with red and white stripes can be found using a few simple techniques.
+      Here, we find two masks (arrays with binary values) that describe the location of sufficiently red and white regions in the image.
+      The term sufficiently is used, as defining 'red' and 'white' is not a simple task for a computer.
+      The function \texttt{get\_colour\_in\_image}, discussed in section \ref{function_getcolinimg}, covers the issues with colour definition.
+
+      Once the masks have been created, they are vertically blurred using a Gaussian blur.
+      This is done so that when the two masks are multiplied together, there will be non-zero values found in overlapping areas.
+      The multiplication now describes regions that have red and white regions of colour that are above each other.
+      As seen in figure \ref{rw_stripe_ex}, the region found may not encompass the entire area desired.
+      This is solved by blurring the located stripe, making a combined region with nearby stripes.
+      The regions are then identified using the \texttt{find\_region\_from\_mask} function.
+    \subfile{implementation/colour_implementation}
+    \subfile{implementation/red_and_white}
+    \subfile{implementation/blue_trousers}
+    \subfile{implementation/find_glasses}
+    \subfile{implementation/find_features}
+
+\biblio
 \end{document}

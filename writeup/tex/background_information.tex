@@ -3,11 +3,10 @@
 \section{Background Information}
   \subsection{Computer Vision}
     Computer vision is a wide ranging field, with a large variety of algorithms and libraries available for use.
-    It is involved with topics such as artificial intelligence \cite{aivis}, machine vision \cite{robovision}, and image processing.
+    It is involved with topics such as artificial intelligence\cite{aivis}, machine vision\cite{robovision}, and image processing.
     Computer vision also draws upon a large range of established fields, such as mathematics, physics and neurobiology.
+    Many 
     
-%%    In 1965, Roberts wrote the first paper on computer vision \cite{machine3d}.
-%%    Since then, 
     Computer vision techniques can be used for numerous tasks, including motion analysis, image restoration and object recognition.
 
     Motion analysis attempts to determine estimates of object velocities in a stream of images.
@@ -18,149 +17,167 @@
     This is both a good example of how computer vision can be applied, and a good indication of how ready it is for everyday use.
 
     Image restoration is the recovery of corrupt or otherwise marred images.
-    One of the most interesting applications of this is in the recovery of medical image \cite{imagerecovery}.
+    One of the most interesting applications of this is in the recovery of medical image\cite{imagerecovery}.
     Obtaining high resolution images from MRI scans normally requires a large number of measurements.
     This is time consuming, which can be distressing for the patient and expensive for the hospital.
     However, taking a smaller number of measurements on purpose can help to improve the situation without forgoing quality.
     In this case, this is because image restoration allows the reconstruction of high resolution images with only a small amount of input data.
     
     The computer vision topic that concerns Where's Wally? images the most is object recognition.
-    This is covered in depth in the following section.
+    This is covered in depth in the section \ref{bkrndobj}.
     
   \subsection{Object Recognition}
-    Finding Wally in a Where's Wally? puzzle is, by definition, a problem of object recognition.
+    \label{bkrndobj}
+    Object recognition is a key technique in computer vision.
+    In 1965, Roberts wrote the first paper on computer vision\cite{machine3d}.
+  
+    Finding Wally in a these puzzles is by definition a problem of object recognition.
     Wally must be correctly identified from other characters, furniture and even food.
-    To this end, the image needs to be analysed so that the correct Wally can be located.
-    We discuss three of most directly useful techniques for defining objects in a cartoon.
+    The image needs to be analysed so that the correct Wally can be located.
+    We discuss two of most directly useful techniques for defining objects in a cartoon style image.
     \subsection{Shape and Colour Analysis}
-      One obvious way of analysing an image is to break it down into shapes and colours.
-      In linguistic terms, it is easiest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
+      One way of analysing an image is to break it down into shapes and colours.
+      In linguistic terms, it is often simplest to depict an object by describing it's shape and colour, i.e. "the red box" or "the green hand".
       This is conceptually simple to explain and understand, and thus is more intuitive to program.
 
-      Most images are saved as raster images (e.g. PNG, BMP, GIF), which is a 2D array of colours that directly map to pixels on the screen.
-      This is opposed to vector images, which store the location and colour of geometric primitives (squares, circles, triangles, etc.).
-      It is often much simpler to perform shape and colour analysis on vector images.
-      However, input devices such as webcams and scanners typically produce images in raster formats.
+      Everyday access to object recognition would generally be done through digital cameras, scanners and other similar devices.
+      Most images saved this way are stored as raster images (e.g. PNG, BMP, GIF), which is a 2D array of colours that directly map to pixels on the screen.
       This is because the input devices do not have the capability of recognising objects in the images they produce.
+      This is opposed to vector images (e.g. PDF, SVG, SWF), which store the location and colour of geometric primitives (squares, circles, triangles etc.).
+      It is often much simpler to perform shape and colour analysis on vector images.
 
       Regardless of format, methods of colour analysis are simple to implement programmatically.
       This is because colour is intrinsic to all methods of storing the properties of an image.
       It is nearly impossible to describe a specific object without discussing some aspect of it's colour, even it that colour is on the greyscale.
 
-      Shape analysis, on the other hand, is considerably more difficult for raster images.
-      Shape boundaries must be specifically located.
-      Global boundares are normally found through edge detection.
-      Global boundaries here, is a single object composed of every boundary in the image.
-      To find the specific boundaries, which are required to detect shapes, more analysis is required.
-      The global boundaries is analysed to find points of boundary intersection, and the curvature between these points.
-      The group of curves must then be examined to find the sort of shapes exist.
+      Shape analysis is more complex for raster images.
+      Unlike vector images, shape boundaries are not clearly defined.
+      The global boundary is normally found through edge detection.
+      The global boundary is defined here as a single object composed of every boundary in the image.
+      Detecting the shapes requires the specific boundaries to be found, which requires further analysis.
+      The global boundary is analysed to find points of boundary intersection, and the curvature between those points.
+      The group of curves must then be examined to find combinations that produce shapes.
 
-      Shape and colour analysis allows for a descriptional, heuristic method for locating characters.
-      No previous image of Wally is required, only a description, such as "red and white stripes" or "black glasses".
+      Shape and colour analysis allows for a descriptional, heuristic method for locating objects.
+      In Where's Wally puzzles, this means no previous image of Wally is needed.
+      All that is required is a basic description, such as "red and white stripes" or "black glasses".
       This allows users to extend the solution past Wally, and towards other characters, who have not previously been seen.
-      Care must be taken, however, as this form of analysis can lead to false positives.
-      To combat this, many different types of analysis should be combined.
+      Care must be taken as this form of analysis can lead to false positives.
+      To prevent this, many different types of analysis should be combined.
       For example, a match for "red and white jumpers" that also has a nearby match for "skin colour" would produce a result that has more confidence of being correct.
 
-      An example of the usefulness of this, beyond Where's Wally, could be found in augmented reality (AR) technology, such as Google Glass.
+      An example of the usefulness of shape and colour analysis, beyond Where's Wally, could be found in augmented reality (AR) technology.
+      Google is developing this technology with the Google Glass device\cite{googleglass}.
 
-      A common experience is losing ones keys.
+      A common experience is the misplacement of keys.
       Users with access to AR devices could use colour and shape analysis to enhance their own searching (i.e. if they are visible, but in a cluttered area).
       As keys, with some exceptions, have a few well defined shapes and possible colour schemes; the device would not have to store what the specific keys look like in advance.
       Assuming that parallelism is available in such devices, this technique could potentially provide real time analysis of the scene, significantly helping the user.
     \subsubsection{Feature Analysis}
-      Some of the most reliable computer vision algorithms (such as SIFT \cite{sift}), were developed while considering the neuroscience of human vision.
+      \label{bkg_feature_analysis}
+      Some of the most reliable computer vision algorithms (such as SIFT\cite{sift}) were developed while considering the neuroscience of human vision.
       Tanaka\cite{mechobjrecog} and Perrett and Oram\cite{perretthv} studied this in detail.
       They found that human vision identifies objects with features that are invariant to brightness, scale and position.
-      Explicitly, this means that humans are able to recognise the same objects under differing light levels, at different distances to us, and in different positions in a room.
+      Explicitly, this means that humans are able to recognise the same objects under differing light levels, at different distances and in different positions in a room.
       These results have been used as inspiration for feature analysis.
 
-      This technique finds `features'; regions of an image which are scale, rotation and illumination invariant.
+      This technique finds `features', which are points in an image that are scale, rotation and illumination invariant.
       These features are most immediately useful when compared with the features of another image.
       For example, the features from a solo image Wally can be used to locate the same Wally in a group image.
 
       The image that is being searched is often referred to as the Scene.
-      Images that are being searched for in the Scene, are known as Objects
-      (Scene and Object are capitalised here to avoid confusion with the more general term of object).
+      Images that are being searched for in the Scene are known as Objects
+      \footnote{Scene and Object are capitalised here to avoid confusion with the more general term of object}.
       The keypoints of objects are known properties, and can be searched against the unknown keypoints of the scene.
 
       This method generally requires an existing image to find Wally, which restricts the flexibility of the search.
       When correctly implemented, this method is very reliable.
       If Wally is not obscured, results found can be assigned high confidence.
-      Normally though, Wally is obscured, so this method should be combined with other techniques.
-      This helps to provide more flexibility.
+      Normally Wally is obscured, so this method should be combined with other techniques.
+      Combination helps to provide more flexibility.
 
       Feature analysis is useful in the manufacturing industry.
-      Mass produced products need to be checked for defects.
-      Due to the regularity of most production systems, this is ideal for feature analysis.
-      If products in the Scene do not match the keypoints of the list of Objects, then the product can be determined to be faulty.
-      This can easily be parallelised; multiple production streams can be scanned simultaneously. %% flesh this sentence a bit
+      Mass manufactured products need to be checked for defects.
+      Due to the regularity of most merchandise produced this way, this is ideal for feature analysis.
+      If products in the Scene do not match the features of the list of Objects, then the product can be determined to be faulty.
+      This can simply be parallelised; multiple production streams can be scanned simultaneously.
+      Using a centralised system could be cheaper than implementing per-line machines.
   \subsection{Computer Vision Libraries}
-    This development of computer vision has led to the creation of many libraries made soley for the purpose of solving computer vision problems.
+    Since the advent of computer vision, many libraries have been developed to implement and group computer vision techniques.
     Arguably, the chief among these is OpenCV.
 
-    OpenCV is an open source library used for implementing a wide range of computer vision techniques. 
-    Using in-built functions, users have immediate and easy access to complicated algorithms.
-    It is available in three of the most major operating systems, linux, mac and windows.
-    OpenCV is aimed at developing real-time solutions to computer vision problems \cite{learningopencv}.
-    The online documentation for OpenCV is extensive, and include tutorials for common topics, such as image recognition.
+    OpenCV\cite{opencv} is an open source library used for implementing a wide range of computer vision techniques. 
+    Using in-built functions, users have immediate and simplified access to complicated algorithms.
+    OpenCV is available in three of the most major operating systems, Linux, Windows and Mac OS.
+    The library is aimed at developing real-time solutions to computer vision problems\cite{learningopencv}.
+    The online documentation for OpenCV is extensive, including tutorials for common topics such as image recognition, machine learning and image processing.
     These properties make OpenCV ideal for implementing computer vision on a wide scale.
+    OpenCV has some drawbacks. 
+    It makes use of bespoke classes for dealing with arrays, called \texttt{Mat}.
+    The \texttt{Mat} class helps to minimise the memory usage of programs using large arrays.
+    Direct pixel access to \texttt{Mat} classes is not accessible in the normally expected C++ fashion.
+    A template function, \texttt{Mat::at<type>(x,y)}, is instead the method of access.
+    This could confuse new users.
     
     %% other libraries
-    Another computer vision library is libCVD, based in Cambridge University.
-    This is a versatile library, which is designed for speed and portability.
-    Unlike OpenCV, it stores in pixels in easily accessible STL vectors.
+    Another computer vision library is libCVD\cite{libcvd}, based in Cambridge University.
+    This is a versatile library, designed for speed and portability.
+    It is often used to access streams of video data.
+    Unlike OpenCV, it stores in pixels in readily accessible STL vectors.
     This is useful, because it makes accessing pixels more intuitive.
     However, libCVD does not have the range of implemented computer vision techniques found in OpenCV.
     It also lacks the level of documentation that OpenCV offers.
-    LibCVD is sometimes used in combination with OpenCV \cite{translatar}.
-    This allows the user access to the breadth of functions available in OpenCV, as well as the 
+    LibCVD can be used in combination with OpenCV\cite{translatar}.
+    This allows the user access to the breadth of functions available in OpenCV, as well as the speed of input that libCVD brings.
+
+    OpenCV will be the sole library used to implement the Where's Wally? solver.
+    Using multiple libraries overly complicates the task, where a key aim is to produce a simple everyday implementation.
+    OpenCV has many attractive properties for non-expert users, when compared with other libraries.
+    These do not have the documentation or community to help with development issues.
 
   \subsection{Parallel Programming}
-    When implementing parallelism, it is desirable to not only speed up a program, but also to use an appropriate number of cores.
-    A useful definition is one of speedup, the amount faster that a parallelised version of a program is to an efficient serial implementation.
+    When implementing parallelism, it is desirable to not only speed up a program, but also to use an efficient number of cores.
+    A useful definition is speedup; the scale to which a parallelised version of a program is faster than an efficient serial implementation.
     \begin{equation}
       \text{Speedup}(P) := \frac{T_\text{serial}}{T_\text{parallel}(P)}
       \label{speedupdef}
     \end{equation}
     Equation \ref{speedupdef} describes the speedup of a system.
     Here $P$ is the number of computing units (threads, processors etc.), $T_\text{serial}$ is the time the serial program takes and $T_\text{parallel}$ is the parallel time.
-    For most systems, the maximum speedup possible is $P$; 2 computing units working on a problem will solve it twice as fast as a single unit. 
+    For most systems, the maximum speedup possible is equivalent to $P$, known as linear speedup.
+    %In an ideal program, 2 computing units working on a problem will solve it twice as fast as a single unit. 
+    %It is worth noting that some programs actually produce super-linear speedup\cite{superlinear}.
+    %This might happen because multiple processors increase the available cache size beyond the size of the problem.
+    %This means that minimal calls to main memory are required, which are often the major cause of slow down.
 
-    Most implementations do not achieve this, especially for larger numbers of computing units.
-    It is worth noting that some programs actually produce super-linear speedup \cite{superlinear}.
-    This might happen because multiple processors increase the available cache size beyond the size of the problem
-    This means that minimal calls to main memory are required, which are often the major cause of slow down.
-
-    A fixed size program with a speedup that scales directly with the number of units used, is said to have `strong scaling'.
-    An example of this is having a program that calculates the sum of each element in a 1024x1024x1024 matrix.
-    The number of elements being added is very large, so there is plenty of scope for a massively parallel system.
-
-    Of course, the scaling is not strong for an infinite number of processors.
-    For more than 1024x1024x512 processors (a minimum of two elements per processor is needed for addition), there is not enough work to be done per processor.
-    This inherently has a negative effect on the speedup.
-    The scaling will most likely stop being strong before this, due to Amdahl's law, seen in equation \ref{amdahl}.
-
-    If a program is composed of serial and parallelisable portions, and $\alpha$ is the portion of the program that is purely serial, then the time a parallel program takes is:
+    Most implementations do not achieve linear speedup, especially for large numbers of computing units.
+    A program that solves a problem of fixed size with near-linear speedup is said to experience `strong scaling'.
+    %An example of this is having a program that calculates the sum of each element in a 1024x1024x1024 matrix.
+    %The number of elements being added is very large, so there is scope for the runtime to be continuously reduced with new processor.
+    %Strong scaling rarely occurs for very large numbers of computing units.
+    %For more than 1024x1024x512 processors (a minimum of two elements per units is needed for addition), there is not enough work per unit to maintain scaling.
+    %This inherently has a negative effect on the speedup.
+    In general, scaling will be limited being strong long before this happens, due to Amdahl's law, seen in equation \ref{amdahl}.
     \begin{equation}
       T_{parallel}(P) = T_{serial}\left(\alpha-\frac{1-\alpha}{P}\right)
     \end{equation}
+    Here, $\alpha$ is the portion of the code that is purely serial.
     Inserting this into the previous definition of speedup in equation \ref{speedupdef}, we see Amdahl's Law emerge.
     \begin{equation}
       \text{Speedup}(P) = \frac{T_\text{serial}}{T_\text{parallel}(P)} = \frac{T_\text{serial}}{T_\text{serial}\left(\alpha-frac{1-\alpha}{P}\right)} = \frac{1}{\alpha+\frac{1-\alpha}{P}}
       \label{amdahl}
     \end{equation}
-    It is clear that as $P$ tends to large numbers, the speedup approaches the constant value of $1/\alpha$.  
+    As $P$ tends to large numbers the speedup approaches the constant value of $1/\alpha$.  
     
-    In spite of this, parallel programs regularly achieve `weak scaling'.
-    This is the case if a program scales with the number of cores for a fixed amount of work per computing unit.
-    Gustafson's law describes the mathematics of weak scaling.
-    Here, $P$ is the number of computing units, and $N$ is the size of the problem.
+    Parallel programs instead often aim for to achieve `weak scaling', described by Gustafson's law.
+    This is the case if the problem size scales with the number of cores for a fixed amount of work per computing unit.
     \begin{align*}
       T(P,N) &= T_\text{serial} + T_{\text{parallel},N} = \alpha + \frac{N(1-\alpha)}{P} \\
       T(1,N) &= T_\text{serial} + NT_{\text{parallel},N} = \alpha + N(1-\alpha) \\
     \end{align*}
-    We define $T(P,N)$ as the time for the purely serial components to complete, $T_\text{serial}$, with the time it takes for $P$ processors one task of size $1/N$, $T_{\text{parallel},1/N}$.
+    Here, $P$ is the number of computing units, and $N$ is the size of the problem.
+    We define $T(P,N)$ as the time for the program to complete the purely serial sections.
+    $T_\text{serial}$ is the time it takes for each of the $P$ processors to complete one task of size $1/N$, $T_{\text{parallel},1/N}$.
     The time for 1 processor to do an equivalent amount of work is defined in $T(1,N)$.
     This is the sum of the serial time $T_\text{serial}$ and every bit of work the processors would do, i.e. $NT_{\text{parallel},N}$.
     \begin{align*}
@@ -170,22 +187,68 @@
       \text{Speedup}(P,\beta P) = \frac{\alpha+\beta P(1-\alpha)}{\alpha+\beta(1-\alpha)} \propto P
       \label{gustafson}
     \end{equation}
+    Here, $\beta$ is some scaling constant.
     It is clear that Gustafson's Law produces better scaling, as long as $N$ scales with $P$.
-    A trivial example of weak scaling is calculating $\pi$ to 10 digits on each processor, and then adding that to some shared variable.
-    The problem size is fixed per processor, but the overall work increases with the number of processors.
+
+    Everyday users have most regular access to computer vision techniques through mobile devices, such as phones, laptops and ipads.
+    These devices rarely have more than 2 cores.
+    The most cores that can be expected is within a home computer, having no more than 8 cores
+    Any parallelism applied should not require the typically large number of cores.
+    This also implies that scalability is only a concern for programs with a high degree of seriality.
+  \subsection{Parallel Computer Vision}
+    Computer Vision poses an interesting challenge for parallelisation.
+    In some regards, computer vision is a typical data parallel problem.
+    Data parallelism uses the available computing units to act on subsets of the total data.
+    Such program simply needs to act as efficiently as possible on multi-dimensional arrays (normally 2 physical dimensions each with 3 colour dimensions).
+    This is a common form of parallelism, implemented in fields such as parallel Fourier transforms, simulation of crystalline matter and database analysis.
+    Image processing, a subset of computer vision, normally falls under this category.
+    
+    More complicated elements of computer vision fit task parallelism better.
+    This is because they require several independent tasks to be completed.
+    
+    Downton\cite{downton} discusses the use of pipeline processing farm in computer vision.
+    This is similar to a task farm, but has a continuous flow of data to process.
+    By parallelising independent tasks, the latency of image analysis can be reduced.
+    This paper was written in 1994 and does not take into account modern technology when discussing potential uses.
+    The advent of multi-core camera phones broadens potential implementations beyond the encoding algorithms and handwriting recognition discussed.
+    
+    A current trend in parallel computing is to use accelerators to improve performance.
+    Graphical Processing Units (GPUs), are the most common choice, due to their relatively high performance/price ratio.
+    Fung\cite{gpuvision} implements the GPU based acceleration for several computer vision techniques, notably including feature detection.
+    The features are detected using Harris detectors, which are often not used in favour of SIFT-like keypoints.
+    The paper does not discuss the details or the benefits of implementing parallel Harris detectors.
+
+    Parallel implementations exist for many algorithms, such as SIFT and Speeded Up Robust Features (SURF), discussed further in section \ref{surf_sec}.
+    Yimin Zhang\cite{zhangsift} implements two forms of parallelism for SIFT, both showing large increases in the amount of frames that can be calculated per second.
+    At 640x480 pixels, the image size used to obtain these speedups is small in comparison to an average Where's Wally? puzzle.
+    Current digital cameras, which might be used with everyday computer vision, typically offer images that are orders of magnitude larger.
+    Despite speedups, the size of these images might inhibit analysis at a useful speed.
+
+    Expanding on previous work, Zhang et. al. discuss in depth the effects that limit scalability \cite{fengparallelization}.
+    The paper shows the purely serial portion of the code takes up less than 2\% of the runtime.
+    This shows that reduced scalability is due to more complicated factors, which should be avoided by novice users.
+    
+    Nan Zhang presents the multi-core implementation of parallel SURF\cite{parallelCPUSURF}.
+    Within, Zhang shows that the multi-core implementations can have speed comparable to GPU implementations.
+    Low-end computers (and by extension, cheap mobile devices) are suggested to lack the quality of GPU that can implement high speed algorithms.
+    This means that CPU based implementations are preferable for widespread usage.
+    
+    The existing parallel implementations of SIFT/SURF algorithms are not directly available.
+    This adds complexity to the project, which aims to maintain simplicity to ensure a wide user base.
+    
   \subsection{Shared Memory Parallelism}
     This project will implement parallelism through the shared memory multiprocessing API known as OpenMP.
 
     %% what is shared memory
     Shared memory multiprocessing is a form of parallelism that relies on the presence of shared memory.
     This is a region of memory that can be accessed equally by several processors.
-    Normal examples of this are in multicore systems, which have a shared L2 or L3 cache.
-    Having shared memory allows data to be easily shared amongst processors.
-    This removes redundant copying of data from main memory, and reduces the overall cache usage.
+    Normal examples of this are in multi-core systems, which have a shared L2 or L3 cache.
+    Having shared memory allows data to be quickly shared amongst processors.
+    This removes redundant and temporally expensive copying of data from main memory, and reduces the overall cache usage.
     Using less of the available cache means that a larger amount of other values can be stored, also reducing calls to main memory.
     In a similar way, messages can also be passed between processors at high speeds.
     Communication through a local cache is considerably faster than typical messaging systems.
-    Most recently manufactured computers are multicore, so it is likely that everyday devices will be able to benefit from shared memory parallelism.
+    Most recently manufactured computers are multi-core, so it is likely that everyday devices will be able to benefit from shared memory parallelism.
 
     %% openmp
     OpenMP implements shared memory multiprocessing through the use of directives and routines.
@@ -213,17 +276,17 @@
     The main one is that scaling is often poor.
     This is due to the fact that there is a fixed amount of processors attached to any block of shared memory.
     Once the system is scaled beyond this amount, the program starts to become dominated by the speed of message between the two memory systems.
-    Futhermore, the speed at which the CPU can write to the memory is limited.
+    Furthermore, the speed at which the CPU can write to the memory is limited.
     Increasing the number of processors attempting to write to memory through the same CPU causes a bottleneck to occur.
 
     %%Shared memory as opposed to message passing.
     Another popular form of parallelism is through message passing.
-    This is, unsurprisngly, the practice of passing messages between processors.
-    In this way, data can be shared between processors, allowing for processors to interact.
+    This is passing messages between processors.
+    In this way data can be shared between processors, allowing for processors to interact.
     Unlike shared memory parallelism, message passing protocols typically do not rely on shared memory.
-    Instead, messages are often sent over the bus, meaning that the processors being used can be in different nodes.
+    Messages are instead sent over the bus, meaning that the processors being used can be in different nodes.
 
-    One of the most commonly implemented standard is the Message Passing Interface (MPI).
+    One of the most commonly implemented message passing standards is the Message Passing Interface (MPI).
     MPI scales to very large numbers of processors.
     However, converting existing code for use in MPI is time consuming, often considerably increasing the maintenance for the code.
     Listing \ref{parMPI} shows one potential way to parallelise the same loop from listing \ref{parhey} using MPI.
@@ -249,25 +312,17 @@
       }
     \end{lstlisting}
 
-    MPI requires experienced users to useful, the uninitiated may have difficulty implementing the correct method of parallelism for a given problem.
-    Users of a parallel computer vision system may have to produce definitions as they go.
+    MPI requires experienced users to produce efficient code.
+    Untrained users may have difficulty implementing an appropriate model of parallelism for a given problem.
+    Users of a parallel computer vision system may have to produce custom functions as they go.
     The complexity of MPI restricts the amount of users who could generate new definitions.
-    This runs counter to an everyday use of parallel computer vision; expertise would be required to tailor it every problem it could be applied to.
-    
-    OpenMP is a good fit for implementing parallelism for everyday parallel computer vision.
-    Existing code can be easily modified, and parallelism does not require expertise in parallel techniques.
+    This opposes the idea of an everyday use of parallel computer vision.
+    Expertise would be required to tailor parallel computer vision to each new problem.
+
+    OpenMP is a good fit for implementing everyday parallel computer vision.
+    Existing code requires only a small amount of  modification, and parallelism does not require expertise in parallel techniques.
     The scalability issues associated with shared memory parallelism are unlikely to be prominent in everyday systems.
     %% wrap up better you chump
-  \subsection{Parallel Computer Vision}
-    Computer Vision poses an interesting challenge for parallelisation.
-    In some regards, computer vision is a typical data parallel problem.
-    Data parallelism, uses the available computing units to act on subsets of the total data.
-    Such program simply needs to act as efficiently as possible on multi-dimensional arrays (normally 2 physical dimensions each with 3 colour dimensions).
-    This a common form of parallelism, implemented in fields such as parallel fourier transforms, simulation of crystalline matter or analysing a database.
-    Image processing, a subset of computer vision, normally falls under this category.
-    
-    More complicated elements of computer vision begin to fit task parallelism better.
-    
   \biblio
 \end{document}
 
