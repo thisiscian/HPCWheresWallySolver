@@ -1,3 +1,0 @@
-test_input_class 0 0
----
-test_input_class

@@ -1,2 +1,0 @@
-add_library(whereswally_framework search_pattern.cpp pattern_information.cpp results_analysis.cpp)
-target_link_libraries(whereswally_framework ${OpenCV_LIBS})

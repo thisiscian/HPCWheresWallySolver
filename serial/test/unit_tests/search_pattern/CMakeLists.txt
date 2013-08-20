@@ -1,3 +1,0 @@
-add_executable(ww_ut_search_pattern ww_ut_search_pattern.cpp)
-target_link_libraries(ww_ut_search_pattern ${CPPUNIT_LIBRARY} ww_ut_general whereswally_io whereswally_framework)
-add_test(test_search_pattern_class ww_ut_search_pattern)
