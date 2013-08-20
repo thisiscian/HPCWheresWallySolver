@@ -149,14 +149,14 @@ Mat IO_Variables::get_loaded_image() {
   return loaded_image.clone();
 }
 
-void IO_Variables::add_to_loaded_results(vector<Pattern_Result> new_results) {
-  for(int i=0; i<new_results.size(); i++) {
-    loaded_results.push_back(new_results[i]);
+void IO_Variables::add_to_results(vector<Pattern_Result> new_results) {
+  for(size_t i=0; i<new_results.size(); i++) {
+    results.push_back(new_results[i]);
   }
 }
 
-vector<Pattern_Result> IO_Variables::get_loaded_results() {
-  return loaded_results;
+vector<Pattern_Result> IO_Variables::get_results() {
+  return results;
 }
 
 

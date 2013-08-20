@@ -1,7 +1,10 @@
 #include "whereswally/framework/search_pattern.h"
-
 using namespace std;
 using namespace cv;
+
+//**
+//**  RELATIONAL OPERATORS
+//**
 
 const bool operator==(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   bool check = true;
@@ -33,6 +36,10 @@ const bool operator>(const Pattern_Result &lhs, const Pattern_Result &rhs) {
 const bool operator!=(const Pattern_Result &lhs, const Pattern_Result &rhs) {
   return !(lhs == rhs);
 }
+
+//**
+//**  MISC
+//**
 
 const Pattern_Information Search_Pattern::get_pattern_information() {
   return info;

@@ -8,10 +8,12 @@
     private:
       int ratio_to_red;
       int white_threshold;
+      bool fast_search;
     public:
       Red_and_White();
       Red_and_White(Search_Pattern *next, float next_certainty);
       std::vector<Pattern_Result> start_search(cv::Mat image);
+      void use_fast_search(bool should_go_fast);
   };
 
 #endif

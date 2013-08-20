@@ -30,8 +30,8 @@ string Error_Message::bad_number_of_openmp_threads(va_list vl) {
 //-- Error message for bad -p option
 string Error_Message::bad_puzzle_input_filename(va_list vl) {
   stringstream output;
-  char* attempt_val = va_arg(vl, char*);
-  char* current_val = va_arg(vl, char*);
+  string attempt_val = va_arg(vl, char*);
+  string current_val = va_arg(vl, char*);
   output << "Error: puzzle input file '" << attempt_val;
   output << "' does not exist.";
   if(current_val == "") {
@@ -47,8 +47,8 @@ string Error_Message::bad_puzzle_input_filename(va_list vl) {
 //-- Error message for bad results addition
 string Error_Message::bad_results_input_filename(va_list vl) {
   stringstream output;
-  char* attempt_val = va_arg(vl, char*);
-  char* current_val = va_arg(vl, char*);
+  string attempt_val = va_arg(vl, char*);
+  string current_val = va_arg(vl, char*);
   output << "Error: results input file '" << attempt_val;
   output << "' does not exist.";
   if(current_val == "") {
@@ -64,7 +64,7 @@ string Error_Message::bad_results_input_filename(va_list vl) {
 //-- Error Message for a bad number of final results
 string Error_Message::bad_option_number_of_final_results(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects a single integer as an argument\n";
   output << "\te.g. " << form << "10";
   output << endl;
@@ -74,7 +74,7 @@ string Error_Message::bad_option_number_of_final_results(va_list vl) {
 //-- Error message for a band number of omp threads
 string Error_Message::bad_option_number_of_openmp_threads(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects a single integer as an argument\n";
   output << "\te.g. " << form << "10";
   output << endl;
@@ -83,7 +83,7 @@ string Error_Message::bad_option_number_of_openmp_threads(va_list vl) {
 //-- Error Message for a bad call to load a puzzle
 string Error_Message::bad_option_load_puzzle(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects a single filename as an argument\n";
   output << "\te.g. " << form << "example_input.png";
   output << endl;
@@ -93,7 +93,7 @@ string Error_Message::bad_option_load_puzzle(va_list vl) {
 //-- Error Message for a bad call to show text output
 string Error_Message::bad_option_show_text(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects TRUE, FALSE or VERBOSE as an argument \n";
   output << "\te.g. " << form << "TRUE";
   output << endl;
@@ -103,7 +103,7 @@ string Error_Message::bad_option_show_text(va_list vl) {
 //-- Error message for a bad call to show graphic output
 string Error_Message::bad_option_show_graphic(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects TRUE, FALSE or VERBOSE as an argument \n";
   output << "\te.g. " << form << "TRUE";
   output << endl;
@@ -112,7 +112,7 @@ string Error_Message::bad_option_show_graphic(va_list vl) {
 //-- Error message for a bad call to show timing
 string Error_Message::bad_option_show_timing(va_list vl) {
   stringstream output;
-  char* form = va_arg(vl, char*);
+  string form = va_arg(vl, char*);
   output << "Error: " << form << " expects TRUE or FALSE as an argument \n";
   output << "\te.g. " << form << "TRUE";
   output << endl;
@@ -122,7 +122,7 @@ string Error_Message::bad_option_show_timing(va_list vl) {
 //-- Print help message
 string Error_Message::bad_option_help(va_list vl) {
   stringstream output;
-  char* prog_name = va_arg(vl, char*);
+  string prog_name = va_arg(vl, char*);
   output << "usage: " << prog_name << " [options [files]]" << endl;
   output << "\t-omp,--openmp=N\tSets the number of threads that OpenMP can use" << endl;
   output << "\t-n,--number-of-final-results=N\tSets the number of results to be output" << endl;

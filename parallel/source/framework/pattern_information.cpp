@@ -1,12 +1,19 @@
 #include "whereswally/framework/pattern_information.h"
-
 using namespace std;
+
+//**
+//**  CLASS INITIALISATION
+//**
 
 Pattern_Information::Pattern_Information() {
   name = "";
   description = "";
   confidence = 1.0;
 }
+
+//**
+//**  RELATIONAL OPERATORS
+//**
 
 const bool Pattern_Information::operator==(const Pattern_Information &rhs) {
   bool check = true;
@@ -19,6 +26,10 @@ const bool Pattern_Information::operator==(const Pattern_Information &rhs) {
 const bool Pattern_Information::operator!=(const Pattern_Information &rhs) {
   return !(*this == rhs);
 }
+
+//**
+//**  GET/SET
+//**
 
 void Pattern_Information::set_name(std::string new_name) {
   name = new_name;

@@ -8,16 +8,12 @@ set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH}
 
 include(source)
 set(OpenCV_DIR /usr/share/opencv)
-#set(OpenCV_DIR /Home/s1256705/opencv-2.4.6.1/test)
 find_package(OpenCV REQUIRED)
 if(OpenCV_found)
   include_directories(${OpenCV_INCLUDE_DIR})
 endif(OpenCV_found)
 
-#if(CMAKE_COMPLIER_IS_GNUCXX)
-#  message("COMPILING WITH GNUCXX")
-  set(CMAKE_CXX_FLAGS "-g -fopenmp -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
-#endif()
+set(CMAKE_CXX_FLAGS "-g -fopenmp -Wall -Wno-varargs -I${PROJECT_SOURCE_DIR}/include/")
 
 make_directory(bin)
 add_subdirectory(source)

@@ -42,23 +42,23 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     setNumThreads(0);
     omp_set_nested(1);
     #pragma omp parallel for default(none) shared(image, patterns)
-    for(int i=0; i<patterns.size(); i++) {
+    for(size_t i=0; i<patterns.size(); i++) {
       double start = omp_get_wtime();
       vector<Pattern_Result> current_pattern_result = patterns[i]->start_search( image );
       #pragma omp critical
       {
-        variables->add_to_loaded_results( current_pattern_result );
+        variables->add_to_results( current_pattern_result );
         variables->add_timing_result(patterns[i]->info.get_name(), omp_get_wtime()-start);
       }
     }
   }
   variables->add_timing_result("Total Time", omp_get_wtime()-solve_start);
-
   Results_Analysis analyser;
-  analyser.calculate_final_results(variables->get_number_of_final_results(), variables->get_loaded_results() );
+  analyser.calculate_final_results(variables->get_number_of_final_results(), variables->get_results() );
   output->set_final_results( analyser.get_final_results() );
   output->output();
   delete variables;
   delete input;
   delete output;
+  return 0;
 }

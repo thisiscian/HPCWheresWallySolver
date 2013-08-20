@@ -27,9 +27,9 @@
     class homography {
       public:
       float a;
-      int b;
+      float b;
       float c;
-      int d;
+      float d;
     };
     bool operator<(homography lhs, homography rhs);
 
@@ -47,14 +47,6 @@
 
     // find all instances of greyscale in image, with a tolerance
     cv::Mat get_greyscale_in_image(cv::Mat image, int low, int high, int tolerance);
-
-// UNIMPLEMENTED
-    // overlay two binary single channel Mats, taking only their intersection
-    std::vector<region> region_overlay_AND(cv::Mat left, cv::Mat right);
-
-    // overlay two binary single channel Mats, taking their union
-    std::vector<region> region_overlay_OR(cv::Mat left, cv::Mat right);
-
   }
 
 #endif

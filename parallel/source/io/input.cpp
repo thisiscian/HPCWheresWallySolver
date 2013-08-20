@@ -22,7 +22,7 @@ int wwp::to_lower_case(int c) {
 
 //-- removes the whitespace is a string, to enable more simple parsing of strings
 string wwp::remove_whitespace(string in_string) {
-  for(int i=0; i<in_string.size(); i++) {
+  for(size_t i=0; i<in_string.size(); i++) {
     if(isspace(in_string[i])) {
       in_string.erase(i,1); 
       i--;

@@ -1,31 +1,22 @@
 #include "whereswally/framework/results_analysis.h"
-
 using namespace std;
-  struct classcomp {
-    bool operator() (const Pattern_Result& lhres, const Pattern_Result& rhres) const {
-      return lhres.info.get_confidence()*lhres.certainty>rhres.info.get_confidence()*rhres.certainty;
-    }
-  };
 
-void Results_Analysis::calculate_final_results(int number_of_final_results, std::vector<Pattern_Result> results) {
+bool compare_results (const Pattern_Result& lhres, const Pattern_Result& rhres) {
+  return lhres.info.get_confidence()*lhres.certainty>rhres.info.get_confidence()*rhres.certainty;
+}
+
+void Results_Analysis::calculate_final_results(size_t number_of_final_results, std::vector<Pattern_Result> results) {
   final_results.clear();
-  set<Pattern_Result, classcomp> result_out; 
-  set<Pattern_Result, classcomp>::iterator it;
-  for(int i=0; i<results.size(); i++) {
-    result_out.insert(results[i]);
+  sort(results.begin(), results.end(), compare_results);
+  for(size_t i=0; i<number_of_final_results && i<results.size(); i++) {
+    if(results[i].scale[0] <=0 || results[i].scale[1] <= 0) {results.erase(results.begin()+i); i--; continue;}
+    final_results.push_back(results[i]);
   }
 
-  it=result_out.begin();
-  int i=0;
-  while(i<number_of_final_results && it != result_out.end()) {
-    final_results.push_back(*it);
-    ++i;
-    ++it;
-  }
 }
 
 void Results_Analysis::add_to_final_results(std::vector<Pattern_Result> results) {
-  for(int i=0; i<results.size(); i++) {
+  for(size_t i=0; i<results.size(); i++) {
     final_results.push_back(results[i]);
   }
 }

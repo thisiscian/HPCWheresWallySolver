@@ -7,12 +7,24 @@
 using namespace std;
 using namespace cv;
 
+//**
+//**  CLASS INITIALISATION
+//**
+
 wwp::region::region() {
   largest_x = 0;
   largest_y = 0;
   smallest_x = INT_MAX;
   smallest_y = INT_MAX;
+  size = 0;
+  av_x = 0.0; 
+  av_y = 0.0;
 }
+
+
+//**
+//**  EQUIVALENCE RELATIONSHIPS
+//**
 
 bool wwp::operator==(wwp::region lhs, wwp::region rhs) {
   bool same = true;
@@ -50,6 +62,10 @@ bool wwp::operator<(wwp::homography lhs, wwp::homography rhs) {
   return false;
 }
 
+//**
+//**  DEBUGGING TOOLS
+//**
+
 void wwp::print_output(string message, int thread_num, int num_threads, string pattern_name) {
   stringstream output_stream;
 //  cout << "\033[" << num_threads << "F" << flush;
@@ -58,31 +74,50 @@ void wwp::print_output(string message, int thread_num, int num_threads, string p
 //  cout << output_stream.str() << flush;
 }
 
-vector<wwp::region> wwp::fast_find_regions(Mat input) {
-  int regions[input.rows][input.cols];
 
-  // calculate rough regions, and region equivalences
-  int n_neighbour, w_neighbour;
-  map<int, int> region_equivalence;
+//**
+//**  COLOUR ANALYSIS TOOLS
+//**
+
+//-- finds regions using a quick algorithm
+vector<wwp::region> wwp::fast_find_regions(Mat input) {
+  vector< vector<int> > region_array(input.rows);
+    
+  for(int i=0; i<input.rows; i++) {
+    region_array[i].resize(input.cols);
+    for(int j=0; j<input.cols; j++) {
+      region_array[i][j] = -1;
+    }
+  }
+
   int region_count = 0;
+  vector<int> region_equivalence;
+  //-- loop that calculates roughly correct regions
+  #pragma omp parallel for default(none) shared(input, region_array, region_equivalence, region_count)
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
+      //-- if current pixel is zero-valued, then move onto next pixel
       if(input.at<uchar>(i,j) == 0 ) {
-        regions[i][j] = 0;
+        region_array[i][j] = -1;
         continue;
       }
+      
+      //-- get values of neighbours to the north and west, unless pixel is on the north or west border
+      int n_neighbour, w_neighbour;
       if(i==0) {
         n_neighbour = 0;
       } else {
-        n_neighbour = regions[i-1][j];
+        n_neighbour = region_array[i-1][j];
       }
+
       if(j==0) { 
         w_neighbour = 0;
       } else {
-        w_neighbour = regions[i][j-1];
+        w_neighbour = region_array[i][j-1];
       }
-      // if there are different regions north and west of the current pixel, combine them
-      if(n_neighbour > 0 && w_neighbour > 0 && n_neighbour != w_neighbour) {
+
+      //-- if there are different regions north and west of the current pixel, define an equivalence between them
+      if(n_neighbour >= 0 && w_neighbour >= 0 && n_neighbour != w_neighbour) {
         int reg, equiv;
         if(n_neighbour > w_neighbour) {
           reg = n_neighbour;
@@ -93,202 +128,133 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
         }
         region_equivalence[reg] = equiv;
       }
-      if(n_neighbour > 0) {
-        regions[i][j] = n_neighbour;
-      } else if (w_neighbour > 0) {
-        regions[i][j] = w_neighbour;
+  
+      //-- if the north neighbour's region is non-zero, current pixel joins that region
+      //-- if north is zero but west's region is not, current pixel joins west region
+      //-- otherwise, define a new region
+      if(n_neighbour >= 0) {
+        region_array[i][j] = n_neighbour;
+      } else if (w_neighbour >= 0) {
+        region_array[i][j] = w_neighbour;
       } else {
-        region_count++;
-        region_equivalence[region_count] = region_count;
-        regions[i][j] = region_count;
+          region_equivalence.push_back(region_count);
+          region_array[i][j] = region_count;
+          region_count++;
       }
     }
   }
-  map<int,int>::iterator it;
-  for(it=region_equivalence.begin(); it!=region_equivalence.end(); ++it) {
-    int equiv_new =it->second, equiv_old = -1;
+
+  //-- remove redundant definitions, e.g. if reg(3) == 2 && reg(2) == 1, then reg(1) is reassigned to 1
+  for(size_t i=0; i<region_equivalence.size(); i++) {
+    int equiv_new=region_equivalence[i], equiv_old = -1;
+    //-- while current region is not equivalent to itself
     while(equiv_new != equiv_old) {
       equiv_old = equiv_new;
       equiv_new = region_equivalence[equiv_new];
     }
-    it->second = equiv_new;
+      region_equivalence[i] = equiv_new;
   }
-  // create a corrected region map
+
+  //-- add each region to a list, and determine some basic information about it
+  vector<wwp::region> region_list;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(regions[i][j] == 0) {continue;}
-      regions[i][j] = region_equivalence[regions[i][j]];
-    }
-  }
-  Mat output(input.rows,input.cols, CV_8U, regions);
-
-  // add each region to a list, and determine some basic information about it
-  map<int, wwp::region> region_list;
-  for(int i=0; i<input.rows; i++) {
-    for(int j=0; j<input.cols; j++) {
-      if(region_list[regions[i][j]].smallest_x > j) region_list[regions[i][j]].smallest_x = j;
-      if(region_list[regions[i][j]].smallest_y > i) region_list[regions[i][j]].smallest_y = i;
-      if(region_list[regions[i][j]].largest_x < j) region_list[regions[i][j]].largest_x = j;
-      if(region_list[regions[i][j]].largest_y < i) region_list[regions[i][j]].largest_y = i;
-      region_list[regions[i][j]].size+=1;
-      region_list[regions[i][j]].av_x+=j;
-      region_list[regions[i][j]].av_y+=i;
-    }
-  }
-
-  // normalize average positions and add them to the list of regions discovered
-  vector<wwp::region> found_regions;
-  for(map<int,wwp::region>::iterator it=++region_list.begin(); it!=region_list.end(); ++it) {
-    it->second.av_x /= it->second.size;
-    it->second.av_y /= it->second.size;
-    found_regions.push_back(it->second);
-  }
-
-  return found_regions;
-}
-
-// Finds the distinct regions from a mask input.
-// This is done by assigning each pixel a unique number
-// and then each pixel takes the value of it's largest neighbour.
-// Pixels with a value of zero remain at zero
-vector<wwp::region> wwp::find_regions_from_mask(Mat input) {
-  int count[input.rows][input.cols];
-  for(int i=0; i<input.rows; i++) {
-    for(int j=0; j<input.cols; j++) {
-      if(input.at<uchar>(i,j) == 255) { 
-        count[i][j] = i*input.cols+j+1; 
-      } else { 
-        count[i][j] = 0;
+      if(region_array[i][j] == -1) {continue;}
+      size_t val = region_equivalence[region_array[i][j]]; //-- adds this pixel to the region that it's current region is equivalent to
+      if(region_list.size() < val+1) {
+        region_list.resize(val+1);
       }
+      if(region_list[val].smallest_x > j) region_list[val].smallest_x = j;
+      if(region_list[val].smallest_y > i) region_list[val].smallest_y = i;
+      if(region_list[val].largest_x < j) region_list[val].largest_x = j;
+      if(region_list[val].largest_y < i) region_list[val].largest_y = i;
+      region_list[val].size+=1;
+      region_list[val].av_x+=j;
+      region_list[val].av_y+=i;
     }
   }
 
-  bool change = true;
-  // while the count image is still being changed, keep changing
-  while(change) {
-    change = false;
-    for(int i=0; i<input.rows; i++) {
-      for(int j=0; j<input.cols; j++) {
-        if(count[i][j] == 0) {continue;}
-        int max = count[i][j];;
-        // get the max of the current cell and it's 4 neighbours
-        max = (i+1 < input.rows && count[i+1][j] > max)?count[i+1][j]:max;
-        max = (i-1 > 0 && count[i-1][j] > max)?count[i-1][j]:max;
-        max = (j+1 < input.cols && count[i][j+1] > max)?count[i][j+1]:max;
-        max = (j-1 > 0 && count[i][j-1] > max)?count[i][j-1]:max;
-        if( count[i][j] < max) {
-          count[i][j] = max;
-          change = true;
-        }
-        if( i+1 < input.rows && count[i+1][j] < max && count[i+1][j] > 0) {
-          count[i+1][j] = max;
-          change = true;
-        }
-        if( i-1 > 0 && count[i-1][j] < max && count[i-1][j] > 0) {
-          count[i-1][j] = max;
-          change = true;
-        }
-        if( j+1 < input.cols && count[i][j+1] < max && count[i][j+1] > 0) {
-          count[i][j+1] = max;
-          change = true;
-        }
-        if( j-1 > 0 && count[i][j-1] < max && count[i][j-1] > 0) {
-          count[i][j-1] = max;
-          change = true;
-        }
-      }
-    }
-  }
-
-  map<int, wwp::region> region_size;
-  for(int i=0; i<input.rows; i++) {
-    for(int j=0; j<input.cols; j++) {
-      if(region_size[count[i][j]].smallest_x > j) region_size[count[i][j]].smallest_x = j;
-      if(region_size[count[i][j]].smallest_y > i) region_size[count[i][j]].smallest_y = i;
-      if(region_size[count[i][j]].largest_x < j) region_size[count[i][j]].largest_x = j;
-      if(region_size[count[i][j]].largest_y < i) region_size[count[i][j]].largest_y = i;
-      region_size[count[i][j]].size+=1;
-      region_size[count[i][j]].av_x+=j;
-      region_size[count[i][j]].av_y+=i;
-    }
-  }
-
-  map<int,wwp::region>::iterator it = region_size.begin();
+  //-- normalize average positions and add to the list of regions discovered
   vector<wwp::region> found_regions;
-  int i=0;
-  ++it;
-  for(; it!=region_size.end(); ++it,++i) {
-    (*it).second.av_x /= (*it).second.size;
-    (*it).second.av_y /= (*it).second.size;
-    found_regions.push_back((*it).second);
+  for(vector<wwp::region>::iterator it=++region_list.begin(); it!=region_list.end(); ++it) {
+    it->av_x /= it->size;
+    it->av_y /= it->size;
+    found_regions.push_back(*it);
   }
-
   return found_regions;
 }
 
 double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
-  double best_width;
-  double min_distance=DBL_MAX, max_distance=0;
-	int count;
-  Size image_size(image.cols, image.rows);
-  Mat black_image, distance_map(image_size, CV_8U, Scalar(0));
-
   int num_threads = omp_get_max_threads();
  
-  //Get mask that describes where black lines are in sharpened image
-  black_image = get_greyscale_in_image(image, 0, limit, tolerance);
+  //-- get mask that describes where black lines are in sharpened image
+  Mat black_image = get_greyscale_in_image(image, 0, limit, tolerance);
   black_image = (black_image > 0);
 
-  //Find the minimum distance between each pixel and the nearest empty pixel, and calculate the average
+  //-- find the minimum distance between each pixel and the nearest empty pixel, and calculate the average
+  Size image_size(image.cols, image.rows);
+  Mat distance_map(image_size, CV_8U, Scalar(0));
   distanceTransform(black_image, distance_map, CV_DIST_L2,5); //CV_DIST_L1 indicates distances are calculated with manhattan distance
+
+  //-- calculate the range of zero-distance pixels
+  double min_distance=DBL_MAX, max_distance=0;
   minMaxIdx(distance_map, &min_distance, &max_distance, NULL, NULL, black_image);
   black_image.release();
-
   int range = max_distance-min_distance;
 
-  Mat subdist[num_threads];
-  for(int i=0; i<num_threads; i++) {
-    subdist[i] = distance_map.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
-  }
-  distance_map.release();
-  #pragma omp parallel for default(none) firstprivate(range,max_distance, num_threads) shared(subdist) reduction(+: best_width) reduction(+: count)
+	int count=0;
+  double best_width=0;
+  #pragma omp parallel for default(none) firstprivate(range,max_distance, num_threads) shared(image, distance_map) reduction(+: best_width) reduction(+: count)
 	for(int i=0; i<num_threads; i++) {
+    Mat subdist = distance_map.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
 		int minimum_difference_in_predictions = 1;
 		for(int j=0; j<range; j++) {
 			double average_prediction, deviation_prediction;
 			double standard_deviation, sum_deviation, average_distance_to_zero;
 			int count_zero;
-			Mat deviation;
 
-			//remove pixels that have the maximum distance from a zero pixel
-			Mat dist_tmp = (subdist[i] < max_distance-j) & ( subdist[i] > 0 );
+			//-- create a mask showing the location of all pixels that are not max_distance away from a zero pixel
+			Mat dist_tmp = (subdist < max_distance-j) & ( subdist > 0 );
 			distanceTransform(dist_tmp, dist_tmp, CV_DIST_C,3);
 		 
+      //-- calculate the average distance to zero
 			average_distance_to_zero = (double)(sum(dist_tmp)[0])/countNonZero(dist_tmp);
+  
+      //-- count the  number of zero pixels in the subimage
 			count_zero = dist_tmp.cols*dist_tmp.rows - countNonZero(dist_tmp);
+
+      //-- calculate the standard deviation from average
+			Mat deviation;
 			pow(dist_tmp-average_distance_to_zero,2, deviation);
 			sum_deviation = sum(deviation)[0];                            // sum_deviation includes the zero pixels, which we don't want to count
       deviation.release();
 			sum_deviation -= count_zero*pow(average_distance_to_zero,2);  // so we remove a (0-average_distance_to_zero)^2 for each zero value
 			standard_deviation = sqrt(sum_deviation/countNonZero(dist_tmp));
+
+      //-- using the average and standard deviation, predict the width of the image lines
 			average_prediction = (average_distance_to_zero-0.5)/0.25;
 			deviation_prediction = (standard_deviation)*(4.0*sqrt(3.0));
 
+      //-- find the predictions that are closest together
 			if( fabs(average_prediction-deviation_prediction) < minimum_difference_in_predictions) {
 				minimum_difference_in_predictions = fabs(average_prediction-deviation_prediction);
 				best_width = (average_prediction+deviation_prediction)/2;
 				count = 1;
 			}
 		}
+    subdist.release();
 	}
-  for(int i=0; i<num_threads; i++) {
-    subdist[i].release();
-  }
+  //-- release uneeded reference to distance_map
+  distance_map.release();
+
+  //-- return the average prediction per processor
   return best_width/count;
 }
 
 Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int tolerance) {
   int high,low;
+  Mat grey;
+  //-- user can define low_in and high_in in any order, find the lowest and highest of the two
   high = (high_in>low_in) ? high_in : low_in;
   low  = (high_in>low_in) ? low_in : high_in;
 
@@ -296,22 +262,25 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
 	Mat out(image.size(), CV_8U);
   #pragma omp parallel for default(none) firstprivate(high,low,num_threads, tolerance) shared(image,out)
 	for(int i=0; i<num_threads; i++) {
-		Mat rgb[3], red, green, blue, rg, rb, gb;
-		split(image.rowRange(i*(image.rows-1)/num_threads,(i+1)*(image.rows-1)/num_threads), rgb);
+    //-- split the image into the BGR decomposition (reverse of RGB)
+		Mat bgr[3];
+		split(image.rowRange(i*(image.rows-1)/num_threads,(i+1)*(image.rows-1)/num_threads), bgr);
 
-		// essentially calculates saturation for each colour
-		blue = (rgb[0] >= low-tolerance) & (rgb[0] <= high+tolerance);
-		green = (rgb[1] >= low-tolerance) & (rgb[1] <= high+tolerance);
-		red = (rgb[2] >= low-tolerance) & (rgb[2] <= high+tolerance);
+		//-- check if bgr values are within tolerance of the requested values
+		Mat blue = (bgr[0] >= low-tolerance) & (bgr[0] <= high+tolerance);
+		Mat green = (bgr[1] >= low-tolerance) & (bgr[1] <= high+tolerance);
+		Mat red = (bgr[2] >= low-tolerance) & (bgr[2] <= high+tolerance);
 
-		// gets all colours with the correct saturation value
+		//-- merges all positions that satisfy boundaries
 		Mat color_magnitude = blue & green & blue;
 
-		// finds colours which are within tolerance of each other -> nearly greys
-		rg = ( (rgb[1]-tolerance) <= rgb[2] ) & ( rgb[2] <= rgb[1]+tolerance );
-		rb = ( (rgb[2]-tolerance) <= rgb[0] ) & ( rgb[0] <= rgb[2]+tolerance );
-		gb = ( (rgb[0]-tolerance) <= rgb[1] ) & ( rgb[1] <= rgb[0]+tolerance );
+		//-- finds colours which are within tolerance of each other -> nearly greys
+		Mat rg = ( (bgr[1]-tolerance) <= bgr[2] ) & ( bgr[2] <= bgr[1]+tolerance );
+		Mat rb = ( (bgr[2]-tolerance) <= bgr[0] ) & ( bgr[0] <= bgr[2]+tolerance );
+		Mat gb = ( (bgr[0]-tolerance) <= bgr[1] ) & ( bgr[1] <= bgr[0]+tolerance );
 		Mat similar_colours = rg & rb & gb;
+    
+    //-- write the local array to the 'out' matrix
 		Mat subout = out.rowRange(i*(out.rows-1)/num_threads,(i+1)*(out.rows-1)/num_threads);
 		Mat result = color_magnitude & similar_colours;
 		result.copyTo(subout);
@@ -319,20 +288,25 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
   return out;
 }
 
+//-- returns mask based on colours chosen
+//-- user can define a range of allowable colours, and also an acceptable ratio
+//-- acceptable ratios mean that 'red-ish' colours can be found, for example
 Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_two, float redgreen, float greenred, float redblue, float bluered, float greenblue, float bluegreen) {
-  // these hold the ranges for allowed colours
+  int num_threads = omp_get_num_threads();
+  Mat out(image.size(),CV_8U);
+  //-- these hold the ranges for allowed colours
   int r[2],g[2],b[2];
 
-  // parse the rgb strings (e.g. '#FFB3AD') into the distinct colour sections
+  //-- parse the rgb strings (e.g. '#FFB3AD') into the distinct colour sections
   string r_hex[2] = {colour_one.substr(1,2),colour_two.substr(1,2)};
   string g_hex[2] = {colour_one.substr(3,2),colour_two.substr(3,2)};
   string b_hex[2] = {colour_one.substr(5,2),colour_two.substr(5,2)};
 
-  // needed to convert hex strings to ints
+  //-- needed to convert hex strings to ints
   stringstream to_hex;
   to_hex.flags(ios_base::hex);
 
-  // convert hex strings of colour_one to integer values
+  //-- convert hex strings of colour_one to integer values
   to_hex << r_hex[0];
   to_hex >> r[0];
   to_hex.clear();
@@ -343,7 +317,7 @@ Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_tw
   to_hex >> b[0];
   to_hex.clear();
 
-  // repeat for second string
+  //-- repeat for second string
   to_hex << r_hex[1];
   to_hex >> r[1];
   to_hex.clear();
@@ -354,26 +328,31 @@ Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_tw
   to_hex >> b[1];
   to_hex.clear();
 
-  Mat imgcpy;
-  image.convertTo(imgcpy, CV_32S);
-  Mat rgb[3], red, green, blue, rg, gr, gb, bg,  br, rb;
-  split(imgcpy, rgb);
+  #pragma omp parallel for default(none) shared(image, out, cout,r, g, b) firstprivate(num_threads, redgreen, greenred, redblue, bluered, bluegreen, greenblue)
+  for(int i=0; i<num_threads; i++) {
+    Mat subimage = image.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
+    Mat bgr[3];
+    split(subimage, bgr);
 
-    red = ( rgb[2] >= r[0] ) & ( rgb[2] <= r[1] );
-    green = ( rgb[1] >= g[0] ) & ( rgb[1] <= g[1] );
-    blue = ( rgb[0] >= b[0] ) & ( rgb[0] <= b[1] );
-  
-  Mat saturation = red & green & blue;
+    //-- find colours fulfill the colour range
+    Mat red = ( bgr[2] >= r[0] ) & ( bgr[2] <= r[1] );
+    Mat green = ( bgr[1] >= g[0] ) & ( bgr[1] <= g[1] );
+    Mat blue = ( bgr[0] >= b[0] ) & ( bgr[0] <= b[1] );
+    Mat saturation = red & green & blue;
 
-  rg = rgb[2] >= redgreen*rgb[1];
-  gr = rgb[1] >= greenred*rgb[2];
-  rb = rgb[2] >= redblue*rgb[0];
-  br = rgb[0] >= bluered*rgb[2];
-  gb = rgb[1] >= greenblue*rgb[0];
-  bg = rgb[0] >= bluegreen*rgb[1];
+    //-- find colours that fulfull the ratio range
+    Mat rg = bgr[2] >= redgreen*bgr[1];
+    Mat gr = bgr[1] >= greenred*bgr[2];
+    Mat rb = bgr[2] >= redblue*bgr[0];
+    Mat br = bgr[0] >= bluered*bgr[2];
+    Mat gb = bgr[1] >= greenblue*bgr[0];
+    Mat bg = bgr[0] >= bluegreen*bgr[1];
 
-  Mat ratios = rg & gr & rb & br & gb & bg;
-
-  Mat out = ratios & saturation;
+    //-- find the overlaps and write to global array
+    Mat ratios = rg & gr & rb & br & gb & bg;
+    Mat result = ratios & saturation;
+    Mat subout = out.rowRange(i*(out.rows-1)/num_threads, (i+1)*(out.rows-1)/num_threads);
+    result.copyTo(subout);
+  }
   return out;
 }

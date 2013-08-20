@@ -40,7 +40,7 @@
       //-- load previously created results instead of image
       bool load_results_from_file;
       std::string results_output_filename;
-      std::vector<Pattern_Result> loaded_results;
+      std::vector<Pattern_Result> results;
 
       //-- the number of results to be shown to the user
       int number_of_final_results;
@@ -84,8 +84,8 @@
       bool get_load_results_from_file();
       void set_results_input_filename(std::string filename);
       std::string get_results_input_filename();
-      void add_to_loaded_results(std::vector<Pattern_Result>);
-      std::vector<Pattern_Result> get_loaded_results();
+      void add_to_results(std::vector<Pattern_Result>);
+      std::vector<Pattern_Result> get_results();
 
       void set_number_of_final_results(int result_count);
       int get_number_of_final_results();
