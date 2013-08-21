@@ -235,11 +235,23 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
   vector <string> objects;
 
   //-- add all the potential objects to be searched over to the objects list
-  objects.push_back("feature_samples/wally_from_beach_no_background.png");
+  //objects.push_back("feature_samples/wally_from_beach_no_background.png");
   objects.push_back("feature_samples/wally_from_beach_with_background.png");
   objects.push_back("feature_samples/wally_from_shopping_mall_no_background.png");
-  objects.push_back("feature_samples/wally_from_shopping_mall_with_background.png");
+  //objects.push_back("feature_samples/wally_from_shopping_mall_with_background.png");
   objects.push_back("feature_samples/wally_from_hometown_no_background.png");
+  objects.push_back("feature_samples/w_fj_01-02.png");
+  objects.push_back("feature_samples/w_fj_03-04.png");
+  objects.push_back("feature_samples/w_fj_05-06.png");
+  objects.push_back("feature_samples/w_fj_07-08.png");
+  objects.push_back("feature_samples/w_fj_09-10.png");
+  objects.push_back("feature_samples/w_fj_11-12.png");
+  objects.push_back("feature_samples/w_fj_13-14.png");
+  objects.push_back("feature_samples/w_fj_15-16.png");
+  objects.push_back("feature_samples/w_fj_17-18.png");
+  objects.push_back("feature_samples/w_fj_19-20.png");
+  objects.push_back("feature_samples/w_fj_21-22.png");
+  objects.push_back("feature_samples/w_fj_23-24.png");
   //objects.push_back("feature_samples/wally_large_generic.png");
 
   // calculate best way to split image up amongst processes
@@ -289,12 +301,12 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
 
       sift(object_image, image_mask, object_keypoints, object_descriptors);
 
-      //-- match the 
+      //-- match the  scene and object
       vector<DMatch> match_list = find_matches_with_matcher(object_descriptors, scene_descriptors);
       Mat H = find_homography_within_minimum_distance(object_keypoints, scene_keypoints, match_list,0);
 
       //-- certainty decided by how close the elements H_{2,0} and H_{2,1} are to their expected value, zero
-      double certainty = pow(1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1)),16);
+      double certainty = pow(1-fabs(H.at<double>(2,0)*H.at<double>(2,1))-fabs(H.at<double>(2,0)) -fabs(H.at<double>(2,1)),32);
 
       //-- defines the box that bounds the scene image match
       vector<Point2f> obj_corners(4), scene_corners(4);
@@ -303,7 +315,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       obj_corners[2] = cvPoint( object_image.cols, object_image.rows );
       obj_corners[3] = cvPoint( 0, object_image.rows );
       perspectiveTransform( obj_corners, scene_corners, H);
-
+ 
       Pattern_Result tmp;
       tmp.info = info;
       tmp.wally_location[0] = (scene_corners[0].x+scene_corners[1].x)/2+y[0];

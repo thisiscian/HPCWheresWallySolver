@@ -144,10 +144,12 @@ void IO_Variables::set_loaded_image(Mat image) {
 }
 
 Mat IO_Variables::get_loaded_image() {
-  Mat clone = loaded_image.clone();
-  return loaded_image.clone();
+  return loaded_image;
 }
 
+void IO_Variables::release_loaded_image() {
+  loaded_image.release();
+}
 void IO_Variables::add_to_results(vector<Pattern_Result> new_results) {
   for(size_t i=0; i<new_results.size(); i++) {
     results.push_back(new_results[i]);

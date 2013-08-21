@@ -28,3 +28,9 @@ The program can be found in the bin/ folder, along with some sample test files
 ./whereswallysolver -h
 ./whereswallysolver input.png -omp 4
 
+//TESTS 
+run test suite with:
+  ctest
+
+//BENCHMARKS
+  some benchmarks can be found in bench/ but they are not very thorough.

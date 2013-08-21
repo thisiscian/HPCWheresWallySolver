@@ -1,6 +1,6 @@
 # CMake generated Testfile for 
-# Source directory: /home/cian/Project/HPCWheresWallySolver/code/test/unit_tests
-# Build directory: /home/cian/Project/HPCWheresWallySolver/code/test/unit_tests
+# Source directory: /home/cian/HPCWheresWallySolver/code/test/unit_tests
+# Build directory: /home/cian/HPCWheresWallySolver/code/test/unit_tests
 # 
 # This file includes the relevent testing commands required for 
 # testing this directory and lists subdirectories to be tested as well.

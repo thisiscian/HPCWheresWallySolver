@@ -29,12 +29,13 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   //-- find the vertical and horizontal blurs in red and white masks
   Mat hred(red_mask.rows,red_mask.cols,red_mask.type());
   Mat hwhite(white_mask.rows,white_mask.cols, white_mask.type());
-  int apature = 10*thickness;
-  if(apature % 2 == 0) {apature += 1;}
+  int aperture = 5*thickness;
+  cout << "thick=" << thickness << endl;
+  if(aperture % 2 == 0) {aperture += 1;}
   GaussianBlur(red_mask, hred, Size(3,1), 0);
   GaussianBlur(white_mask, hwhite, Size(3,1), 0);
-  GaussianBlur(red_mask, red_mask, Size(1,apature), 0);
-  GaussianBlur(white_mask, white_mask, Size(1,apature), 0);
+  GaussianBlur(red_mask, red_mask, Size(1,aperture), 0);
+  GaussianBlur(white_mask, white_mask, Size(1,aperture), 0);
 
   //-- remove the boundaries of blurred matches
   int tolerance = 5;
@@ -57,7 +58,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   red_and_white_stripes  = red_and_white_stripes > tolerance;
     //-- find and number the regions located
   vector<region> regions_list = fast_find_regions(red_and_white_stripes);
-
+  cout << "hi" << endl;
   //-- no longer in use, so free
   red_and_white_stripes.release();
 

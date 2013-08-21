@@ -78,6 +78,7 @@
       void set_puzzle_input_filename(std::string filename);
       std::string get_puzzle_input_filename();
       void set_loaded_image(cv::Mat image);
+      void release_loaded_image();
       cv::Mat get_loaded_image();
 
       void set_load_results_from_file(bool should_load_results_from_file);

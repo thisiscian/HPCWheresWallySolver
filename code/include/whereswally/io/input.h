@@ -52,7 +52,7 @@
       int parse_input(int argc, char* argv[]); //-- parses user input
       int load_config(); //-- loads values into *variables from a configuration file
       int load_results(); //-- loads previously calculated results into *variables
-      cv::Mat load_image(); //-- loads a puzzle image from a file, as defined in variables->get_puzzle_image_filename
+      void load_image(); //-- loads a puzzle image from a file, as defined in variables->get_puzzle_image_filename
   };
 
 #endif

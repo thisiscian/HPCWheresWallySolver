@@ -15,7 +15,7 @@ Find_Glasses::Find_Glasses() {
   info.set_name("Find Glasses");
   info.set_description("Locate Wally by areas that look like glasses");
   info.set_confidence(0.1);
-  rescale = 2; // change the size of the image to get better resolution
+  rescale = 2; //-- change the size of the image to get better resolution
   thresholds = 3;
   allowed_irregularity = 0.4;
 }

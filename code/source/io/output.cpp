@@ -43,7 +43,7 @@ void Output::show_graphic_results() {
     }
   multiply(image, mask, mask);
   image = image/2 + mask/2;
-  for(size_t i=0; i<final_results.size(); i++ ) {
+  for(int i=(int)final_results.size()-1; i>=0; i-- ) {
     center.x = final_results[i].wally_location[0];
     center.y = final_results[i].wally_location[1];
     scale.width = final_results[i].scale[0];
@@ -55,17 +55,18 @@ void Output::show_graphic_results() {
     int fontFace = FONT_HERSHEY_SCRIPT_SIMPLEX; 
     int baseline = 0;
     Size textSize = getTextSize(text.str(), fontFace, 0.4, 2, &baseline);
-    rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height+12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height+12), Scalar::all(255), -1);
-    rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height+12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height+12), Scalar::all(0), 2);
-    putText(image, text.str(), Point(center.x-(textSize.width/2),center.y+scale.height-textSize.height+25),fontFace, 0.4, Scalar::all(0), 1);
     int len=8;
     for(int i=0; i<len;i++) {
       ellipse(image,center, scale,0,360*(2*i)/(2*len),360*(2*i+1)/(2*len),Scalar(255,255,255),4);
       ellipse(image,center, scale,0,360*(2*i+1)/(2*len), 360*(2*i+2)/(2*len),Scalar(0,0,255),4);
     }
+    rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height-12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height-12), Scalar::all(255), -1);
+    rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height-12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height-12), Scalar::all(0), 2);
+    putText(image, text.str(), Point(center.x-(textSize.width/2),center.y+scale.height-textSize.height-12),fontFace, 0.4, Scalar::all(0), 1);
 }
 
   imshow(window_name, image);
+  imwrite("out.png",image);
   waitKey();
   destroyWindow(window_name);
 }

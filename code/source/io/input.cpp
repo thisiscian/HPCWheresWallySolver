@@ -235,8 +235,7 @@ int Input::parse_input(int argc, char* argv[]) {
 //**
 
 //-- load the puzzle image from file
-Mat Input::load_image() {
+void Input::load_image() {
   Mat image = imread(variables->get_puzzle_input_filename(), 1);
   variables->set_loaded_image(image);
-  return image;
 }

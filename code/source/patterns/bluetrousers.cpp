@@ -61,5 +61,6 @@ vector<Pattern_Result> Blue_Trousers::start_search(Mat image) {
     tmp.certainty = (float) regions_list[i].size/sum;
     results.push_back(tmp);
   }
+  image.release();
   return results;
 }

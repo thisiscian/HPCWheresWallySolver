@@ -29,7 +29,7 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
   //-- if allowed to load puzzle from file
   if(variables->get_load_puzzle_from_file()) {
     double start = omp_get_wtime();
-    Mat image = input->load_image();
+    input->load_image();
 
     //-- get time to load image from file; purely serial
     variables->add_timing_result("Load Image", omp_get_wtime()-start);
@@ -37,10 +37,10 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     //-- parallelise over tasks, spare threads will go towards parallelising the tasks themselves
     omp_set_num_threads(variables->get_number_of_openmp_threads());
     omp_set_nested(1);
-    #pragma omp parallel for default(none) shared(image, patterns)
+    #pragma omp parallel for default(none) shared(patterns)
     for(size_t i=0; i<patterns.size(); i++) {
       double start = omp_get_wtime();
-      vector<Pattern_Result> current_pattern_result = patterns[i]->start_search( image );
+      vector<Pattern_Result> current_pattern_result = patterns[i]->start_search(variables->get_loaded_image() );
       #pragma omp critical
       {
         variables->add_to_results( current_pattern_result );
@@ -49,11 +49,11 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     }
   }
   variables->add_timing_result("Total Time", omp_get_wtime()-solve_start);
-
   Results_Analysis analyser;
   analyser.calculate_final_results(variables->get_number_of_final_results(), variables->get_results() );
   output->set_final_results( analyser.get_final_results() );
   output->output();
+  variables->release_loaded_image();
   delete variables;
   delete input;
   delete output;
