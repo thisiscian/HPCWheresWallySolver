@@ -112,7 +112,7 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
 
         //-- if there are different regions north and west of the current pixel, define an equivalence between them
         if(n_neighbour >= 0 && w_neighbour >= 0 && n_neighbour != w_neighbour) {
-          #pragma omp critical
+          #pragma omp critical (regionequiv)
           {
             region_equivalence[w_neighbour] = n_neighbour;
           }
@@ -126,7 +126,7 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
          subimage.at<int>(i,j) = w_neighbour;
         } else {
          subimage.at<int>(i,j) = region_count;
-          #pragma omp critical
+          #pragma omp critical (regionequiv)
           {
             region_equivalence.push_back(region_count);
             region_count++;

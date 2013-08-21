@@ -41,7 +41,7 @@ int IO_Control::start(vector<Search_Pattern*> patterns) {
     for(size_t i=0; i<patterns.size(); i++) {
       double start = omp_get_wtime();
       vector<Pattern_Result> current_pattern_result = patterns[i]->start_search(variables->get_loaded_image() );
-      #pragma omp critical
+      #pragma omp critical (export_results)
       {
         variables->add_to_results( current_pattern_result );
         variables->add_timing_result(patterns[i]->info.get_name(), omp_get_wtime()-start);
