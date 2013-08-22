@@ -125,10 +125,6 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       }
     }
   }
-  namedWindow("t", CV_WINDOW_NORMAL);
-  imshow("t", input*100);
-  waitKey(0);
-
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
       if(input.at<short>(i,j) < 0) continue;
@@ -139,12 +135,6 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       }
     }
   }
-  namedWindow("t", CV_WINDOW_NORMAL);
-  imshow("t", input >=0);
-  waitKey(0);
-
- 
-
   int to_unique = 0;
   vector<map<int,int> > map_thread_to_unique(num_threads);
   map<int,int> unique_region_labels;
@@ -189,11 +179,6 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       input.at<short>(i,j) = unique_region_labels[map_thread_to_unique[thread][input.at<short>(i,j)]];
     }
   }
-  
-  namedWindow("t", CV_WINDOW_NORMAL);
-  imshow("t", input*10);
-  waitKey(0);
-
   
   //-- add each region to a list, and determine some basic information about it
   map<int, wwp::region> region_list;
