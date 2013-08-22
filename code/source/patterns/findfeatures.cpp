@@ -254,33 +254,17 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
   objects.push_back("feature_samples/w_fj_23-24.png");
   //objects.push_back("feature_samples/wally_large_generic.png");
 
-  // calculate best way to split image up amongst processes
-  int num_threads = omp_get_max_threads();
-  int size[2] = {image.cols, image.rows};
-  int split[2] = {1,1};
-  int tmp_num_threads = num_threads;
-  while(tmp_num_threads > 1) {
-    int div = 2;
-    while(tmp_num_threads%2!=0) {
-      div++;
-    }
-    tmp_num_threads /= div;
-    int largest = 0;
-    if((float)(size[1])/split[1] > (float)(size[0])/split[0]) {
-      largest = 1;
-    }
-    split[largest] *= div;
-  }
-    
   vector<Mat> object_list, object_descriptors_list;
   vector<vector<KeyPoint> > object_keypoints_list;
   vector<double> scale_list;
-  #pragma omp parallel for default(none) shared(cout, objects, object_list, object_descriptors_list, object_keypoints_list, scale_list) firstprivate(scene_thickness, num_threads, split)
+	int largest_object[2]={0,0};
+  #pragma omp parallel for default(none) shared(objects, object_list, object_descriptors_list, object_keypoints_list, scale_list, largest_object, scene_thickness)
   for(size_t i=0; i<objects.size(); i++) {
 
     Mat object = imread(objects[i], CV_LOAD_IMAGE_COLOR);
-    //-- mask all FUSHCIA (#FF00FF) colours to ensure that transparent colours don't get matched
     Mat image_mask = get_colour_in_image(object, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
+		if(largest_object[0] <object.cols) largest_object[0] = object.cols;
+		if(largest_object[1] <object.rows) largest_object[1] = object.rows;
     image_mask = image_mask != 255;
     Mat tmp_desc;
     vector<KeyPoint> tmp_kp;
@@ -288,7 +272,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     sift(object, image_mask, tmp_kp, tmp_desc);
     double object_thickness = estimate_black_line_thickness(object,50,50);
     double scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
-    #pragma omp critical
+    #pragma omp critical (findfeatures_keypoints)
     {
       object_descriptors_list.push_back(tmp_desc);
       object_keypoints_list.push_back(tmp_kp);
@@ -296,11 +280,27 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       scale_list.push_back(scale);
     }
   }
+	// calculate best way to split image up amongst processes
+  int divisions = omp_get_max_threads();
+  int size[2] = {image.cols, image.rows};
+  int split[2] = {sqrt(divisions),1};
+	while(divisions%split[0] != 0) {
+		split[0]--;
+	}
+	split[1] = divisions/split[0];
 
-  //-- decompose the image into chunks
-  #pragma omp parallel for default(none) shared(results, image, object_list, object_descriptors_list, object_keypoints_list, scale_list) firstprivate(scene_thickness, num_threads, split)
-  for(int subimage=0; subimage<num_threads; ++subimage) {
-    //-- get the appropriate subimage from the main image
+	if(size[0]/split[0] < 2*largest_object[0]) {
+		split[0] = size[0]/(2*largest_object[0]);
+	}
+	if(size[1]/split[1] < 2*largest_object[1]) {
+		split[1] = size[1]/(2*largest_object[1]);
+	}
+	if(split[0] < 1) {split[0] = 1;}
+	if(split[1] < 1) {split[1] = 1;}
+	divisions = split[0]*split[1];
+
+  #pragma omp parallel for default(none) shared(results, image, object_list, object_descriptors_list, object_keypoints_list, scale_list) firstprivate(scene_thickness, divisions, split)
+  for(int subimage=0; subimage<divisions; ++subimage) {
     int x[2] = { (subimage/split[0])*(image.rows-1)/split[1], (subimage/split[0]+1)*(image.rows-1)/split[1] };
     int y[2] = { (subimage%split[0])*(image.cols-1)/split[0], (subimage%split[0]+1)*(image.cols-1)/split[0] };
 
@@ -311,6 +311,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     SIFT sift;
     sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
 
+  	#pragma omp parallel for default(none) shared(results, scene_descriptors, scene_keypoints, object_list, object_descriptors_list, object_keypoints_list, scale_list,x,y)
     for(size_t i=0; i<object_list.size(); i++) {
       Mat object_descriptors = object_descriptors_list[i], object_image = object_list[i];
       vector<KeyPoint> object_keypoints = object_keypoints_list[i];
@@ -340,7 +341,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
       tmp.certainty = certainty;
       if(tmp.certainty >= 0 && tmp.scale[0] > 0 && tmp.scale[1] > 0 && tmp.scale[0] <= scale*object_image.rows && tmp.scale[1] <= scale*object_image.cols)
       {
-        #pragma omp critical
+        #pragma omp critical (findfeatures)
         {
           results.push_back(tmp);
         }

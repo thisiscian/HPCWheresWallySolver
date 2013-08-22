@@ -49,7 +49,6 @@
 
 
 find_path(OpenCV_DIR "OpenCVConfig.cmake" DOC "Root directory of OpenCV")
-
 ##====================================================
 ## Find OpenCV libraries
 ##----------------------------------------------------

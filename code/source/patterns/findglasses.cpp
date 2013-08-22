@@ -160,7 +160,7 @@ vector<Pattern_Result> Find_Glasses::start_search(Mat image) {
           //-- resize so that it covers a full wally, not just the glasses
           tmp.scale[0]*=5;
           tmp.scale[1]*=34;
-          #pragma omp critical
+          #pragma omp critical (export_results)
           {
             results.push_back(tmp);
           }
