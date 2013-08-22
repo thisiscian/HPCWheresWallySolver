@@ -32,6 +32,7 @@ void Output::show_graphic_results() {
   Size scale;
   string window_name = "Where's Wally Solver";
   namedWindow(window_name, CV_WINDOW_NORMAL);
+  resizeWindow(window_name, 1440,900);
   Mat mask(image.rows, image.cols, CV_8UC3, Scalar(0,0,0));
   // for the top results, draw a circle indicating Wally's location and a box labelling the result
   for(size_t i=0; i<final_results.size(); i++ ) {

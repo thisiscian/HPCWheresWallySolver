@@ -22,19 +22,18 @@ Red_and_White::Red_and_White() {
 vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   double thickness = estimate_black_line_thickness(image, 50,50);
   if(thickness < 1 || thickness != thickness) thickness = 1;
-
+  int estimated_size = 600*thickness*thickness;
   //-- create two arrays, one red and one white, indicating where the respective colour exists on the image
-  Mat red_mask = get_colour_in_image(image, "#770000", "#FF4646", 1.7,0,1.7,0,0,0);
-  Mat white_mask = get_greyscale_in_image(image, 105, 255, 50);
+  Mat red_mask = get_colour_in_image(image, "#900000", "#FF7070", 1.7,0,1.7,0,0,0);
+  Mat white_mask = get_greyscale_in_image(image, 200, 255, 45);
 
   //-- find the vertical and horizontal blurs in red and white masks
   Mat hred(red_mask.rows,red_mask.cols,red_mask.type());
   Mat hwhite(white_mask.rows,white_mask.cols, white_mask.type());
-  int aperture = 5*floor(thickness+0.5);
-  cout << "apt=" << aperture << endl;
+  int aperture = 2*floor(thickness+0.5);
   if(aperture % 2 == 0) {aperture += 1;}
-  GaussianBlur(red_mask, hred, Size(3,1), 0);
-  GaussianBlur(white_mask, hwhite, Size(3,1), 0);
+  GaussianBlur(red_mask, hred, Size(aperture,1), 0);
+  GaussianBlur(white_mask, hwhite, Size(aperture,1), 0);
   GaussianBlur(red_mask, red_mask, Size(1,aperture), 0);
   GaussianBlur(white_mask, white_mask, Size(1,aperture), 0);
 
@@ -49,7 +48,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   Mat red_and_white_stripes, horizontal_matches;
   multiply(red_mask, white_mask, red_and_white_stripes);
   multiply(hred, hwhite, horizontal_matches);
-  red_and_white_stripes -= horizontal_matches;
+    red_and_white_stripes -= horizontal_matches;
 
   //-- no longer need to store these masks, so free them
   red_mask.release();
@@ -57,10 +56,9 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
   GaussianBlur(red_and_white_stripes, red_and_white_stripes,Size(),5);
   red_and_white_stripes  = red_and_white_stripes > tolerance;
-  //-- find and number the regions located
+//-- find and number the regions located
 
   vector<region> regions_list = fast_find_regions(red_and_white_stripes);
-  cout << "regions_list:" << regions_list.size() << endl;
   //-- no longer in use, so free
   red_and_white_stripes.release();
 
@@ -69,14 +67,15 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   if(regions_list.size() < 1) {
     return results;
   }
+  
+  int sum=0;
   //-- count total size of all matching regions
-  int sum = 0;
   for(size_t i=0; i<regions_list.size(); i++) {
     sum += regions_list[i].size;
   }
 
   //-- turn regions into results
-  float wally_jumper_ratio[2] = {1.5,3.5};
+  float wally_jumper_ratio[2] = {1.5,3.2};
   for(size_t i=0; i<regions_list.size(); i++) {
     Pattern_Result tmp;
     tmp.info = info;
@@ -84,8 +83,11 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
     tmp.wally_location[1] = regions_list[i].largest_y; // vertical center of wally is approximately at the end of his jumper
     tmp.scale[0] = wally_jumper_ratio[0]*(regions_list[i].largest_x -regions_list[i].smallest_x)/2;
     tmp.scale[1] = wally_jumper_ratio[1]*(regions_list[i].largest_y -regions_list[i].smallest_y)/2;
-    tmp.certainty = (float)regions_list[i].size/sum;
-    results.push_back(tmp);
+    tmp.certainty = exp(-pow(tmp.scale[0]*tmp.scale[1]-estimated_size,2)*5e-8);
+//    tmp.certainty = (float)regions_list[i].size/sum; //fabs(1-(float)regions_list[i].size/estimated_size);
+    if((float)tmp.scale[1]/tmp.scale[0] > 2 && (float) tmp.scale[1]/tmp.scale[0] < 5) {
+      results.push_back(tmp);   
+    }
   }
   image.release();
   return results;

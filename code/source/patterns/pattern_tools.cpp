@@ -102,9 +102,11 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
 
         //-- if there are different regions north and west of the current pixel, define an equivalence between them
         if(n_neighbour >= 0 && w_neighbour >= 0 && thread_region_labels[x][n_neighbour] != thread_region_labels[x][w_neighbour]) {
+          int min_neighbour = min(w_neighbour, n_neighbour);
+          int max_neighbour = max(w_neighbour, n_neighbour);
           #pragma omp critical (updatethreadregion)
           {
-            thread_region_labels[x][w_neighbour] = n_neighbour;
+            thread_region_labels[x][max_neighbour] = min_neighbour;
           }
         }
         //-- if the north neighbour's region is non-zero, current pixel joins that region
