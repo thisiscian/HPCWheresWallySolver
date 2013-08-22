@@ -62,7 +62,7 @@ void Output::show_graphic_results() {
     }
     rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height-12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height-12), Scalar::all(255), -1);
     rectangle(image, Point(center.x-textSize.width/2,center.y+scale.height-textSize.height-12),Point(center.x+textSize.width/2,center.y+scale.height+textSize.height-12), Scalar::all(0), 2);
-    putText(image, text.str(), Point(center.x-(textSize.width/2),center.y+scale.height-textSize.height-12),fontFace, 0.4, Scalar::all(0), 1);
+    putText(image, text.str(), Point(center.x-(textSize.width/2),center.y+scale.height-textSize.height),fontFace, 0.4, Scalar::all(0), 1);
 }
 
   imshow(window_name, image);

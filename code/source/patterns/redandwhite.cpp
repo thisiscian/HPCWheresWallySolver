@@ -21,6 +21,7 @@ Red_and_White::Red_and_White() {
 
 vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   double thickness = estimate_black_line_thickness(image, 50,50);
+  if(thickness < 1 || thickness != thickness) thickness = 1;
 
   //-- create two arrays, one red and one white, indicating where the respective colour exists on the image
   Mat red_mask = get_colour_in_image(image, "#770000", "#FF4646", 1.7,0,1.7,0,0,0);
@@ -29,8 +30,8 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   //-- find the vertical and horizontal blurs in red and white masks
   Mat hred(red_mask.rows,red_mask.cols,red_mask.type());
   Mat hwhite(white_mask.rows,white_mask.cols, white_mask.type());
-  int aperture = 5*thickness;
-  cout << "thick=" << thickness << endl;
+  int aperture = 5*floor(thickness+0.5);
+  cout << "apt=" << aperture << endl;
   if(aperture % 2 == 0) {aperture += 1;}
   GaussianBlur(red_mask, hred, Size(3,1), 0);
   GaussianBlur(white_mask, hwhite, Size(3,1), 0);
@@ -56,9 +57,10 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
   GaussianBlur(red_and_white_stripes, red_and_white_stripes,Size(),5);
   red_and_white_stripes  = red_and_white_stripes > tolerance;
-    //-- find and number the regions located
+  //-- find and number the regions located
+
   vector<region> regions_list = fast_find_regions(red_and_white_stripes);
-  cout << "hi" << endl;
+  cout << "regions_list:" << regions_list.size() << endl;
   //-- no longer in use, so free
   red_and_white_stripes.release();
 
@@ -68,7 +70,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
     return results;
   }
   //-- count total size of all matching regions
-  int sum = regions_list[1].size;
+  int sum = 0;
   for(size_t i=0; i<regions_list.size(); i++) {
     sum += regions_list[i].size;
   }
@@ -82,7 +84,7 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
     tmp.wally_location[1] = regions_list[i].largest_y; // vertical center of wally is approximately at the end of his jumper
     tmp.scale[0] = wally_jumper_ratio[0]*(regions_list[i].largest_x -regions_list[i].smallest_x)/2;
     tmp.scale[1] = wally_jumper_ratio[1]*(regions_list[i].largest_y -regions_list[i].smallest_y)/2;
-    tmp.certainty = (float) regions_list[i].size/sum;
+    tmp.certainty = (float)regions_list[i].size/sum;
     results.push_back(tmp);
   }
   image.release();

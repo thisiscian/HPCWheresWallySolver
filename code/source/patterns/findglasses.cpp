@@ -74,14 +74,18 @@ vector<Pattern_Result> Find_Glasses::start_search(Mat image) {
   if(decomposition[0] < 1) {decomposition[0] = 1;}
   if(decomposition[1] < 1) {decomposition[1] = 1;}
 
-  //-- convert to grey and resize to get more resolution on image
+  Mat skin_colour = get_colour_in_image(image, "#907070", "#FFE0e0", 0,0,0,0,0,0);
+  GaussianBlur(skin_colour, skin_colour, Size(), 5);
+  skin_colour = (skin_colour > 20)/255;
+ //-- convert to grey and resize to get more resolution on image
   Mat grey_image;
   cvtColor(image,grey_image,CV_RGB2GRAY);
+  multiply(skin_colour,grey_image,grey_image);
   resize(grey_image, grey_image, Size(), rescale,rescale,INTER_CUBIC);
-
+   
   //-- sharpen image with unsharp mask
   Mat blur_grey;
-  GaussianBlur(grey_image, blur_grey, Size(0,0), 1);
+  GaussianBlur(grey_image, blur_grey, Size(), 1);
   addWeighted(grey_image, 1.5, blur_grey, -0.7, 0, grey_image);
 
 

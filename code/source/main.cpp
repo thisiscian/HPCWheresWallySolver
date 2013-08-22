@@ -14,10 +14,10 @@ int main(int argc, char* argv[] ) {
   
   //-- Add patterns to list
   vector<Search_Pattern*> patterns;
-  //patterns.push_back(&rw);
+  patterns.push_back(&rw);
   //patterns.push_back(&fg);
   //patterns.push_back(&bt);
-  patterns.push_back(&ff);
+  //patterns.push_back(&ff);
 
   //-- Start the search for Wally
   controller.start(patterns);

@@ -69,31 +69,21 @@ bool wwp::operator<(wwp::homography lhs, wwp::homography rhs) {
 
 //-- finds regions using the quick Connected Component Labelling algorithm
 vector<wwp::region> wwp::fast_find_regions(Mat input) {
-   /*
-//  vector< vector<int> > region_array(input.rows);
-    int region_array[input.rows][input.cols];
-  for(int i=0; i<input.rows; i++) {
-  //  region_array[i].resize(input.cols);
-    for(int j=0; j<input.cols; j++) {
-      input.at<int>(i,j) = -1;
-    }
-  }
-  */
-//  input != input;
   input.convertTo(input,CV_16S);
   input -= 50;
 
-  int region_count = 0;
   int num_threads = omp_get_max_threads();
-  vector<int> region_equivalence;
+  vector<vector<int> > thread_region_labels(num_threads);
   //-- loop that calculates roughly correct regions
-  #pragma omp parallel for default(none) shared(cout, num_threads, input, region_equivalence, region_count)
+  #pragma omp parallel for default(none) shared(num_threads, input, thread_region_labels)
   for(int x=0; x<num_threads; x++) {
-    Mat subimage=input.rowRange((x*input.rows)/num_threads, ((x+1)*input.rows)/num_threads-1);
+    Mat subimage=input.rowRange((x*(input.rows))/num_threads, ((x+1)*(input.rows))/num_threads);
+    int region_count = 0;
     for(int i=0; i<subimage.rows; i++) {
       for(int j=0; j<subimage.cols; j++) {
         //-- if current pixel is zero-valued, then move onto next pixel
-        if(subimage.at<int>(i,j) < 0 ) {
+        if(subimage.at<short>(i,j) < 0 ) {
+          subimage.at<short>(i,j) = -1;
           continue;
         }
         //-- get values of neighbours to the north and west, unless pixel is on the north or west border
@@ -101,85 +91,117 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
         if(i==0) {
           n_neighbour = -1;
         } else {
-          n_neighbour = subimage.at<int>(i-1,j); //[i-1+x*(input.rows-1)/num_threads][j];
+          n_neighbour = subimage.at<short>(i-1,j);
         }
 
         if(j==0) { 
           w_neighbour = -1;
         } else {
-          w_neighbour = subimage.at<int>(i,j-1);//region_array[i+x*(input.rows-1)/num_threads][j-1];
+          w_neighbour = subimage.at<short>(i,j-1);
         }
 
         //-- if there are different regions north and west of the current pixel, define an equivalence between them
-        if(n_neighbour >= 0 && w_neighbour >= 0 && n_neighbour != w_neighbour) {
-          #pragma omp critical
+        if(n_neighbour >= 0 && w_neighbour >= 0 && thread_region_labels[x][n_neighbour] != thread_region_labels[x][w_neighbour]) {
+          #pragma omp critical (updatethreadregion)
           {
-            region_equivalence[w_neighbour] = n_neighbour;
+            thread_region_labels[x][w_neighbour] = n_neighbour;
           }
         }
         //-- if the north neighbour's region is non-zero, current pixel joins that region
         //-- if north is zero but west's region is not, current pixel joins west region
         //-- otherwise, define a new region
         if(n_neighbour >= 0) {
-         subimage.at<int>(i,j) = n_neighbour;
+         subimage.at<short>(i,j) = n_neighbour;
         } else if (w_neighbour >= 0) {
-         subimage.at<int>(i,j) = w_neighbour;
+         subimage.at<short>(i,j) = w_neighbour;
         } else {
-         subimage.at<int>(i,j) = region_count;
-          #pragma omp critical
+          subimage.at<short>(i,j) = region_count;
+          #pragma omp critical(updatethreadregion)
           {
-            region_equivalence.push_back(region_count);
-            region_count++;
+            thread_region_labels[x].push_back(region_count);
           }
+          region_count++;
         }
       }
     }
   }
+  namedWindow("t", CV_WINDOW_NORMAL);
+  imshow("t", input*100);
+  waitKey(0);
 
-  for(int x=1;x<num_threads;x++) {
-    for(int i=(x*input.rows)/num_threads-1;i<(x*input.rows)/num_threads+1;i++)
+  for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      int n_neighbour, w_neighbour;
-      if(i==0) {
-        n_neighbour = -1;
-      } else {
-        n_neighbour = input.at<int>(i-1,j);//region_array[i-1][j];
-      }
-
-      if(j==0) { 
-        w_neighbour = -1;
-      } else {
-        w_neighbour = input.at<int>(i,j-1);//region_array[i][j-1];
-      }
-
-      //-- if there are different regions north and west of the current pixel, define an equivalence between them
-      if(n_neighbour >= 0 && w_neighbour >= 0 && n_neighbour != w_neighbour) {
-        region_equivalence[w_neighbour] = n_neighbour;
+      if(input.at<short>(i,j) < 0) continue;
+      int thread = (i*num_threads+0.5)/input.rows;
+      while(input.at<short>(i,j) != thread_region_labels[thread][input.at<short>(i,j)])
+      {
+        input.at<short>(i,j) = thread_region_labels[thread][input.at<short>(i,j)];
       }
     }
   }
- namedWindow("t", CV_WINDOW_NORMAL);
-  imshow("t", input*50);
+  namedWindow("t", CV_WINDOW_NORMAL);
+  imshow("t", input >=0);
   waitKey(0);
- int max = 0;
+
+ 
+
+  int to_unique = 0;
+  vector<map<int,int> > map_thread_to_unique(num_threads);
+  map<int,int> unique_region_labels;
+  for(int x=0; x<num_threads; x++) {
+    for(size_t i=0; i<thread_region_labels[x].size(); i++) {
+      int label_equiv = thread_region_labels[x][i]+to_unique;
+      int unique_label = i+to_unique;
+      map_thread_to_unique[x][i] = unique_label;
+      unique_region_labels[unique_label] = label_equiv;
+    }
+    to_unique+=thread_region_labels[x].size();
+  }
+  for(int x=1;x<num_threads;x++) {
+    int i=(x*input.rows)/num_threads;
+    for(int j=0; j<input.cols; j++) {
+      int thread_label_north = input.at<short>(i-1,j);
+      int thread_label_current = input.at<short>(i,j);
+      int n_neighbour = map_thread_to_unique[x-1][thread_label_north];
+      int me = map_thread_to_unique[x][thread_label_current];
+      //-- if there are different regions north and west of the current pixel, define an equivalence between them
+      if(n_neighbour >= 0 && me >=0) {
+        unique_region_labels[me] = n_neighbour;
+      }
+    }
+  }
+
   //-- remove redundant definitions, e.g. if reg(3) == 2 && reg(2) == 1, then reg(1) is reassigned to 1
-  for(size_t i=0; i<region_equivalence.size(); i++) {
-    int equiv_new=region_equivalence[i], equiv_old = -1;
+  for(map<int,int>::iterator it=unique_region_labels.begin(); it!=unique_region_labels.end(); ++it) {
+    int equiv_new=it->second, equiv_old = -1;
     //-- while current region is not equivalent to itself
     while(equiv_new != equiv_old) {
       equiv_old = equiv_new;
-      equiv_new = region_equivalence[equiv_new];
+      equiv_new = unique_region_labels[equiv_new];
     }
-    if(equiv_new > max ) {max = equiv_new;}
-    region_equivalence[i] = equiv_new;
+    it->second = equiv_new;
   }
+ 
+  for(int i=0; i<input.rows; i++) {
+    for(int j=0; j<input.cols; j++) {
+      if(input.at<short>(i,j) < 0) continue;
+      int thread = (i*num_threads+0.5)/input.rows;
+      input.at<short>(i,j) = unique_region_labels[map_thread_to_unique[thread][input.at<short>(i,j)]];
+    }
+  }
+  
+  namedWindow("t", CV_WINDOW_NORMAL);
+  imshow("t", input*10);
+  waitKey(0);
+
   
   //-- add each region to a list, and determine some basic information about it
   map<int, wwp::region> region_list;
   for(int i=0; i<input.rows; i++) {
     for(int j=0; j<input.cols; j++) {
-      if(input.at<int>(i,j) /*input.at<int>(i,j)*/ < 0 || input.at<int>(i,j) > max) {continue;}
-      size_t val = region_equivalence[input.at<int>(i,j)]; //-- adds this pixel to the region that it's current region is equivalent to
+      if(input.at<short>(i,j) < 0) {continue;}
+      int thread = (i*num_threads+0.5)/input.rows;
+      size_t val = unique_region_labels[map_thread_to_unique[thread][input.at<short>(i,j)]]; //-- adds this pixel to the region that it's current region is equivalent to
       if(region_list[val].smallest_x > j) region_list[val].smallest_x = j;
       if(region_list[val].smallest_y > i) region_list[val].smallest_y = i;
       if(region_list[val].largest_x < j) region_list[val].largest_x = j;
@@ -188,10 +210,7 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
       region_list[val].av_x+=j;
       region_list[val].av_y+=i;
     }
-    //region_array[i].clear();
   }
-  //region_array.clear();
-  region_equivalence.clear();
 
   //-- normalize average positions and add to the list of regions discovered
   vector<wwp::region> found_regions;
@@ -199,11 +218,7 @@ vector<wwp::region> wwp::fast_find_regions(Mat input) {
     it->second.av_x /= it->second.size;
     it->second.av_y /= it->second.size;
     found_regions.push_back(it->second);
-    cout << it->first << ": " << it->second.size << endl;
   }
-  input.release();
-  region_list.clear();
-  cout << found_regions.size() << endl;
   return found_regions;
 }
 
@@ -229,7 +244,7 @@ double wwp::estimate_black_line_thickness(Mat image, int limit, int tolerance) {
   double best_width=0;
   #pragma omp parallel for default(none) firstprivate(range,max_distance, num_threads) shared(image, distance_map) reduction(+: best_width) reduction(+: count)
 	for(int i=0; i<num_threads; i++) {
-    Mat subdist = distance_map.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
+    Mat subdist = distance_map.rowRange((i*image.rows)/num_threads, ((i+1)*image.rows)/num_threads);
 		int minimum_difference_in_predictions = 1;
 		for(int j=0; j<range; j++) {
 			double average_prediction, deviation_prediction;
@@ -284,8 +299,9 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
   #pragma omp parallel for default(none) firstprivate(high,low,num_threads, tolerance) shared(image,out)
 	for(int i=0; i<num_threads; i++) {
     //-- split the image into the BGR decomposition (reverse of RGB)
+    Mat subimage = image.rowRange((i*image.rows)/num_threads, ((i+1)*image.rows)/num_threads);
 		Mat bgr[3];
-		split(image.rowRange(i*(image.rows-1)/num_threads,(i+1)*(image.rows-1)/num_threads), bgr);
+		split(subimage, bgr);
   
 		//-- check if bgr values are within tolerance of the requested values
 		Mat blue = (bgr[0] >= low-tolerance) & (bgr[0] <= high+tolerance);
@@ -302,7 +318,7 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
 		Mat similar_colours = rg & rb & gb;
     
     //-- write the local array to the 'out' matrix
-		Mat subout = out.rowRange(i*(out.rows-1)/num_threads,(i+1)*(out.rows-1)/num_threads);
+		Mat subout = out.rowRange((i*out.rows)/num_threads,((i+1)*out.rows)/num_threads);
 		Mat result = colour_magnitude & similar_colours;
 		result.copyTo(subout);
     subout.release();
@@ -317,7 +333,7 @@ Mat wwp::get_greyscale_in_image(Mat image, int low_in, int high_in, int toleranc
 //-- user can define a range of allowable colours, and also an acceptable ratio
 //-- acceptable ratios mean that 'red-ish' colours can be found, for example
 Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_two, float redgreen, float greenred, float redblue, float bluered, float greenblue, float bluegreen) {
-  int num_threads = omp_get_num_threads();
+  int num_threads = omp_get_max_threads();
   Mat out(image.size(),CV_8U);
   //-- these hold the ranges for allowed colours
   int r[2],g[2],b[2];
@@ -353,9 +369,9 @@ Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_tw
   to_hex >> b[1];
   to_hex.clear();
 
-  #pragma omp parallel for default(none) shared(image, out, cout,r, g, b) firstprivate(num_threads, redgreen, greenred, redblue, bluered, bluegreen, greenblue)
+  #pragma omp parallel for default(none) shared(image, out, r, g, b) firstprivate(num_threads, redgreen, greenred, redblue, bluered, bluegreen, greenblue)
   for(int i=0; i<num_threads; i++) {
-    Mat subimage = image.rowRange(i*(image.rows-1)/num_threads, (i+1)*(image.rows-1)/num_threads);
+    Mat subimage = image.rowRange((i*image.rows)/num_threads, ((i+1)*image.rows)/num_threads);
     Mat bgr[3];
     split(subimage, bgr);
 
@@ -382,7 +398,7 @@ Mat wwp::get_colour_in_image(Mat image, string colour_one, std::string colour_tw
     red.release(); green.release();
     blue.release();saturation.release();
     bgr[0].release(); bgr[1].release(); bgr[2].release();
-    Mat subout = out.rowRange(i*(out.rows-1)/num_threads, (i+1)*(out.rows-1)/num_threads);
+    Mat subout = out.rowRange((i*out.rows)/num_threads, ((i+1)*out.rows)/num_threads);
     result.copyTo(subout);
     subout.release();
   }

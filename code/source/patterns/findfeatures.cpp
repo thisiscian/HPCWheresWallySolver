@@ -271,9 +271,34 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     }
     split[largest] *= div;
   }
-  
+    
+  vector<Mat> object_list, object_descriptors_list;
+  vector<vector<KeyPoint> > object_keypoints_list;
+  vector<double> scale_list;
+  #pragma omp parallel for default(none) shared(cout, objects, object_list, object_descriptors_list, object_keypoints_list, scale_list) firstprivate(scene_thickness, num_threads, split)
+  for(size_t i=0; i<objects.size(); i++) {
+
+    Mat object = imread(objects[i], CV_LOAD_IMAGE_COLOR);
+    //-- mask all FUSHCIA (#FF00FF) colours to ensure that transparent colours don't get matched
+    Mat image_mask = get_colour_in_image(object, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
+    image_mask = image_mask != 255;
+    Mat tmp_desc;
+    vector<KeyPoint> tmp_kp;
+    SIFT sift;
+    sift(object, image_mask, tmp_kp, tmp_desc);
+    double object_thickness = estimate_black_line_thickness(object,50,50);
+    double scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
+    #pragma omp critical
+    {
+      object_descriptors_list.push_back(tmp_desc);
+      object_keypoints_list.push_back(tmp_kp);
+      object_list.push_back(object);
+      scale_list.push_back(scale);
+    }
+  }
+
   //-- decompose the image into chunks
-  #pragma omp parallel for default(none) shared(image, objects, results) firstprivate(scene_thickness, num_threads, split)
+  #pragma omp parallel for default(none) shared(results, image, object_list, object_descriptors_list, object_keypoints_list, scale_list) firstprivate(scene_thickness, num_threads, split)
   for(int subimage=0; subimage<num_threads; ++subimage) {
     //-- get the appropriate subimage from the main image
     int x[2] = { (subimage/split[0])*(image.rows-1)/split[1], (subimage/split[0]+1)*(image.rows-1)/split[1] };
@@ -284,22 +309,12 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
     Mat scene_descriptors;
     vector<KeyPoint> scene_keypoints;
     SIFT sift;
+    sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
 
-        sift(scene_image, Mat(), scene_keypoints, scene_descriptors);
-
-    for(size_t i=0; i<objects.size(); i++) {
-      Mat object_descriptors, image_mask, object_image;
-      vector<KeyPoint> object_keypoints;
-
-      object_image = imread(objects[i], CV_LOAD_IMAGE_COLOR);
-      double object_thickness = estimate_black_line_thickness(object_image,50,50);
-      double scale = floor(floor(object_thickness+1)/floor(scene_thickness+1)+0.5);
-
-      //-- mask all FUSHCIA (#FF00FF) colours to ensure that transparent colours don't get matched
-      image_mask = get_colour_in_image(object_image, "#FF00FF", "#FF00FF", 1, 0, 1, 1, 0, 1);
-      image_mask = image_mask != 255;
-
-      sift(object_image, image_mask, object_keypoints, object_descriptors);
+    for(size_t i=0; i<object_list.size(); i++) {
+      Mat object_descriptors = object_descriptors_list[i], object_image = object_list[i];
+      vector<KeyPoint> object_keypoints = object_keypoints_list[i];
+      double scale = scale_list[i];
 
       //-- match the  scene and object
       vector<DMatch> match_list = find_matches_with_matcher(object_descriptors, scene_descriptors);
