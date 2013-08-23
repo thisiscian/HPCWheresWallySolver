@@ -31,6 +31,3 @@ The program can be found in the bin/ folder, along with some sample test files
 //TESTS 
 run test suite with:
   ctest
-
-//BENCHMARKS
-  some benchmarks can be found in bench/ but they are not very thorough.

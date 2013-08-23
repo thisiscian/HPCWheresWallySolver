@@ -67,7 +67,6 @@ void Output::show_graphic_results() {
 }
 
   imshow(window_name, image);
-  imwrite("out.png",image);
   waitKey();
   destroyWindow(window_name);
 }
