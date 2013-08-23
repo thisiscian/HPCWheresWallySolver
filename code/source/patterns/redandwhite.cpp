@@ -22,18 +22,10 @@ Red_and_White::Red_and_White() {
 vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   double thickness = estimate_black_line_thickness(image, 50,50);
   if(thickness < 1 || thickness != thickness) thickness = 1;
-  int estimated_size = 400*thickness*thickness;
+  int estimated_size = 600*thickness*thickness;
   //-- create two arrays, one red and one white, indicating where the respective colour exists on the image
-  Mat red_mask = get_colour_in_image(image, "#101010", "#FFFF99", 0.95,0.95,1.7,0,1.7,0);
-  Mat white_mask = get_greyscale_in_image(image, 0, 50, 25);
-  //Mat red_mask = get_colour_in_image(image, "#900000", "#FF7070", 1.7,0,1.7,0,0,0);
-  //Mat white_mask = get_greyscale_in_image(image, 200, 255, 45);
-
-  namedWindow("t", CV_WINDOW_NORMAL);
-  namedWindow("u", CV_WINDOW_NORMAL);
-  imshow("t", red_mask);
-  imshow("u", white_mask);
-  waitKey(0);
+  Mat red_mask = get_colour_in_image(image, "#900000", "#FF7070", 1.7,0,1.7,0,0,0);
+  Mat white_mask = get_greyscale_in_image(image, 200, 255, 45);
 
   //-- find the vertical and horizontal blurs in red and white masks
   Mat hred(red_mask.rows,red_mask.cols,red_mask.type());
@@ -64,11 +56,10 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
 
   GaussianBlur(red_and_white_stripes, red_and_white_stripes,Size(),5);
   red_and_white_stripes  = red_and_white_stripes > tolerance;
-  imshow("u", red_and_white_stripes);
-  waitKey(0);
-//-- find and number the regions located
 
+  //-- find and number the regions located
   vector<region> regions_list = fast_find_regions(red_and_white_stripes);
+
   //-- no longer in use, so free
   red_and_white_stripes.release();
 
@@ -89,8 +80,8 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
   for(size_t i=0; i<regions_list.size(); i++) {
     Pattern_Result tmp;
     tmp.info = info;
-    tmp.wally_location[0] = regions_list[i].av_x; // horizontal center of wally is the center of his jumper
-    tmp.wally_location[1] = regions_list[i].largest_y; // vertical center of wally is approximately at the end of his jumper
+    tmp.wally_location[0] = regions_list[i].av_x; //-- horizontal center of wally is the center of his jumper
+    tmp.wally_location[1] = regions_list[i].largest_y; //-- vertical center of wally is approximately at the end of his jumper
     tmp.scale[0] = wally_jumper_ratio[0]*(regions_list[i].largest_x -regions_list[i].smallest_x)/2;
     tmp.scale[1] = wally_jumper_ratio[1]*(regions_list[i].largest_y -regions_list[i].smallest_y)/2;
     tmp.certainty = exp(-pow(tmp.scale[0]*tmp.scale[1]-estimated_size,2)*5e-8);
