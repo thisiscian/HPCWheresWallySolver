@@ -283,7 +283,7 @@ vector<Pattern_Result> Find_Features::start_search(Mat image) {
 	// calculate best way to split image up amongst processes
   int divisions = omp_get_max_threads();
   int size[2] = {image.cols, image.rows};
-  int split[2] = {sqrt(divisions),1};
+  int split[2] = {(int)sqrt(divisions),1};
 	while(divisions%split[0] != 0) {
 		split[0]--;
 	}

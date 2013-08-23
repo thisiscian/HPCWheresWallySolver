@@ -84,7 +84,6 @@ vector<Pattern_Result> Red_and_White::start_search(Mat image) {
     tmp.scale[0] = wally_jumper_ratio[0]*(regions_list[i].largest_x -regions_list[i].smallest_x)/2;
     tmp.scale[1] = wally_jumper_ratio[1]*(regions_list[i].largest_y -regions_list[i].smallest_y)/2;
     tmp.certainty = exp(-pow(tmp.scale[0]*tmp.scale[1]-estimated_size,2)*5e-8);
-//    tmp.certainty = (float)regions_list[i].size/sum; //fabs(1-(float)regions_list[i].size/estimated_size);
     if((float)tmp.scale[1]/tmp.scale[0] > 2 && (float) tmp.scale[1]/tmp.scale[0] < 5) {
       results.push_back(tmp);   
     }

@@ -24,6 +24,8 @@ vector<Pattern_Result> Blue_Trousers::start_search(Mat image) {
   //-- Wally's trousers are light blue
   Mat blue_trousers = get_colour_in_image(image, "#000000", "#AAAAFF",0,0,0,0.1,0,1.1);
   double thickness = estimate_black_line_thickness(image, 50,50);
+  if(thickness < 1 || thickness != thickness) thickness = 1;
+  int estimated_size = 600*thickness*thickness;
 
   int aperture = 8*thickness;
   if(aperture % 2 == 0) {aperture += 1;}
@@ -58,8 +60,10 @@ vector<Pattern_Result> Blue_Trousers::start_search(Mat image) {
     tmp.wally_location[1] = regions_list[i].smallest_y;
     tmp.scale[0] = (7.0/4)*(regions_list[i].largest_x -regions_list[i].smallest_x);
     tmp.scale[1] = (regions_list[i].largest_y -regions_list[i].smallest_y);
-    tmp.certainty = (float) regions_list[i].size/sum;
-    results.push_back(tmp);
+    tmp.certainty = exp(-pow(tmp.scale[0]*tmp.scale[1]-estimated_size,2)*5e-8);
+    if((float)tmp.scale[1]/tmp.scale[0] > 2 && (float) tmp.scale[1]/tmp.scale[0] < 5) {
+      results.push_back(tmp);   
+    }
   }
   image.release();
   return results;
